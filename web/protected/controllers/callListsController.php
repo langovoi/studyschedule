@@ -59,7 +59,7 @@ class callListsController extends Controller
 
     public function actionDelete($id, $confirm = 0)
     {
-        $model = new Call();
+        $model = new CallLists();
         if ($model = $model->findByPk($id)) {
             if ($confirm) {
                 if ($model->delete()) {
