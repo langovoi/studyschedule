@@ -1,0 +1,9 @@
+{% if App.user.hasFlash('success') or App.user.hasFlash('error') %}
+    <div class="alert alert-{% if App.user.hasFlash('success') %}success{% else %}danger{% endif %}">
+        {% if App.user.hasFlash('success') %}
+            {{ App.user.getFlash('success') }}
+        {% else %}
+            {{ App.user.getFlash('error') }}
+        {% endif %}
+    </div>
+{% endif %}

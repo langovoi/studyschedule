@@ -1,0 +1,52 @@
+{% extends '/views/layouts/main.twig' %}
+{% if model.isNewRecord %}
+    {% set title = 'Добавление преподавателя' %}
+{% else %}
+    {% set title = 'Редактирование преподавателя ' ~ model.lastname ~ ' ' ~ model.firstname ~ ' ' ~ model.middlename %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                {% include '/views/particle/notice.twig' %}
+                {% set form = this.beginWidget('CActiveForm',
+                {
+                'errorMessageCssClass': 'alert alert-danger'
+                }) %}
+                <div class="form-group text-center">
+                    <h1>{{ title }}</h1>
+                </div>
+                {% include '/views/particle/notice.twig' %}
+                <div class="form-group">
+                    {{ form.label(model, 'lastname') }}
+                    {{ form.textField(model, 'lastname', {'class': 'form-control', 'placeholder': model.attributeLabels().lastname }) }}
+                </div>
+                {{ form.error(model, 'lastname') }}
+                <div class="form-group">
+                    {{ form.label(model, 'firstname') }}
+                    {{ form.textField(model, 'firstname', {'class': 'form-control', 'placeholder': model.attributeLabels().firstname }) }}
+                </div>
+                {{ form.error(model, 'firstname') }}
+                <div class="form-group">
+                    {{ form.label(model, 'middlename') }}
+                    {{ form.textField(model, 'middlename', {'class': 'form-control', 'placeholder': model.attributeLabels().middlename }) }}
+                </div>
+                {{ form.error(model, 'middlename') }}
+                {% if App.user.checkAccess('admin') %}
+                    <div class="form-group">
+                        {{ form.label(model, 'owner_id') }}
+                        {{ form.dropDownList(model, 'owner_id', users_list, {'class': 'form-control', 'placeholder': model.attributeLabels().owner_id }) }}
+                    </div>
+                    {{ form.error(model, 'owner_id') }}
+                {% endif %}
+                <div class="form-group text-center">
+                    {{ C.Html.submitButton(model.isNewRecord ? 'Создать' : 'Сохранить', {'class': 'btn btn-success'}) }}
+                </div>
+                {{ void(this.endWidget()) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
