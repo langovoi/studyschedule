@@ -9,7 +9,7 @@ class m140925_124131_create_user_table extends CDbMigration
             'username' => 'varchar(120) NOT NULL',
             'email' => 'varchar(255) NOT NULL',
             'password' => 'varchar(32) NOT NULL',
-        ], 'ENGINE=InnoDB');
+        ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->createIndex('users_username_unique', '{{users}}', 'username', true);
         $this->createIndex('users_email_unique', '{{users}}', 'email', true);
