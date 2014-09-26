@@ -1,0 +1,15 @@
+{
+  "name": "kkep-schedule",
+  "authors": [
+    "Mark Langovoi <marklangovoi@gmail.com>"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.2.0"
+  }
+}

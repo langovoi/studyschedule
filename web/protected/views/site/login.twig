@@ -1,0 +1,33 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Расписание{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% set form = this.beginWidget('CActiveForm',
+        {
+        'htmlOptions': {'class': 'login-form'},
+        'errorMessageCssClass': 'alert alert-danger'
+        }) %}
+        <div class="form-group text-center">
+            <h1>Вход</h1>
+        </div>
+        {% if error and error != 100 and error != 0 %}
+            <div class="alert alert-danger" role="alert">Неверный логин или пароль</div>
+        {% endif %}
+        <div class="form-group">
+            {{ form.label(model, 'username') }}
+            {{ form.textField(model, 'username', {'class': 'form-control', 'placeholder': model.attributeLabels().username }) }}
+        </div>
+        {{ form.error(model, 'username') }}
+        <div class="form-group">
+            {{ form.label(model, 'password') }}
+            {{ form.passwordField(model, 'password', {'class': 'form-control', 'placeholder': model.attributeLabels().password }) }}
+        </div>
+        {{ form.error(model, 'password') }}
+        <div class="form-group text-center">
+            {{ C.Html.submitButton('Войти', {'class': 'btn btn-success'}) }}
+        </div>
+        {{ void(this.endWidget()) }}
+    </div>
+{% endblock %}

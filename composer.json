@@ -1,0 +1,16 @@
+{
+    "name": "sc0rp1d/schedule",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Mark Langovoi",
+            "email": "marklangovoi@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "yiisoft/yii": "1.1.15",
+        "twig/twig": "1.6.5",
+        "yiiext/twig-renderer": "dev-master"
+    }
+}

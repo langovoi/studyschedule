@@ -1,0 +1,18 @@
+### IDE's ###
+.idea
+nbproject
+
+#### Windows ####
+Desktop.ini
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN
+#### Mac ####
+.Trashes
+.DS_Store
+
+### Others ###
+/vendor
+/bower_components
+/node_modules
+composer.lock
