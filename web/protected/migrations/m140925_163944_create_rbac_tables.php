@@ -10,14 +10,14 @@ class m140925_163944_create_rbac_tables extends CDbMigration
             'description' => 'text',
             'bizrule' => 'text',
             'data' => 'text',
-        ]);
+        ], 'ENGINE=InnoDB');
 
         $this->addPrimaryKey('primary', '{{AuthItem}}', 'name');
 
         $this->createTable('{{AuthItemChild}}', [
             'parent' => 'varchar(64) not null',
             'child' => 'varchar(64) not null',
-        ]);
+        ], 'ENGINE=InnoDB');
 
         $this->addPrimaryKey('primary', '{{AuthItemChild}}', 'parent,child');
         $this->addForeignKey('foreign_parent', '{{AuthItemChild}}', 'parent', '{{AuthItem}}', 'name', 'cascade', 'cascade');
@@ -28,7 +28,7 @@ class m140925_163944_create_rbac_tables extends CDbMigration
             'userid' => 'varchar(64) not null',
             'bizrule' => 'text',
             'data' => 'text',
-        ]);
+        ], 'ENGINE=InnoDB');
 
         $this->addPrimaryKey('primary', '{{AuthAssignment}}', 'itemname,userid');
         $this->addForeignKey('foreign_itemname', '{{AuthAssignment}}', 'itemname', '{{AuthItem}}', 'name', 'cascade', 'cascade');

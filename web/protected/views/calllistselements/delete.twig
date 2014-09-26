@@ -1,0 +1,19 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Удаление элемента списка звонков{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="alert alert-danger">Вы уверены что хотите удалить элемента список звонков "<b>{{ model.call_list.name }}</b>"?
+                </div>
+                {{ C.Html.beginForm(['delete'], 'get') }}
+                {{ C.Html.hiddenField('confirm', 1) }}
+                {{ C.Html.hiddenField('id', model.id) }}
+                {{ C.Html.submitButton('Удалить', {class: 'btn btn-danger'}) }}
+                {{ C.Html.endForm() }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

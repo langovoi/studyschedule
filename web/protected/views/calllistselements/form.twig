@@ -1,0 +1,46 @@
+{% extends '/views/layouts/main.twig' %}
+{% if model.isNewRecord %}
+    {% set title = 'Добавление элемента списка звонков' %}
+{% else %}
+    {% set title = 'Редактирование элемента списка звонков "' ~ model.call_list.name~'"' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                {% include '/views/particle/notice.twig' %}
+                {% set form = this.beginWidget('CActiveForm',
+                {
+                'action': {0: (model.isNewRecord ? 'create' : 'update')}|merge(model.isNewRecord ? {list_id: App.request.param('list_id')} : {id: model.id}),
+                'errorMessageCssClass': 'alert alert-danger'
+                }) %}
+                <div class="form-group text-center">
+                    <h1>{{ title }}</h1>
+                </div>
+                {% include '/views/particle/notice.twig' %}
+                <div class="form-group">
+                    {{ form.label(model, 'number') }}
+                    {{ form.dropDownList(model, 'number', {1:1, 2:2, 3:3, 4:4, 5:5, 6:6},  {'class': 'form-control', 'placeholder': model.attributeLabels().number }) }}
+                </div>
+                {{ form.error(model, 'number') }}
+                <div class="form-group">
+                    {{ form.label(model, 'start_time') }}
+                    {{ form.timeField(model, 'start_time',  {'class': 'form-control', 'placeholder': model.attributeLabels().start_time }) }}
+                </div>
+                {{ form.error(model, 'start_time') }}
+                <div class="form-group">
+                    {{ form.label(model, 'end_time') }}
+                    {{ form.timeField(model, 'end_time',  {'class': 'form-control', 'placeholder': model.attributeLabels().end_time }) }}
+                </div>
+                {{ form.error(model, 'end_time') }}
+                <div class="form-group text-center">
+                    {{ C.Html.submitButton(model.isNewRecord ? 'Создать' : 'Сохранить', {'class': 'btn btn-success'}) }}
+                </div>
+                {{ void(this.endWidget()) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

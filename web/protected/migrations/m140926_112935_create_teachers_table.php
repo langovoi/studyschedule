@@ -10,7 +10,7 @@ class m140926_112935_create_teachers_table extends CDbMigration
             'lastname' => 'varchar(255) not null',
             'middlename' => 'varchar(255) not null',
             'owner_id' => 'integer NULL DEFAULT NULL'
-        ]);
+        ], 'ENGINE=InnoDB');
 
         $this->addForeignKey('teachers_owner_fk', '{{teachers}}', 'owner_id', '{{users}}', 'id', 'set null', 'no action');
     }

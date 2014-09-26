@@ -8,7 +8,7 @@ class m140926_114659_create_subjects_table extends CDbMigration
             'id' => 'pk',
             'name' => 'text not null',
             'owner_id' => 'integer NULL DEFAULT NULL'
-        ]);
+        ], 'ENGINE=InnoDB');
 
         $this->addForeignKey('subjects_owner_fk', '{{subjects}}', 'owner_id', '{{users}}', 'id', 'set null', 'no action');
     }
