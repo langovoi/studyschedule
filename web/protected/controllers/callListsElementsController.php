@@ -1,6 +1,6 @@
 <?php
 
-class callListsElementsController extends Controller
+class CallListsElementsController extends Controller
 {
 
     public function filters()

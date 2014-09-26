@@ -1,6 +1,6 @@
 <?php
 
-class callListsController extends Controller
+class CallListsController extends Controller
 {
 
     public function filters()
