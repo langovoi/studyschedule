@@ -15,7 +15,17 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="#">Главная</a></li>
-                    {% if App.user.checkAccess('admin') %}<li><a href="{{ App.createUrl('users/index') }}">Пользователи</a></li>{% endif %}
+                    {% if App.user.checkAccess('admin') %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Пользователи<span
+                                        class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ App.createUrl('users/index') }}">Список</a></li>
+                                <li><a href="{{ App.createUrl('users/create') }}">Добавить пользователя</a></li>
+                                {#<li class="divider"></li>#}
+                            </ul>
+                        </li>
+                    {% endif %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справочники <span
                                     class="caret"></span></a>
