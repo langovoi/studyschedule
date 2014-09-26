@@ -25,6 +25,7 @@
                             {% for attribute,value in model.attributes %}
                                 <th>{{ labels[attribute] }}</th>
                             {% endfor %}
+                            <th>Права</th>
                             <th>Действия</th>
                         </tr>
                         </thead>
@@ -34,6 +35,9 @@
                                 {% for attribute in user.attributes %}
                                     <td>{{ attribute }}</td>
                                 {% endfor %}
+                                <td>
+                                    {{ users_rights[user.id]|keys|join(',') }}
+                                </td>
                                 <td>
                                     <a href="{{ this.createUrl('update', {id: user.id}) }}"
                                        class="btn btn-sm btn-default"><span

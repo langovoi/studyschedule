@@ -35,6 +35,10 @@
                     {{ form.emailField(model, 'email', {'class': 'form-control', 'placeholder': model.attributeLabels().email }) }}
                 </div>
                 {{ form.error(model, 'email') }}
+                <div class="form-group">
+                    {{ C.Html.label('Группа',get_class(model) ~'[rights]') }}
+                    {{ C.Html.dropDownList(get_class(model) ~'[rights]', user_right, auth_items, {'class': 'form-control', 'placeholder': 'Группа' }) }}
+                </div>
                 <div class="form-group text-center">
                     {{ C.Html.submitButton(model.isNewRecord ? 'Создать' : 'Сохранить', {'class': 'btn btn-success'}) }}
                 </div>
