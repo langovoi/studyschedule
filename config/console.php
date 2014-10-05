@@ -1,10 +1,6 @@
 <?php
 
-if (YII_DEBUG) {
-    $db = require('local/db.php');
-} else {
-    $db = require('db.php');
-}
+$db = !file_exists(dirname(__FILE__) . '/local/db.php') ? require('db.php') : require(dirname(__FILE__) . '/local/db.php');
 
 return [
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',

@@ -11,6 +11,7 @@
         "php": ">=5.5.0",
         "yiisoft/yii": "1.1.15",
         "twig/twig": "1.6.5",
-        "yiiext/twig-renderer": "dev-master"
+        "yiiext/twig-renderer": "dev-master",
+        "jsvrcek/ics": "dev-master"
     }
 }

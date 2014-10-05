@@ -8,10 +8,9 @@ if (YII_DEBUG) {
         'password' => 'kkep-schedule',
         'ipFilters' => ['127.0.0.1', '::1'],
     ];
-    $db = require('local/db.php');
-} else {
-    $db = require('db.php');
 }
+
+$db = !file_exists(dirname(__FILE__) . '/local/db.php') ? require('db.php') : require(dirname(__FILE__) . '/local/db.php');
 
 return [
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',

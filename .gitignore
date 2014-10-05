@@ -16,3 +16,5 @@ $RECYCLE.BIN
 /bower_components
 /node_modules
 composer.lock
+
+/.local
