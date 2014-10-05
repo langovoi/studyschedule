@@ -6,8 +6,8 @@ class m140925_124131_create_user_table extends CDbMigration
     {
         $this->createTable('{{users}}', [
             'id' => 'pk',
-            'username' => 'varchar(120) NOT NULL',
-            'email' => 'varchar(255) NOT NULL',
+            'username' => 'string NOT NULL',
+            'email' => 'string NOT NULL',
             'password' => 'varchar(32) NOT NULL',
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 

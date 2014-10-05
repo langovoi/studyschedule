@@ -5,8 +5,8 @@ class m140925_163944_create_rbac_tables extends CDbMigration
     public function safeUp()
     {
         $this->createTable('{{AuthItem}}', [
-            'name' => 'varchar(64) not null',
-            'type' => 'integer not null',
+            'name' => 'varchar(64) NOT NULL',
+            'type' => 'integer NOT NULL',
             'description' => 'text',
             'bizrule' => 'text',
             'data' => 'text',
@@ -15,8 +15,8 @@ class m140925_163944_create_rbac_tables extends CDbMigration
         $this->addPrimaryKey('primary', '{{AuthItem}}', 'name');
 
         $this->createTable('{{AuthItemChild}}', [
-            'parent' => 'varchar(64) not null',
-            'child' => 'varchar(64) not null',
+            'parent' => 'varchar(64) NOT NULL',
+            'child' => 'varchar(64) NOT NULL',
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->addPrimaryKey('primary', '{{AuthItemChild}}', 'parent,child');
@@ -24,8 +24,8 @@ class m140925_163944_create_rbac_tables extends CDbMigration
         $this->addForeignKey('foreign_child', '{{AuthItemChild}}', 'child', '{{AuthItem}}', 'name', 'cascade', 'cascade');
 
         $this->createTable('{{AuthAssignment}}', [
-            'itemname' => 'varchar(64) not null',
-            'userid' => 'varchar(64) not null',
+            'itemname' => 'varchar(64) NOT NULL',
+            'userid' => 'varchar(64) NOT NULL',
             'bizrule' => 'text',
             'data' => 'text',
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');

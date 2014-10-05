@@ -6,10 +6,10 @@ class m140926_112935_create_teachers_table extends CDbMigration
     {
         $this->createTable('{{teachers}}', [
             'id' => 'pk',
-            'firstname' => 'varchar(255) not null',
-            'lastname' => 'varchar(255) not null',
-            'middlename' => 'varchar(255) not null',
-            'owner_id' => 'integer NULL DEFAULT NULL'
+            'firstname' => 'string NOT NULL',
+            'lastname' => 'string NOT NULL',
+            'middlename' => 'string NOT NULL',
+            'owner_id' => 'integer DEFAULT NULL'
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->addForeignKey('teachers_owner_fk', '{{teachers}}', 'owner_id', '{{users}}', 'id', 'set null', 'no action');

@@ -6,17 +6,17 @@ class m140926_155227_create_calls_table extends CDbMigration
     {
         $this->createTable('{{call_lists}}', [
             'id' => 'pk',
-            'name' => 'varchar(255) not null'
+            'name' => 'string NOT NULL'
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->createIndex('call_lists_name_unique', '{{call_lists}}', 'name', true);
 
         $this->createTable('{{call_lists_elements}}', [
             'id' => 'pk',
-            'number' => 'int(11) not null',
-            'start_time' => 'time',
-            'end_time' => 'time',
-            'call_list_id' => 'int(11) not null'
+            'number' => 'integer NOT NULL',
+            'start_time' => 'time NOT NULL',
+            'end_time' => 'time NOT NULL',
+            'call_list_id' => 'integer NOT NULL'
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
         $this->addForeignKey('call_lists_elements_call_id_fk', '{{call_lists_elements}}', 'call_list_id', '{{call_lists}}', 'id', 'CASCADE', 'CASCADE');
