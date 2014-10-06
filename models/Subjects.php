@@ -6,9 +6,18 @@
  * @property integer $owner_id
  *
  * @property Users $owner
+ * @property ScheduleElement[] $schedule_elements
  */
 class Subjects extends CActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            'ActiveRecordLogableBehavior' =>
+                'application.behaviors.ActiveRecordLogableBehavior',
+        ];
+    }
+
     /**
      * @return string
      */
@@ -36,6 +45,7 @@ class Subjects extends CActiveRecord
     {
         return [
             'owner' => [self::BELONGS_TO, 'Users', 'owner_id'],
+            'schedule_elements' => [self::HAS_MANY, 'ScheduleElemenet', 'subject_id'],
         ];
     }
 

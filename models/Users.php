@@ -9,6 +9,14 @@
  */
 class Users extends CActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            'ActiveRecordLogableBehavior' =>
+                'application.behaviors.ActiveRecordLogableBehavior',
+        ];
+    }
+
     public $old_password;
     public $new_password;
     public $repeat_password;

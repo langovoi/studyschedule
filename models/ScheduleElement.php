@@ -19,6 +19,14 @@
  */
 class ScheduleElement extends CActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            'ActiveRecordLogableBehavior' =>
+                'application.behaviors.ActiveRecordLogableBehavior',
+        ];
+    }
+
     /**
      * @return string
      */
