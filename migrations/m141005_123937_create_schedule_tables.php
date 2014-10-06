@@ -11,8 +11,8 @@ class m141005_123937_create_schedule_tables extends CDbMigration
             'week_number' => 'integer NOT NULL',
             'week_day' => 'integer NOT NULL',
             'number' => 'integer NOT NULL',
-            'classroom_id' => 'integer DEFAULT NULL',
-            'teacher_id' => 'integer DEFAULT NULL',
+            'classroom_id' => 'integer NULL DEFAULT NULL',
+            'teacher_id' => 'integer NULL DEFAULT NULL',
             'subject_id' => 'integer NOT NULL',
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 
