@@ -6,8 +6,8 @@ class m140926_112935_create_teachers_table extends CDbMigration
     {
         $this->createTable('{{teachers}}', [
             'id' => 'pk',
-            'firstname' => 'string NOT NULL',
             'lastname' => 'string NOT NULL',
+            'firstname' => 'string NOT NULL',
             'middlename' => 'string NOT NULL',
             'owner_id' => 'integer NULL DEFAULT NULL'
         ], 'ENGINE=InnoDB DEFAULT CHARSET=utf8');

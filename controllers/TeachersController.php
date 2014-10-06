@@ -39,7 +39,9 @@ class TeachersController extends Controller
             if (Yii::app()->user->checkAccess('admin') || $model->owner_id == Yii::app()->user->id) {
                 if (Yii::app()->request->isPostRequest) {
                     $model->setAttributes(Yii::app()->request->getParam('Teachers'));
-                    $model->setAttribute('owner_id', Yii::app()->user->id);
+                    if (!Yii::app()->user->checkAccess('admin')) {
+                        $model->setAttribute('owner_id', Yii::app()->user->id);
+                    }
                     if ($model->save()) {
                         Yii::app()->user->setFlash('success', 'Преподаватель успешно сохранен');
                         $this->redirect(['index']);
@@ -65,7 +67,7 @@ class TeachersController extends Controller
         if (Yii::app()->request->isPostRequest) {
             $classroom = Yii::app()->request->getParam('Teachers');
             $model->setAttributes($classroom);
-            if (Yii::app()->user->checkAccess('user')) {
+            if (!Yii::app()->user->checkAccess('admin')) {
                 $model->setAttribute('owner_id', Yii::app()->user->id);
             }
             if ($model->save()) {
