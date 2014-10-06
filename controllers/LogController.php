@@ -23,7 +23,7 @@ class LogController extends Controller
         $logs = new ActiveRecordLog();
         $model = new ActiveRecordLog();
         $count = $logs->count();
-        if (($page - 1) * 10 < $count) {
+        if (($page - 1) * 10 < $count || $page == 1) {
             $logs = $logs->findAll(['order' => 'creationdate DESC, id DESC', 'limit' => 10, 'offset' => ($page - 1) * 10]);
             $this->render('list', ['logs' => $logs, 'model' => $model, 'pages' => round($count / 10, 0, PHP_ROUND_HALF_DOWN), 'page' => $page]);
         } else
