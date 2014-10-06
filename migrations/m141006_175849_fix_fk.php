@@ -18,6 +18,12 @@ class m141006_175849_fix_fk extends CDbMigration
 
 		$this->dropForeignKey('schedule_element_subject_id_fk', '{{schedule_element}}');
         $this->addForeignKey('schedule_element_subject_id_fk', '{{schedule_element}}', 'subject_id', '{{subjects}}', 'id', 'RESTRICT', 'CASCADE');
+
+		$this->dropForeignKey('schedule_element_classroom_id_fk', '{{schedule_element}}');
+        $this->addForeignKey('schedule_element_classroom_id_fk', '{{schedule_element}}', 'classroom_id', '{{classrooms}}', 'id', 'RESTRICT', 'CASCADE');
+
+		$this->dropForeignKey('schedule_element_teacher_id_fk', '{{schedule_element}}');
+        $this->addForeignKey('schedule_element_teacher_id_fk', '{{schedule_element}}', 'teacher_id', '{{teachers}}', 'id', 'RESTRICT', 'CASCADE');
     }
 
     public function safeDown()
