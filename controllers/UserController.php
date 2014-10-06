@@ -2,9 +2,19 @@
 
 class UserController extends Controller
 {
-    public function actions()
+    public function filters()
     {
-        return [];
+        return [
+            'accessControl',
+        ];
+    }
+
+    public function accessRules()
+    {
+        return [
+            ['allow', 'users' => ['@']],
+            ['deny', 'users' => ['*']],
+        ];
     }
 
     public function actionChangePassword()

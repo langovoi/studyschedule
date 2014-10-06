@@ -31,9 +31,14 @@ class Semesters extends CActiveRecord
             ['name, start_date, end_date, week_number, call_list, call_list_short', 'required'],
             ['week_number, call_list, call_list_short', 'numerical', 'integerOnly' => true],
             ['name', 'length', 'max' => 255],
-            ['start_date, end_date', 'date', 'format' => 'yyyy.MM.dd'],
+            ['start_date, end_date', 'date', 'format' => 'yyyy-MM-dd'],
             ['id, name, start_date, end_date, week_number, call_list, call_list_short', 'safe', 'on' => 'search'],
         ];
+    }
+
+    public function byStartDate() {
+        $this->dbCriteria->order = 'start_date DESC';
+        return $this;
     }
 
     /**

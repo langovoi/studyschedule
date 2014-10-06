@@ -2,6 +2,21 @@
 
 class ClassroomsController extends Controller
 {
+    public function filters()
+    {
+        return [
+            'accessControl',
+        ];
+    }
+
+    public function accessRules()
+    {
+        return [
+            ['allow', 'users' => ['@']],
+            ['deny', 'users' => ['*']],
+        ];
+    }
+
     public function actionIndex()
     {
         $classroms = new Classrooms();

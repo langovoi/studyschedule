@@ -2,10 +2,27 @@
 
 class SiteController extends Controller
 {
+    public function filters()
+    {
+        return [
+            'accessControl',
+        ];
+    }
+
+    public function accessRules()
+    {
+        return [
+            ['allow', 'users' => ['*'], 'actions' => ['login', 'error']],
+            ['allow', 'users' => ['@'], 'actions' => ['logout', 'index']],
+            ['deny', 'users' => ['*']],
+        ];
+    }
 
     public function actionIndex()
     {
-        $this->render('index');
+        $groups = new Group();
+        $groups = $groups->findAllByAttributes(['owner_id' => Yii::app()->user->getId()]);
+        $this->render('index', ['groups' => $groups]);
     }
 
     public function actionError()
@@ -25,7 +42,7 @@ class SiteController extends Controller
                 $user_identity = new UserIdentity($model->username, md5($model->password));
                 if ($model->validate() && $user_identity->authenticate()) {
                     Yii::app()->user->login($user_identity, 60 * 60 * 24 * 7); // sign-in for week
-                    $this->redirect($this->createUrl(Yii::app()->user->returnUrl ? Yii::app()->user->returnUrl : '/'));
+                    $this->redirect($this->createUrl(Yii::app()->user->returnUrl && Yii::app()->user->returnUrl != '/' ? Yii::app()->user->returnUrl : 'site/index'));
                 } else {
                     $this->render('login', ['model' => $model, 'error' => $user_identity->errorCode]);
                 }
