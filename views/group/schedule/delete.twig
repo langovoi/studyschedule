@@ -1,0 +1,24 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Удаление элемента{% endblock %}
+
+{% set week_days = {1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница', 6: 'Суббота'} %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="alert alert-danger">Вы уверены что хотите удалить <b>{{ model.number }} пару
+                        "{{ model.subject.name }}"
+                        {% if model['teacher_id'] %}у {{ model.teacher.lastname }} {{ model.teacher.firstname|slice(0, 1) }}.{{ model.teacher.middlename|slice(0, 1) }}. {% endif %}{% if model['classroom_id'] %}в "{{ model.classroom.name }}" {% endif %}
+                        в {{ week_days[model.week_day] }} {{ model.week_number }} недели</b>?
+                </div>
+                {{ C.Html.beginForm('', 'get') }}
+                {{ C.Html.hiddenField('confirm', 1) }}
+                {{ C.Html.hiddenField('id', model.id) }}
+                {{ C.Html.submitButton('Удалить', {class: 'btn btn-danger'}) }}
+                {{ C.Html.endForm() }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

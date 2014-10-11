@@ -95,9 +95,9 @@ class GroupController extends Controller
     public function actionUpdateScheduleElement($element_id)
     {
         $model = ScheduleElement::model()->findByPk($element_id);
-        if(!$model)
-            throw new CHttpException(404, 'Элемент не найден');
         $semester = Semesters::model()->byStartDate()->find();
+        if (!$model || $model->semester_id != $semester->id)
+            throw new CHttpException(404, 'Элемент не найден');
         if (Yii::app()->request->isPostRequest) {
             $schedule_element = Yii::app()->request->getParam('ScheduleElement');
             $week_number = $model->week_number;
@@ -133,5 +133,19 @@ class GroupController extends Controller
                     unset($numbers[$key]);
             }
         $this->render('schedule/form', ['model' => $model, 'classrooms' => $classrooms, 'teachers' => $teachers, 'subjects' => $subjects, 'numbers' => $numbers]);
+    }
+
+    public function actionDeleteScheduleElement($element_id, $confirm = 0) {
+        $model = ScheduleElement::model()->with('teacher', 'classroom', 'subject')->findByPk($element_id);
+        $semester = Semesters::model()->byStartDate()->find();
+        if (!$model || $model->semester_id != $semester->id)
+            throw new CHttpException(404, 'Элемент не найден');
+        if ($confirm) {
+            $model->delete();
+            Yii::app()->user->setFlash('success', 'Элемент успешно удален');
+            $this->redirect(['schedule', 'id' => self::$group->number]);
+        } else {
+            $this->render('schedule/delete', ['model' => $model]);
+        }
     }
 }
