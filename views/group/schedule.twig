@@ -26,10 +26,10 @@
                 {% for key,week_day in week_days %}
                     <div class="col-md-2">
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-md-9">
                                 {{ week_day }}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <a href="{{ this.createUrl('createScheduleElement', {week_number: week_number, week_day: key, id: group.number}) }}"
                                    class="btn btn-default btn-xs"><span
                                             class="glyphicon glyphicon-plus"></span></a>
@@ -41,12 +41,12 @@
                                     <small>
                                         {% for lesson in schedule[week_number][key] %}
                                             <div class="row" style="margin-top:10px;">
-                                                <div class="col-md-10">
+                                                <div class="col-md-9">
                                                     <b>{{ lesson.number }})</b>
                                                     {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
                                                     {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-3">
                                                     <a href="{{ this.createUrl('updateScheduleElement', {element_id: lesson.id, id: group.number}) }}"
                                                        class="btn btn-default btn-xs"><span
                                                                 class="glyphicon glyphicon-pencil"></span></a>
