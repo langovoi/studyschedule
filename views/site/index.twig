@@ -28,7 +28,19 @@
                                 <td>
                                     <a href="{{ this.createUrl('group/schedule', {id: group.number}) }}"
                                        class="btn btn-sm btn-default">
-                                        <span class="glyphicon glyphicon-pencil"></span>
+                                        <span class="glyphicon glyphicon-calendar"></span> Расписание
+                                    </a>
+                                    <a href="{{ this.createUrl('group/replaces', {id: group.number}) }}"
+                                       class="btn btn-sm btn-default">
+                                        <span class="glyphicon glyphicon-indent-left"></span> Замены
+                                    </a>
+                                    <a href="{{ this.createUrl('group/moderators', {id: group.number}) }}"
+                                       class="btn btn-sm btn-default">
+                                        <span class="glyphicon glyphicon-user"></span> Модераторы
+                                    </a>
+                                    <a href="{{ this.createUrl('group/settings', {id: group.number}) }}"
+                                       class="btn btn-sm btn-default">
+                                        <span class="glyphicon glyphicon-cog"></span> Настройки
                                     </a>
                                 </td>
                             </tr>
