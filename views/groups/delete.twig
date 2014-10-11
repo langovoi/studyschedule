@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3">
-                <div class="alert alert-danger">Вы уверены что хотите удалить преподавателя "<b>{{ model.lastname ~ ' ' ~ model.firstname ~ ' ' ~ model.middlename }}</b>"?</div>
+                <div class="alert alert-danger">Вы уверены что хотите удалить группу "<b>{{ model.number }}</b>"?</div>
                 {{ C.Html.beginForm(['delete'], 'get') }}
                 {{ C.Html.hiddenField('confirm', 1) }}
                 {{ C.Html.hiddenField('id', model.id) }}
