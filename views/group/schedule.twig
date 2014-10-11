@@ -2,6 +2,8 @@
 
 {% block title %}Расписание группы #{{ group.number }}{% endblock %}
 
+{% set week_days = {1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница', 6: 'Суббота'} %}
+
 {% block content %}
     <div class="container-fluid">
         <div class="row">
@@ -20,24 +22,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
-                Понедельник
-            </div>
-            <div class="col-md-2">
-                Вторник
-            </div>
-            <div class="col-md-2">
-                Среда
-            </div>
-            <div class="col-md-2">
-                Четверг
-            </div>
-            <div class="col-md-2">
-                Пятница
-            </div>
-            <div class="col-md-2">
-                Суббота
-            </div>
+            {% for key,week_day in week_days %}
+                <div class="col-md-2">
+                    {{ week_day }}
+                    <a href="{{ this.createUrl('createScheduleElement', {week_number: 1, week_day: key, id: group.number}) }}"
+                       class="btn btn-default btn-xs pull-right"><span
+                                class="glyphicon glyphicon-plus"></span></a>
+                </div>
+            {% endfor %}
         </div>
         <div class="row">
             {% for lessons in schedule[1] %}
@@ -64,24 +56,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
-                Понедельник
-            </div>
-            <div class="col-md-2">
-                Вторник
-            </div>
-            <div class="col-md-2">
-                Среда
-            </div>
-            <div class="col-md-2">
-                Четверг
-            </div>
-            <div class="col-md-2">
-                Пятница
-            </div>
-            <div class="col-md-2">
-                Суббота
-            </div>
+            {% for key,week_day in week_days %}
+                <div class="col-md-2">
+                    {{ week_day }}
+                    <a href="{{ this.createUrl('createScheduleElement', {week_number: 2, week_day: key, id: group.number}) }}"
+                       class="btn btn-default btn-xs pull-right"><span
+                                class="glyphicon glyphicon-plus"></span></a>
+                </div>
+            {% endfor %}
         </div>
         <div class="row">
             {% for lessons in schedule[2] %}

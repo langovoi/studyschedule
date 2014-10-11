@@ -19,7 +19,6 @@
                 <div class="form-group text-center">
                     <h1>{{ title }}</h1>
                 </div>
-                {% include '/views/particle/notice.twig' %}
                 <div class="form-group">
                     {{ form.label(model, 'name') }}
                     {{ form.textField(model, 'name', {'class': 'form-control', 'placeholder': model.attributeLabels().name }) }}

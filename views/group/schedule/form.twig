@@ -1,0 +1,49 @@
+{% extends '/views/layouts/main.twig' %}
+{% if model.isNewRecord %}
+    {% set title = 'Добавление элемента' %}
+{% else %}
+    {% set title = 'Редактирование элемента' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                {% include '/views/particle/notice.twig' %}
+                {% set form = this.beginWidget('CActiveForm',
+                {
+                'errorMessageCssClass': 'alert alert-danger'
+                }) %}
+                <div class="form-group text-center">
+                    <h1>{{ title }}</h1>
+                </div>
+                <div class="form-group">
+                    {{ form.label(model, 'number') }}
+                    {{ form.dropDownList(model, 'number', numbers, {'class': 'form-control', 'placeholder': model.attributeLabels().number }) }}
+                </div>
+                {{ form.error(model, 'number') }}
+                <div class="form-group">
+                    {{ form.label(model, 'subject_id') }}
+                    {{ form.dropDownList(model, 'subject_id', subjects, {'class': 'form-control', 'placeholder': model.attributeLabels().subject_id }) }}
+                </div>
+                {{ form.error(model, 'subject_id') }}
+                <div class="form-group">
+                    {{ form.label(model, 'teacher_id') }}
+                    {{ form.dropDownList(model, 'teacher', teachers, {'class': 'form-control', 'placeholder': model.attributeLabels().teacher_id }) }}
+                </div>
+                {{ form.error(model, 'teacher_id') }}
+                <div class="form-group">
+                    {{ form.label(model, 'classroom_id') }}
+                    {{ form.dropDownList(model, 'classroom_id', classrooms, {'class': 'form-control', 'placeholder': model.attributeLabels().classroom_id }) }}
+                </div>
+                {{ form.error(model, 'classroom_id') }}
+                <div class="form-group text-center">
+                    {{ C.Html.submitButton(model.isNewRecord ? 'Создать' : 'Сохранить', {'class': 'btn btn-success'}) }}
+                </div>
+                {{ void(this.endWidget()) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
