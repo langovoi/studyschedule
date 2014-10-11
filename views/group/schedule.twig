@@ -16,87 +16,52 @@
                 {% include '/views/particle/notice.twig' %}
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h2>1 неделя</h2>
+        {% for week_number in 1..2 %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>{{ week_number }} неделя</h2>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            {% for key,week_day in week_days %}
-                <div class="col-md-2">
-                    {{ week_day }}
-                    <a href="{{ this.createUrl('createScheduleElement', {week_number: 1, week_day: key, id: group.number}) }}"
-                       class="btn btn-default btn-xs pull-right"><span
-                                class="glyphicon glyphicon-plus"></span></a>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="row">
-            {% for lessons in schedule[1] %}
-                <div class="col-md-2">
-                    <small>
-                        {% if lessons|length %}
-                            {% for lesson in lessons %}
-                                <div class="row" style="margin-top:10px;">
-                                    <div class="col-md-10">
-                                        <b>{{ lesson.number }})</b>
-                                        {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
-                                        {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a href="{{ this.createUrl('updateScheduleElement', {element_id: lesson.id, id: group.number}) }}"
-                                           class="btn btn-default btn-xs pull-right"><span
-                                                    class="glyphicon glyphicon-pencil"></span></a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </small>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h2>2 неделя</h2>
+            <div class="row">
+                {% for key,week_day in week_days %}
+                    <div class="col-md-2">
+                        <div class="row">
+                            <div class="col-md-10">
+                                {{ week_day }}
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{ this.createUrl('createScheduleElement', {week_number: week_number, week_day: key, id: group.number}) }}"
+                                   class="btn btn-default btn-xs"><span
+                                            class="glyphicon glyphicon-plus"></span></a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% if schedule[week_number][key] %}
+                                    <small>
+                                        {% for lesson in schedule[week_number][key] %}
+                                            <div class="row" style="margin-top:10px;">
+                                                <div class="col-md-10">
+                                                    <b>{{ lesson.number }})</b>
+                                                    {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
+                                                    {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <a href="{{ this.createUrl('updateScheduleElement', {element_id: lesson.id, id: group.number}) }}"
+                                                       class="btn btn-default btn-xs"><span
+                                                                class="glyphicon glyphicon-pencil"></span></a>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </small>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
-        <div class="row">
-            {% for key,week_day in week_days %}
-                <div class="col-md-2">
-                    {{ week_day }}
-                    <a href="{{ this.createUrl('createScheduleElement', {week_number: 2, week_day: key, id: group.number}) }}"
-                       class="btn btn-default btn-xs pull-right"><span
-                                class="glyphicon glyphicon-plus"></span></a>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="row">
-            {% for lessons in schedule[2] %}
-                <div class="col-md-2">
-                    <small>
-                        {% if lessons|length %}
-                            {% for lesson in lessons %}
-                                <div class="row" style="margin-top:10px;">
-                                    <div class="col-md-10">
-                                        <b>{{ lesson.number }})</b>
-                                        {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
-                                        {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a href="{{ this.createUrl('updateScheduleElement', {element_id: lesson.id, id: group.number}) }}"
-                                           class="btn btn-default btn-xs pull-right"><span
-                                                    class="glyphicon glyphicon-pencil"></span></a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </small>
-                </div>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
 {% endblock %}
