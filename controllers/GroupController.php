@@ -129,7 +129,7 @@ class GroupController extends Controller
         $numbers = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
         if (($elements = ScheduleElement::model()->findAllByAttributes(['group_id' => self::$group->id, 'week_number' => $model->week_number, 'week_day' => $model->week_day, 'semester_id' => $semester->id])))
             foreach ($elements as $element) {
-                if (($key = array_search($element->number, $numbers)) !== false)
+                if ($element->id !== $model->id && ($key = array_search($element->number, $numbers)) !== false)
                     unset($numbers[$key]);
             }
         $this->render('schedule/form', ['model' => $model, 'classrooms' => $classrooms, 'teachers' => $teachers, 'subjects' => $subjects, 'numbers' => $numbers]);
