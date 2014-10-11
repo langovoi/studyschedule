@@ -37,10 +37,17 @@
                     <small>
                         {% if lessons|length %}
                             {% for lesson in lessons %}
-                                <div>
-                                    <b>{{ lesson.number }})</b>
-                                    {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
-                                    {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-10">
+                                        <b>{{ lesson.number }})</b>
+                                        {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
+                                        {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="{{ this.createUrl('updateScheduleElement', {element_id: lesson.id, id: group.number}) }}"
+                                           class="btn btn-default btn-xs pull-right"><span
+                                                    class="glyphicon glyphicon-pencil"></span></a>
+                                    </div>
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -71,10 +78,17 @@
                     <small>
                         {% if lessons|length %}
                             {% for lesson in lessons %}
-                                <div>
-                                    <b>{{ lesson.number }})</b>
-                                    {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
-                                    {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-10">
+                                        <b>{{ lesson.number }})</b>
+                                        {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
+                                        {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="{{ this.createUrl('updateScheduleElement', {element_id: lesson.id, id: group.number}) }}"
+                                           class="btn btn-default btn-xs pull-right"><span
+                                                    class="glyphicon glyphicon-pencil"></span></a>
+                                    </div>
                                 </div>
                             {% endfor %}
                         {% else %}
