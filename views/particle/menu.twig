@@ -9,12 +9,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ App.createUrl('/site/index') }}">Расписание</a>
+                <span class="navbar-brand">Расписание</span>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ App.createUrl('site/index') }}">Главная</a></li>
+                    <li><a href="{{ App.createUrl('site/index') }}">Мои группы</a></li>
                     {% if App.user.checkAccess('admin') %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Пользователи<span
