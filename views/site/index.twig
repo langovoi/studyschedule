@@ -1,6 +1,6 @@
 {% extends '/views/layouts/main.twig' %}
 
-{% block title %}Расписание{% endblock %}
+{% block title %}Мои группы{% endblock %}
 
 {% block content %}
     <div class="container-fluid">
@@ -26,7 +26,7 @@
                                     {{ group.number }}
                                 </td>
                                 <td>
-                                    <a href="{{ this.createUrl('group/schedule', {id: group.id}) }}"
+                                    <a href="{{ this.createUrl('group/schedule', {id: group.number}) }}"
                                        class="btn btn-sm btn-default">
                                         <span class="glyphicon glyphicon-pencil"></span>
                                     </a>

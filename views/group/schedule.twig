@@ -1,0 +1,102 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Расписание группы #{{ group.number }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Расписание группы #{{ group.number }}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% include '/views/particle/notice.twig' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>1 неделя</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                Понедельник
+            </div>
+            <div class="col-md-2">
+                Вторник
+            </div>
+            <div class="col-md-2">
+                Среда
+            </div>
+            <div class="col-md-2">
+                Четверг
+            </div>
+            <div class="col-md-2">
+                Пятница
+            </div>
+            <div class="col-md-2">
+                Суббота
+            </div>
+        </div>
+        <div class="row">
+            {% for lessons in schedule[1] %}
+                <div class="col-md-2">
+                    <small>
+                        {% if lessons|length %}
+                            {% for lesson in lessons %}
+                                <b>{{ lesson.number }})</b>
+                                {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
+                                {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                            {% endfor %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </small>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>2 неделя</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                Понедельник
+            </div>
+            <div class="col-md-2">
+                Вторник
+            </div>
+            <div class="col-md-2">
+                Среда
+            </div>
+            <div class="col-md-2">
+                Четверг
+            </div>
+            <div class="col-md-2">
+                Пятница
+            </div>
+            <div class="col-md-2">
+                Суббота
+            </div>
+        </div>
+        <div class="row">
+            {% for lessons in schedule[1] %}
+                <div class="col-md-2">
+                    <small>
+                        {% if lessons|length %}
+                            {% for lesson in lessons %}
+                                <b>{{ lesson.number }})</b>
+                                {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
+                                {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                            {% endfor %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </small>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

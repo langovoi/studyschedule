@@ -50,6 +50,7 @@ return [
                 '<action:(login|logout)>' => 'site/<action>',
                 'main' => 'site/index',
                 'ics/<id:\d+>' => 'ics/group',
+                'group/<id:\d+>/<action:\w+>' => 'group/<action>',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
