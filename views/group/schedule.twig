@@ -45,9 +45,11 @@
                     <small>
                         {% if lessons|length %}
                             {% for lesson in lessons %}
-                                <b>{{ lesson.number }})</b>
-                                {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
-                                {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                <div>
+                                    <b>{{ lesson.number }})</b>
+                                    {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
+                                    {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                </div>
                             {% endfor %}
                         {% else %}
                             -
@@ -87,9 +89,11 @@
                     <small>
                         {% if lessons|length %}
                             {% for lesson in lessons %}
-                                <b>{{ lesson.number }})</b>
-                                {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
-                                {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                <div>
+                                    <b>{{ lesson.number }})</b>
+                                    {{ lesson.subject.name }}{% if lesson.teacher %}, {{ lesson.teacher.lastname }} {{ lesson.teacher.firstname|slice(0, 1) }}.{{ lesson.teacher.middlename|slice(0, 1) }}.{% endif %}
+                                    {% if lesson.classroom %}({{ lesson.classroom.name }}){% endif %}
+                                </div>
                             {% endfor %}
                         {% else %}
                             -
