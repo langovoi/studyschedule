@@ -21,7 +21,7 @@ class GroupController extends Controller
             /** @var Group $group */
             if (!$group)
                 throw new CHttpException(404, 'Данной группы не существует');
-            if ($group->owner_id != Yii::app()->user->getId() || !Yii::app()->user->checkAccess('admin'))
+            if (Yii::app()->user->checkAccess('admin') == false || Yii::app()->user->checkAccess('admin') == false && $group->owner_id != Yii::app()->user->getId())
                 throw new CHttpException(403, 'У вас нет доступа к данной группе');
             self::$group = $group;
         } else
