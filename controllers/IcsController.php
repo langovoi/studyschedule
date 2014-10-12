@@ -94,7 +94,7 @@ class IcsController extends Controller
                     }
                     $calendar->addEvent($event);
                 }
-                $replaces = GroupReplace::model()->findAllByAttributes(['group_id' => $group->id, 'date' => date('Y-m-d', $i)], 'number IN (:numbers)', [':numbers' => implode(',', $numbers)]);
+                $replaces = GroupReplace::model()->findAllByAttributes(['group_id' => $group->id, 'date' => date('Y-m-d', $i), 'number' => $numbers]);
                 if ($replaces)
                     foreach ($replaces as $schedule_element) {
                         if ($schedule_element->cancel) continue;
