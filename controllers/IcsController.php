@@ -70,8 +70,12 @@ class IcsController extends Controller
                         $schedule_element = $schedule_element_temp;
                     }
                     $event = new CalendarEvent();
-                    $event->setStart(new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time, new DateTimeZone('Europe/Moscow')));
-                    $event->setEnd(new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->end_time, new DateTimeZone('Europe/Moscow')));
+                    $start_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time);
+                    $start_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                    $event->setStart($start_time);
+                    $end_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->end_time);
+                    $end_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                    $event->setEnd($end_time);
                     $event->setSummary($schedule_element->subject->name);
                     $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
                     if ($schedule_element->classroom_id || $schedule_element->teacher_id) {
@@ -89,8 +93,12 @@ class IcsController extends Controller
                     foreach ($replaces as $schedule_element) {
                         if ($schedule_element->cancel) continue;
                         $event = new CalendarEvent();
-                        $event->setStart(new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time, new DateTimeZone('Europe/Moscow')));
-                        $event->setEnd(new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->end_time, new DateTimeZone('Europe/Moscow')));
+                        $start_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time);
+                        $start_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                        $event->setStart($start_time);
+                        $end_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->end_time);
+                        $end_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                        $event->setEnd($end_time);
                         $event->setSummary($schedule_element->subject->name);
                         $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
                         if ($schedule_element->classroom_id || $schedule_element->teacher_id) {
