@@ -5,6 +5,7 @@ use Jsvrcek\ICS\Model\CalendarEvent;
 use Jsvrcek\ICS\CalendarExport;
 use Jsvrcek\ICS\CalendarStream;
 use Jsvrcek\ICS\Utility\Formatter;
+use Jsvrcek\ICS\Model\Description\Location;
 
 class IcsController extends Controller
 {
@@ -46,6 +47,7 @@ class IcsController extends Controller
             $call_list_short[$element->number] = $element;
         }
         if (ScheduleElement::model()->count('group_id = :group_id AND semester_id = :semester_id', [':group_id' => $group->id, ':semester_id' => $semester->id])) {
+            date_default_timezone_set('Europe/Moscow');
             $calendar = new Calendar();
             $calendar->setProdId('-//Sc0Rp1D//KKEP//RU');
             $calendar->setTimezone(new DateTimeZone('Europe/Moscow'));
@@ -70,21 +72,25 @@ class IcsController extends Controller
                         $schedule_element = $schedule_element_temp;
                     }
                     $event = new CalendarEvent();
-                    $start_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time);
-                    $start_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                    $start_time = new DateTime(date('Y-m-d', $i));
+                    $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
+                    $call_list_end = explode(':', $current_call_list[$schedule_element->number]->end_time);
+                    $start_time->setTime($call_list_start[0], $call_list_start[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
                     $event->setStart($start_time);
-                    $end_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->end_time);
-                    $end_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                    $end_time = new DateTime(date('Y-m-d', $i));
+                    $end_time->setTime($call_list_end[0], $call_list_end[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
                     $event->setEnd($end_time);
                     $event->setSummary($schedule_element->subject->name);
                     $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
                     if ($schedule_element->classroom_id || $schedule_element->teacher_id) {
+                        $location = new Location();
                         $desc = [];
                         if ($schedule_element->teacher_id)
                             $desc[] = $schedule_element->teacher->lastname . ' ' . mb_substr($schedule_element->teacher->firstname, 0, 1, "UTF-8") . '.' . mb_substr($schedule_element->teacher->middlename, 0, 1, "UTF-8");
                         if ($schedule_element->classroom_id)
                             $desc[] = $schedule_element->classroom->name;
-                        $event->setDescription(implode(', ', $desc));
+                        $location->setName(implode(' | ', $desc));
+                        $event->addLocation($location);
                     }
                     $calendar->addEvent($event);
                 }
@@ -93,26 +99,29 @@ class IcsController extends Controller
                     foreach ($replaces as $schedule_element) {
                         if ($schedule_element->cancel) continue;
                         $event = new CalendarEvent();
-                        $start_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time);
-                        $start_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                        $start_time = new DateTime(date('Y-m-d', $i));
+                        $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
+                        $call_list_end = explode(':', $current_call_list[$schedule_element->number]->end_time);
+                        $start_time->setTime($call_list_start[0], $call_list_start[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
                         $event->setStart($start_time);
-                        $end_time = new DateTime(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->end_time);
-                        $end_time->setTimezone(new DateTimeZone('Europe/Moscow'));
+                        $end_time = new DateTime(date('Y-m-d', $i));
+                        $end_time->setTime($call_list_end[0], $call_list_end[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
                         $event->setEnd($end_time);
                         $event->setSummary($schedule_element->subject->name);
                         $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
                         if ($schedule_element->classroom_id || $schedule_element->teacher_id) {
+                            $location = new Location();
                             $desc = [];
                             if ($schedule_element->teacher_id)
                                 $desc[] = $schedule_element->teacher->lastname . ' ' . mb_substr($schedule_element->teacher->firstname, 0, 1, "UTF-8") . '.' . mb_substr($schedule_element->teacher->middlename, 0, 1, "UTF-8");
                             if ($schedule_element->classroom_id)
                                 $desc[] = $schedule_element->classroom->name;
-                            $event->setDescription(implode(', ', $desc));
+                            $location->setName(implode(' | ', $desc));
+                            $event->addLocation($location);
                         }
                         $calendar->addEvent($event);
                     }
             }
-
             $calendarExport = new CalendarExport(new CalendarStream, new Formatter());
             $calendarExport->addCalendar($calendar);
 
