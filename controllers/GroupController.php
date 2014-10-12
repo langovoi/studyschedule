@@ -10,6 +10,7 @@ class GroupController extends Controller
         return [
             'accessControl',
             'groupControl',
+            'actionControl',
         ];
     }
 
@@ -21,11 +22,25 @@ class GroupController extends Controller
             /** @var Group $group */
             if (!$group)
                 throw new CHttpException(404, 'Данной группы не существует');
-            if (Yii::app()->user->checkAccess('admin') == false && $group->owner_id != Yii::app()->user->getId())
+            $is_admin = Yii::app()->user->checkAccess('admin');
+            $is_owner = $group->owner_id == Yii::app()->user->getId();
+            $is_member = GroupMember::model()->findByAttributes(['group_id' => $group->id, 'user_id' => Yii::app()->user->getId()]);
+            if (!$is_admin && !$is_owner && !$is_member)
                 throw new CHttpException(403, 'У вас нет доступа к данной группе');
             self::$group = $group;
         } else
             throw new CHttpException(404);
+        $filterChain->run();
+    }
+
+    public function filterActionControl($filterChain)
+    {
+        $is_admin = Yii::app()->user->checkAccess('admin');
+        $is_owner = self::$group->owner_id == Yii::app()->user->getId();
+        $allow_member = ['schedule', 'createscheduleelement', 'updatescheduleelement', 'deletescheduleelement'];
+        if(!$is_owner && !$is_owner && in_array($this->action->getId(), $allow_member) == false)
+            throw new CHttpException(403, 'Нет доступа');
+
         $filterChain->run();
     }
 
@@ -135,7 +150,8 @@ class GroupController extends Controller
         $this->render('schedule/form', ['model' => $model, 'classrooms' => $classrooms, 'teachers' => $teachers, 'subjects' => $subjects, 'numbers' => $numbers]);
     }
 
-    public function actionDeleteScheduleElement($element_id, $confirm = 0) {
+    public function actionDeleteScheduleElement($element_id, $confirm = 0)
+    {
         $model = ScheduleElement::model()->with('teacher', 'classroom', 'subject')->findByPk($element_id);
         $semester = Semesters::model()->byStartDate()->find();
         if (!$model || $model->semester_id != $semester->id)
@@ -148,4 +164,71 @@ class GroupController extends Controller
             $this->render('schedule/delete', ['model' => $model]);
         }
     }
+
+    public function actionModerators()
+    {
+        $members = GroupMember::model()->with('user')->findAllByAttributes(['group_id' => self::$group->id]);
+        $invites = GroupInvite::model()->findAllByAttributes(['group_id' => self::$group->id]);
+
+        $this->render('moderators', ['members' => $members, 'invites' => $invites, 'group' => self::$group]);
+    }
+
+    public function actionCreateInvite()
+    {
+        $model = new GroupInvite();
+        if (Yii::app()->request->isPostRequest) {
+            $invite = Yii::app()->request->getParam('GroupInvite');
+            $user = Users::model()->findByAttributes(['email' => $invite['email']]);
+            if ($user) {
+                $group_member = GroupMember::model()->findByAttributes(['user_id' => $user->id, 'group_id' => self::$group->id]);
+                if ($group_member) {
+                    Yii::app()->user->setFlash('error', 'Пользователь с данной почтой уже состоит в вашей группе');
+                    $this->redirect(['moderators', 'id' => self::$group->number]);
+                }
+            }
+            $model->setAttributes($invite);
+            $model->setAttributes([
+                'group_id' => self::$group->id,
+                'status' => GroupInvite::INVITE_CREATE,
+            ]);
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'Приглашение успешно создано');
+                $this->redirect(['moderators', 'id' => self::$group->number]);
+            } else
+                Yii::app()->user->setFlash('error', 'Ошибка создания приглашения');
+        }
+        $this->render('invite/form', ['model' => $model]);
+    }
+
+    public function actionDeleteInvite($invite_id, $confirm = 0)
+    {
+        $model = GroupInvite::model()->findByPk($invite_id);
+        if (!$model || $model->status != 0)
+            throw new CHttpException(404, 'Элемент не найден');
+        if ($confirm) {
+            $model->setAttribute('status', GroupInvite::INVITE_CANCELED);
+            if ($model->save())
+                Yii::app()->user->setFlash('success', 'Приглашение успешно отменено');
+            else Yii::app()->user->setFlash('error', 'Ошибка отмены приглашения');
+            $this->redirect(['moderators', 'id' => self::$group->number]);
+        } else {
+            $this->render('invite/delete', ['model' => $model]);
+        }
+    }
+
+    public function actionDeleteModerator($member_id, $confirm = 0)
+    {
+        $model = GroupMember::model()->findByPk($member_id);
+        if (!$model)
+            throw new CHttpException(404, 'Элемент не найден');
+        if ($confirm) {
+            if ($model->delete())
+                Yii::app()->user->setFlash('success', 'Модератор успешно удален');
+            else Yii::app()->user->setFlash('error', 'Ошибка удаления модератора');
+            $this->redirect(['moderators', 'id' => self::$group->number]);
+        } else {
+            $this->render('moderator/delete', ['model' => $model]);
+        }
+    }
+
 }

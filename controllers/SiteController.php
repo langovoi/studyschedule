@@ -22,7 +22,9 @@ class SiteController extends Controller
     {
         $groups = new Group();
         $groups = $groups->findAllByAttributes(['owner_id' => Yii::app()->user->getId()]);
-        $this->render('index', ['groups' => $groups]);
+        $groups_member = new GroupMember();
+        $groups_member = $groups_member->findAllByAttributes(['user_id' => Yii::app()->user->getId()]);
+        $this->render('index', ['groups' => $groups, 'groups_member' => $groups_member]);
     }
 
     public function actionError()

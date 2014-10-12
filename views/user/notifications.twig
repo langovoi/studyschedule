@@ -1,0 +1,40 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Оповещения{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                {% include '/views/particle/notice.twig' %}
+            </div>
+        </div>
+        {% if invites %}
+            {% for invite in invites %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="alert alert-info">Вас пригласили стать модератором группы
+                            <b>{{ invite.group.number }}</b>:
+                            <br/>
+                            {{ C.Html.beginForm(['invite'], 'get', {'style': 'display: inline-block'}) }}
+                            {{ C.Html.hiddenField('accept', 1) }}
+                            {{ C.Html.hiddenField('invite_id', invite.id) }}
+                            {{ C.Html.submitButton('Согласиться', {class: 'btn btn-success'}) }}
+                            {{ C.Html.endForm() }}
+                            {{ C.Html.beginForm(['invite'], 'get', {'style': 'display: inline-block'}) }}
+                            {{ C.Html.hiddenField('accept', 0) }}
+                            {{ C.Html.hiddenField('invite_id', invite.id) }}
+                            {{ C.Html.submitButton('Отклонить', {class: 'btn btn-danger'}) }}
+                            {{ C.Html.endForm() }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="alert alert-warning">У вас нет оповещений</div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
