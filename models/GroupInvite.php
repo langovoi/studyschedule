@@ -4,6 +4,7 @@
  * @property integer $id
  * @property integer $group_id
  * @property string $email
+ * @property string $hash
  * @property integer $status
  *
  * @property Group $group
@@ -34,6 +35,7 @@ class GroupInvite extends CActiveRecord
             ['email', 'email'],
             ['email', 'checkEmail', 'on' => 'insert'],
             ['status', 'in', 'allowEmpty' => true, 'range' => [self::INVITE_CREATE, self::INVITE_ACCEPT, self::INVITE_CANCELED]],
+            ['hash', 'safe'],
             ['id, group_id, email, status', 'safe', 'on' => 'search'],
         ];
     }
@@ -42,23 +44,51 @@ class GroupInvite extends CActiveRecord
     {
         $value = $this->$attribute;
         $user = Users::model()->findByAttributes(['email' => $value]);
-        if (!$user) {
+        /*if (!$user) {
             $this->addError($attribute, 'В системе нет пользователя с данной почтой');
             return false;
-        }
-        $group_member = GroupMember::model()->findByAttributes(['group_id' => $this->group_id, 'user_id' => $user->id]);
-        if ($group_member) {
-            $this->addError($attribute, 'Данный пользователь уже член вашей группы');
-            return false;
-        }
-        $group = Group::model()->findByPk($this->group_id);
-        if ($group->owner_id == $user->id) {
-            $this->addError($attribute, 'Администратор группы не может быть членом группы');
-            return false;
+        }*/
+        if ($user) {
+            $group_member = GroupMember::model()->findByAttributes(['group_id' => $this->group_id, 'user_id' => $user->id]);
+            if ($group_member) {
+                $this->addError($attribute, 'Данный пользователь уже член вашей группы');
+                return false;
+            }
+            $group = Group::model()->findByPk($this->group_id);
+            if ($group->owner_id == $user->id) {
+                $this->addError($attribute, 'Администратор группы не может быть членом группы');
+                return false;
+            }
         }
         $active_invites = GroupInvite::model()->findByAttributes(['group_id' => $this->group_id, 'email' => $value, 'status' => self::INVITE_CREATE]);
         if ($active_invites)
             $this->addError($attribute, 'Данный пользователь уже имеет приглашение');
+    }
+
+    public function afterSave()
+    {
+        if ($this->getScenario() == 'insert') {
+            $user = Users::model()->findByAttributes(['email' => $this->email]);
+            if (!$user) {
+                $group = Group::model()->findByPk($this->group_id);
+                $mail = new YiiMailer();
+                $mail->setView('invite');
+                $mail->setData(array('group' => $group, 'hash' => $this->hash));
+                $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
+                $mail->setTo($this->email);
+                $mail->setSubject('Приглашение');
+                $mail->send();
+            }
+        }
+    }
+
+
+    public function beforeSave()
+    {
+        if ($this->getScenario() == 'insert') {
+            $this->hash = md5($this->email . $this->group_id);
+        }
+        return parent::beforeSave();
     }
 
     /**

@@ -49,7 +49,7 @@ class UserController extends Controller
         $invite = GroupInvite::model()->findByPk($invite_id);
         if (!$invite)
             throw new CHttpException(404);
-        $invite->setAttribute('status', ($accept == 1 ? 1 : 2));
+        $invite->setAttribute('status', ($accept == 1 ? GroupInvite::INVITE_ACCEPT : GroupInvite::INVITE_CANCELED));
         if ($accept == 1) {
             $group_member = new GroupMember();
             $group_member->setAttributes([

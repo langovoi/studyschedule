@@ -12,7 +12,7 @@ class SiteController extends Controller
     public function accessRules()
     {
         return [
-            ['allow', 'users' => ['*'], 'actions' => ['login', 'error']],
+            ['allow', 'users' => ['*'], 'actions' => ['login', 'error', 'invite']],
             ['allow', 'users' => ['@'], 'actions' => ['logout', 'index']],
             ['deny', 'users' => ['*']],
         ];
@@ -62,5 +62,37 @@ class SiteController extends Controller
             $this->redirect('/');
         } else
             throw new CHttpException(403);
+    }
+
+    public function actionInvite($hash)
+    {
+        $invite = GroupInvite::model()->with('group')->findByAttributes(['status' => 0, 'hash' => $hash]);
+        if (!$invite)
+            throw new CHttpException(404, 'Данное приглашение не найдено или было отменено');
+        $model = new Users();
+        if (Yii::app()->request->isPostRequest) {
+            $user = Yii::app()->request->getParam('Users');
+            $model->setAttributes($user);
+            $model->setAttributes([
+                'email' => $invite->email,
+                'password' => md5($user['password'])
+            ]);
+            if ($model->save()) {
+                $user_identity = new UserIdentity($model->username, $model->password);
+                $user_identity->authenticate();
+                Yii::app()->user->login($user_identity, 60 * 60 * 24 * 7);
+                $invite->setAttribute('status', GroupInvite::INVITE_ACCEPT);
+                $invite->save();
+                $group_member = new GroupMember();
+                $group_member->setAttributes([
+                    'group_id' => $invite->group_id,
+                    'user_id' => $model->id
+                ]);
+                Yii::app()->authManager->assign('user', $model->id);
+                $group_member->save();
+                $this->redirect(['site/index']);
+            }
+        }
+        $this->render('invite', ['model' => $model]);
     }
 }

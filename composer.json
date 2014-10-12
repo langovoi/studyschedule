@@ -7,11 +7,26 @@
             "email": "marklangovoi@gmail.com"
         }
     ],
+    "repositories":[
+        {
+            "type":"package",
+            "package":{
+                "name":"vernes/YiiMailer",
+                "version":"dev-master",
+                "source":{
+                    "type":"git",
+                    "url":"https://github.com/vernes/YiiMailer",
+                    "reference":"master"
+                }
+            }
+        }
+    ],
     "require": {
         "php": ">=5.5.0",
         "yiisoft/yii": "1.1.15",
         "twig/twig": "1.6.5",
         "yiiext/twig-renderer": "dev-master",
-        "jsvrcek/ics": "dev-master"
+        "jsvrcek/ics": "dev-master",
+        "vernes/YiiMailer": "dev-master"
     }
 }

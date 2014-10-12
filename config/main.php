@@ -11,6 +11,7 @@ if (YII_DEBUG) {
 }
 
 $db = !file_exists(dirname(__FILE__) . '/local/db.php') ? require(dirname(__FILE__) . '/db.php') : require(dirname(__FILE__) . '/local/db.php');
+$mail = !file_exists(dirname(__FILE__) . '/local/mail.php') ? require(dirname(__FILE__) . '/mail.php') : require(dirname(__FILE__) . '/local/mail.php');
 
 return [
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
@@ -20,6 +21,7 @@ return [
     'import' => [
         'application.models.*',
         'application.components.*',
+        'application.vendor.vernes.YiiMailer.YiiMailer'
     ],
     'aliases' => [
         'Jsvrcek' => 'application.vendor.jsvrcek.ics.src.Jsvrcek',
@@ -49,6 +51,7 @@ return [
             'rules' => [
                 '<action:(login|logout)>' => 'site/<action>',
                 'dashboard' => 'site/index',
+                'invite' => 'site/invite',
                 'ics/<id:\d+>' => 'ics/group',
                 'group/<id:\d+>/<action:\w+>' => 'group/<action>',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
@@ -71,6 +74,7 @@ return [
         ],
     ],
     'params' => [
+        'YiiMailer' => $mail,
         'adminEmail' => 'webmaster@example.com',
     ],
 ];
