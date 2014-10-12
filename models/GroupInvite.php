@@ -32,9 +32,33 @@ class GroupInvite extends CActiveRecord
             ['group_id, status', 'numerical', 'integerOnly' => true],
             ['email', 'length', 'max' => 255],
             ['email', 'email'],
+            ['email', 'checkEmail', 'on' => 'insert'],
             ['status', 'in', 'allowEmpty' => true, 'range' => [self::INVITE_CREATE, self::INVITE_ACCEPT, self::INVITE_CANCELED]],
             ['id, group_id, email, status', 'safe', 'on' => 'search'],
         ];
+    }
+
+    public function checkEmail($attribute)
+    {
+        $value = $this->$attribute;
+        $user = Users::model()->findByAttributes(['email' => $value]);
+        if (!$user) {
+            $this->addError($attribute, 'В системе нет пользователя с данной почтой');
+            return false;
+        }
+        $group_member = GroupMember::model()->findByAttributes(['group_id' => $this->group_id, 'user_id' => $user->id]);
+        if ($group_member) {
+            $this->addError($attribute, 'Данный пользователь уже член вашей группы');
+            return false;
+        }
+        $group = Group::model()->findByPk($this->group_id);
+        if ($group->owner_id == $user->id) {
+            $this->addError($attribute, 'Администратор группы не может быть членом группы');
+            return false;
+        }
+        $active_invites = GroupInvite::model()->findByAttributes(['group_id' => $this->group_id, 'email' => $value, 'status' => self::INVITE_CREATE]);
+        if ($active_invites)
+            $this->addError($attribute, 'Данный пользователь уже имеет приглашение');
     }
 
     /**

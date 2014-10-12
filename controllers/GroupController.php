@@ -178,17 +178,6 @@ class GroupController extends Controller
         $model = new GroupInvite();
         if (Yii::app()->request->isPostRequest) {
             $invite = Yii::app()->request->getParam('GroupInvite');
-            $user = Users::model()->findByAttributes(['email' => $invite['email']]);
-            if ($user) {
-                $group_member = GroupMember::model()->findByAttributes(['user_id' => $user->id, 'group_id' => self::$group->id]);
-                if ($group_member) {
-                    Yii::app()->user->setFlash('error', 'Пользователь с данной почтой уже состоит в вашей группе');
-                    $this->redirect(['moderators', 'id' => self::$group->number]);
-                }
-            } else {
-                Yii::app()->user->setFlash('error', 'Пользователь с данной почтой в системе нет');
-                $this->redirect(['moderators', 'id' => self::$group->number]);
-            }
             $model->setAttributes($invite);
             $model->setAttributes([
                 'group_id' => self::$group->id,
@@ -197,8 +186,7 @@ class GroupController extends Controller
             if ($model->save()) {
                 Yii::app()->user->setFlash('success', 'Приглашение успешно создано');
                 $this->redirect(['moderators', 'id' => self::$group->number]);
-            } else
-                Yii::app()->user->setFlash('error', 'Ошибка создания приглашения');
+            }
         }
         $this->render('invite/form', ['model' => $model]);
     }
