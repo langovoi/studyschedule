@@ -53,6 +53,7 @@ return [
                 'dashboard' => 'site/index',
                 'invite' => 'site/invite',
                 'ics/<id:\d+>' => 'ics/group',
+                'ics/<id:\d+>.ics' => 'ics/group',
                 'group/<id:\d+>/<action:\w+>' => 'group/<action>',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
