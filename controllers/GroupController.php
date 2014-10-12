@@ -185,6 +185,9 @@ class GroupController extends Controller
                     Yii::app()->user->setFlash('error', 'Пользователь с данной почтой уже состоит в вашей группе');
                     $this->redirect(['moderators', 'id' => self::$group->number]);
                 }
+            } else {
+                Yii::app()->user->setFlash('error', 'Пользователь с данной почтой в системе нет');
+                $this->redirect(['moderators', 'id' => self::$group->number]);
             }
             $model->setAttributes($invite);
             $model->setAttributes([
