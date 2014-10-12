@@ -37,8 +37,8 @@ class GroupController extends Controller
     {
         $is_admin = Yii::app()->user->checkAccess('admin');
         $is_owner = self::$group->owner_id == Yii::app()->user->getId();
-        $allow_member = ['schedule', 'createscheduleelement', 'updatescheduleelement', 'deletescheduleelement'];
-        if(!$is_admin && !$is_owner && in_array($this->action->getId(), $allow_member) == false)
+        $allow_member = ['schedule', 'createscheduleelement', 'updatescheduleelement', 'deletescheduleelement', 'replaces', 'createreplace', 'updatereplace', 'deletereplace'];
+        if (!$is_admin && !$is_owner && in_array($this->action->getId(), $allow_member) == false)
             throw new CHttpException(403, 'Нет доступа');
 
         $filterChain->run();
@@ -219,6 +219,92 @@ class GroupController extends Controller
             $this->redirect(['moderators', 'id' => self::$group->number]);
         } else {
             $this->render('moderator/delete', ['model' => $model]);
+        }
+    }
+
+    public function actionReplaces()
+    {
+        /** @var Semesters $semester */
+        $semester = Semesters::model()->byStartDate()->find();
+        $replaces = GroupReplace::model()->byDate()->findAllByAttributes(['group_id' => self::$group->id], 'date >= :start_date AND date <= :end_date', [':start_date' => $semester->start_date, ':end_date' => $semester->end_date]);
+
+        $this->render('replaces', ['replaces' => $replaces, 'group' => self::$group]);
+    }
+
+    public function actionCreateReplace()
+    {
+        $model = new GroupReplace();
+        $classrooms = ['' => '-'];
+        $subjects = ['' => '-'];
+        $teachers = ['' => '-'];
+        $semester = Semesters::model()->byStartDate()->find();
+        foreach (Classrooms::model()->findAll() as $classroom) {
+            $classrooms[$classroom->id] = $classroom->name;
+        }
+        foreach (Subjects::model()->findAll() as $subject) {
+            $subjects[$subject->id] = $subject->name;
+        }
+        foreach (Teachers::model()->findAll() as $teacher) {
+            $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
+        }
+
+        if (Yii::app()->request->isPostRequest) {
+            $replace = Yii::app()->request->getParam('GroupReplace');
+            $model->setAttributes($replace);
+            $model->setAttributes(['group_id' => self::$group->id]);
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'Замена успешно создано');
+                $this->redirect(['replaces', 'id' => self::$group->number]);
+            }
+        }
+
+        $this->render('replace/form', ['semester' => $semester, 'model' => $model, 'teachers' => $teachers, 'subjects' => $subjects, 'classrooms' => $classrooms, 'numbers' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5]]);
+    }
+
+    public function actionUpdateReplace($replace_id)
+    {
+        $model = GroupReplace::model()->findByPk($replace_id);
+        if (!$model)
+            throw new CHttpException(404, 'Замена не найдена');
+        $classrooms = ['' => '-'];
+        $subjects = ['' => '-'];
+        $teachers = ['' => '-'];
+        $semester = Semesters::model()->byStartDate()->find();
+        foreach (Classrooms::model()->findAll() as $classroom) {
+            $classrooms[$classroom->id] = $classroom->name;
+        }
+        foreach (Subjects::model()->findAll() as $subject) {
+            $subjects[$subject->id] = $subject->name;
+        }
+        foreach (Teachers::model()->findAll() as $teacher) {
+            $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
+        }
+
+        if (Yii::app()->request->isPostRequest) {
+            $replace = Yii::app()->request->getParam('GroupReplace');
+            $model->setAttributes($replace);
+            $model->setAttributes(['group_id' => self::$group->id]);
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'Замена успешно обновлена');
+                $this->redirect(['replaces', 'id' => self::$group->number]);
+            }
+        }
+
+        $this->render('replace/form', ['semester' => $semester, 'model' => $model, 'teachers' => $teachers, 'subjects' => $subjects, 'classrooms' => $classrooms, 'numbers' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5]]);
+    }
+
+    public function actionDeleteReplace($replace_id, $confirm = 0)
+    {
+        $model = GroupReplace::model()->findByPk($replace_id);
+        if (!$model)
+            throw new CHttpException(404, 'Элемент не найден');
+        if ($confirm) {
+            if ($model->delete())
+                Yii::app()->user->setFlash('success', 'Замена успешно удален');
+            else Yii::app()->user->setFlash('error', 'Ошибка удаления замены');
+            $this->redirect(['replaces', 'id' => self::$group->number]);
+        } else {
+            $this->render('replace/delete', ['model' => $model]);
         }
     }
 
