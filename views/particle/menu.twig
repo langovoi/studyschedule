@@ -52,7 +52,7 @@
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>#}
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{{ App.createUrl('user/notifications') }}">Оповещения <span class="badge">{{ this.getCountUserNotifications() }}</span></a></li>
+                    {% if this.getCountUserNotifications() %}<li><a href="{{ App.createUrl('user/notifications') }}">Оповещения <span class="badge">{{ this.getCountUserNotifications() }}</span></a></li>{% endif %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Настройки <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
