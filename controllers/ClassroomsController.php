@@ -20,7 +20,7 @@ class ClassroomsController extends Controller
     public function actionIndex()
     {
         $classroms = new Classrooms();
-        $classroms = $classroms->findAll();
+        $classroms = $classroms->byName()->findAll();
         $model = new Classrooms;
         $this->render('list', ['classrooms' => $classroms, 'model' => $model]);
     }

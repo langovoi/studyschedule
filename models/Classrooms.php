@@ -40,6 +40,11 @@ class Classrooms extends CActiveRecord
         ];
     }
 
+    public function byName() {
+        $this->dbCriteria->order = 'name ASC';
+        return $this;
+    }
+
     /**
      * @return array
      */

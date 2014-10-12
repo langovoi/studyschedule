@@ -20,7 +20,7 @@ class TeachersController extends Controller
     public function actionIndex()
     {
         $teachers = new Teachers();
-        $teachers = $teachers->findAll();
+        $teachers = $teachers->byLastName()->findAll();
         $model = new Teachers;
         $this->render('list', ['teachers' => $teachers, 'model' => $model]);
     }

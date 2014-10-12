@@ -41,6 +41,11 @@ class Teachers extends CActiveRecord
         ];
     }
 
+    public function byLastName() {
+        $this->dbCriteria->order = 'lastname ASC';
+        return $this;
+    }
+
     /**
      * @return array
      */
