@@ -26,7 +26,7 @@
                 {{ form.error(model, 'name') }}
                 <div class="form-group">
                     {{ form.label(model, 'date') }}
-                    {{ form.dateField(model, 'date', {'class': 'form-control', 'placeholder': model.attributeLabels().date }) }}
+                    {{ form.dateField(model, 'date', {'class': 'form-control', 'placeholder': model.attributeLabels().date, 'min': semester.start_date, 'max': semester.end_date }) }}
                 </div>
                 {{ form.error(model, 'date') }}
                 <div class="form-group text-center">

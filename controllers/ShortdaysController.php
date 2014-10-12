@@ -20,9 +20,7 @@ class ShortDaysController extends Controller
     public function actionIndex()
     {
         $short_days = new ShortDay();
-        $semester = new Semesters();
-        /** @var Semesters $semester */
-        $semester = $semester->byStartDate()->find();
+        $semester = Semesters::model()->byStartDate()->find();
         if ($semester)
             $short_days = $short_days->findAllByAttributes([], 'date >= :start_date AND date <= :end_date', [':start_date' => $semester->start_date, ':end_date' => $semester->end_date]);
         else
@@ -34,6 +32,7 @@ class ShortDaysController extends Controller
     public function actionUpdate($id)
     {
         $model = new ShortDay();
+        $semester = Semesters::model()->byStartDate()->find();
         if (($model = $model->findByPk($id)) && strtotime($model->date) >= time()) {
             if (Yii::app()->request->isPostRequest) {
                 $holiday = Yii::app()->request->getParam('ShortDay');
@@ -43,7 +42,7 @@ class ShortDaysController extends Controller
                     $this->redirect(['index']);
                 }
             }
-            $this->render('form', ['model' => $model]);
+            $this->render('form', ['model' => $model, 'semester' => $semester]);
         } else
             throw new CHttpException(404, 'Скоращенный день не найден');
     }
@@ -51,7 +50,7 @@ class ShortDaysController extends Controller
     public function actionCreate()
     {
         $model = new ShortDay('insert');
-
+        $semester = Semesters::model()->byStartDate()->find();
         if (Yii::app()->request->isPostRequest) {
             $holiday = Yii::app()->request->getParam('ShortDay');
             $model->setAttributes($holiday);
@@ -60,7 +59,7 @@ class ShortDaysController extends Controller
                 $this->redirect(['index']);
             }
         }
-        $this->render('form', ['model' => $model]);
+        $this->render('form', ['model' => $model, 'semester' => $semester]);
     }
 
     public function actionDelete($id, $confirm = 0)

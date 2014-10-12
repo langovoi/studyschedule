@@ -34,6 +34,7 @@ class HolidaysController extends Controller
     public function actionUpdate($id)
     {
         $model = new Holiday();
+        $semester = Semesters::model()->byStartDate()->find();
         if (($model = $model->findByPk($id)) && strtotime($model->date) >= time()) {
             if (Yii::app()->request->isPostRequest) {
                 $holiday = Yii::app()->request->getParam('Holiday');
@@ -43,7 +44,7 @@ class HolidaysController extends Controller
                     $this->redirect(['index']);
                 }
             }
-            $this->render('form', ['model' => $model]);
+            $this->render('form', ['model' => $model, 'semester' => $semester]);
         } else
             throw new CHttpException(404, 'Выходной не найден');
     }
@@ -51,7 +52,7 @@ class HolidaysController extends Controller
     public function actionCreate()
     {
         $model = new Holiday('insert');
-
+        $semester = Semesters::model()->byStartDate()->find();
         if (Yii::app()->request->isPostRequest) {
             $holiday = Yii::app()->request->getParam('Holiday');
             $model->setAttributes($holiday);
@@ -60,7 +61,7 @@ class HolidaysController extends Controller
                 $this->redirect(['index']);
             }
         }
-        $this->render('form', ['model' => $model]);
+        $this->render('form', ['model' => $model, 'semester' => $semester]);
     }
 
     public function actionDelete($id, $confirm = 0)
