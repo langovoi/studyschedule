@@ -38,7 +38,7 @@ class GroupController extends Controller
         $is_admin = Yii::app()->user->checkAccess('admin');
         $is_owner = self::$group->owner_id == Yii::app()->user->getId();
         $allow_member = ['schedule', 'createscheduleelement', 'updatescheduleelement', 'deletescheduleelement'];
-        if(!$is_owner && !$is_owner && in_array($this->action->getId(), $allow_member) == false)
+        if(!$is_admin && !$is_owner && in_array($this->action->getId(), $allow_member) == false)
             throw new CHttpException(403, 'Нет доступа');
 
         $filterChain->run();
