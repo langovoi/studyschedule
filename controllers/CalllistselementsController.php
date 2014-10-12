@@ -24,7 +24,7 @@ class CallListsElementsController extends Controller
         $call_list_elements = [];
         /** @var CallLists $call_list */
         if ($call_list = $call_list->findByPk($list_id)) {
-            $call_list_elements = $call_list->call_list_elements;
+            $call_list_elements = $call_list->elements;
             $model = new CallListsElements();
         } else
             throw new CHttpException(404, 'Список не найден');
