@@ -49,6 +49,11 @@ class ScheduleElement extends CActiveRecord
         ];
     }
 
+    function byNumber() {
+        $this->dbCriteria->order = 'number ASC';
+        return $this;
+    }
+
     /**
      * @return array
      */

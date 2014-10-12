@@ -42,7 +42,7 @@ class CallLists extends CActiveRecord
     public function relations()
     {
         return [
-            'call_list_elements' => [self::HAS_MANY, 'CallListsElements', 'call_list_id'],
+            'elements' => [self::HAS_MANY, 'CallListsElements', 'call_list_id'],
         ];
     }
 

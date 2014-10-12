@@ -55,8 +55,8 @@ class Semesters extends CActiveRecord
     public function relations()
     {
         return [
-            'callListShort' => [self::BELONGS_TO, 'CallLists', 'call_list_short'],
-            'callList' => [self::BELONGS_TO, 'CallLists', 'call_list'],
+            'call_list_short' => [self::BELONGS_TO, 'CallLists', 'call_list_short'],
+            'call_list' => [self::BELONGS_TO, 'CallLists', 'call_list'],
         ];
     }
 
