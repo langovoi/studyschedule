@@ -10,6 +10,13 @@
  */
 class GroupMember extends CActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            'ActiveRecordLogableBehavior' =>
+                'application.behaviors.ActiveRecordLogableBehavior',
+        ];
+    }
     /**
      * @return string
      */
