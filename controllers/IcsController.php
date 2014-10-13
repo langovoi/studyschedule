@@ -29,10 +29,9 @@ class IcsController extends Controller
     {
         $analytics = new IcsAnalytics();
         $analytics->setAttributes([
-            'headers' => json_encode(getallheaders()),
             'useragent' => $_SERVER['HTTP_USER_AGENT'],
-            'params' => json_encode($_REQUEST),
-            'time' => new CDbExpression('NOW()'),
+            'group' => $id,
+            'time' => date("Y-m-d H:i:s"),
             'ip' => get_client_ip()
         ]);
         $analytics->save();
@@ -56,7 +55,6 @@ class IcsController extends Controller
             $call_list_short[$element->number] = $element;
         }
         if (ScheduleElement::model()->count('group_id = :group_id AND semester_id = :semester_id', [':group_id' => $group->id, ':semester_id' => $semester->id])) {
-            date_default_timezone_set('Europe/Moscow');
             $calendar = new Calendar();
             $calendar->setProdId('-//Sc0Rp1D//KKEP//RU');
             $calendar->setTimezone(new DateTimeZone('Europe/Moscow'));
@@ -133,7 +131,7 @@ class IcsController extends Controller
             }
             $calendarExport = new CalendarExport(new CalendarStream, new Formatter());
             $calendarExport->addCalendar($calendar);
-
+            header('Content-Type: text/calendar; charset=utf-8');
             echo $calendarExport->getStream();
         } else
             throw new CHttpException(404, 'Расписание для группы не найдена');

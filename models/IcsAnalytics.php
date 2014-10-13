@@ -23,7 +23,7 @@ class IcsAnalytics extends CActiveRecord
     public function rules()
     {
         return [
-            ['ip, headers, params, time, useragent', 'required'],
+            ['ip, group, time, useragent', 'required'],
             ['id, ip, headers, params, time, useragent', 'safe', 'on' => 'search'],
         ];
     }
@@ -46,8 +46,7 @@ class IcsAnalytics extends CActiveRecord
             'id' => 'ID',
             'ip' => 'Ip',
             'useragent' => 'User Agent',
-            'headers' => 'Headers',
-            'params' => 'Params',
+            'group' => 'Group',
             'time' => 'Time',
         ];
     }
