@@ -131,7 +131,7 @@ class IcsController extends Controller
             }
             $calendarExport = new CalendarExport(new CalendarStream, new Formatter());
             $calendarExport->addCalendar($calendar);
-//            header('Content-Type: text/calendar; charset=utf-8');
+            header('Content-Type: text/calendar; charset=utf-8');
             echo $calendarExport->getStream();
         } else
             throw new CHttpException(404, 'Расписание для группы не найдена');
