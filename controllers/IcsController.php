@@ -27,14 +27,6 @@ class IcsController extends Controller
 
     public function actionGroup($id)
     {
-        /*$analytics = new IcsAnalytics();
-        $analytics->setAttributes([
-            'useragent' => $_SERVER['HTTP_USER_AGENT'],
-            'group' => $id,
-            'time' => date("Y-m-d H:i:s"),
-            'ip' => get_client_ip()
-        ]);
-        $analytics->save();*/
         $group = new Group();
         /** @var Group $group */
         if (!($group = $group->findByAttributes(['number' => $id])))
@@ -133,6 +125,14 @@ class IcsController extends Controller
             $calendarExport->addCalendar($calendar);
             header('Content-Type: text/calendar; charset=utf-8');
             echo $calendarExport->getStream();
+            $analytics = new IcsAnalytics();
+            $analytics->setAttributes([
+                'useragent' => $_SERVER['HTTP_USER_AGENT'],
+                'group' => $id,
+                'time' => date("Y-m-d H:i:s"),
+                'ip' => get_client_ip()
+            ]);
+            $analytics->save();
         } else
             throw new CHttpException(404, 'Расписание для группы не найдена');
     }
