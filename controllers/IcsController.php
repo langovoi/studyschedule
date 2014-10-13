@@ -27,6 +27,15 @@ class IcsController extends Controller
 
     public function actionGroup($id)
     {
+        $analytics = new IcsAnalytics();
+        $analytics->setAttributes([
+            'headers' => json_encode(getallheaders()),
+            'useragent' => $_SERVER['HTTP_USER_AGENT'],
+            'params' => json_encode($_REQUEST),
+            'time' => new CDbExpression('NOW()'),
+            'ip' => get_client_ip()
+        ]);
+        $analytics->save();
         $group = new Group();
         /** @var Group $group */
         if (!($group = $group->findByAttributes(['number' => $id])))
@@ -136,4 +145,37 @@ class IcsController extends Controller
             $this->schedule_elements[$week_number . "_" . $week_day] = ScheduleElement::model()->byNumber()->findAllByAttributes(['group_id' => $group_id, 'semester_id' => $semester_id, 'week_number' => $week_number, 'week_day' => $week_day]);
         return $this->schedule_elements[$week_number . "_" . $week_day];
     }
+}
+
+if (!function_exists('getallheaders')) {
+    function getallheaders()
+    {
+        $headers = '';
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+        }
+        return $headers;
+    }
+}
+
+function get_client_ip()
+{
+    $ipaddress = '';
+    if (getenv('HTTP_CLIENT_IP'))
+        $ipaddress = getenv('HTTP_CLIENT_IP');
+    else if (getenv('HTTP_X_FORWARDED_FOR'))
+        $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+    else if (getenv('HTTP_X_FORWARDED'))
+        $ipaddress = getenv('HTTP_X_FORWARDED');
+    else if (getenv('HTTP_FORWARDED_FOR'))
+        $ipaddress = getenv('HTTP_FORWARDED_FOR');
+    else if (getenv('HTTP_FORWARDED'))
+        $ipaddress = getenv('HTTP_FORWARDED');
+    else if (getenv('REMOTE_ADDR'))
+        $ipaddress = getenv('REMOTE_ADDR');
+    else
+        $ipaddress = 'UNKNOWN';
+    return $ipaddress;
 }
