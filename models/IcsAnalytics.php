@@ -3,8 +3,8 @@
 /**
  * @property integer $id
  * @property string $ip
- * @property string $headers
- * @property string $params
+ * @property string $useragent
+ * @property string $group
  * @property string $time
  */
 class IcsAnalytics extends CActiveRecord
@@ -23,8 +23,8 @@ class IcsAnalytics extends CActiveRecord
     public function rules()
     {
         return [
-            ['ip, group, time, useragent', 'required'],
-            ['id, ip, headers, params, time, useragent', 'safe', 'on' => 'search'],
+            ['ip, ip, group, useragent, time', 'required'],
+            ['ip, ip, group, useragent, time', 'safe', 'on' => 'search'],
         ];
     }
 
@@ -60,9 +60,8 @@ class IcsAnalytics extends CActiveRecord
 
         $criteria->compare('id', $this->id);
         $criteria->compare('ip', $this->ip, true);
-        $criteria->compare('headers', $this->headers, true);
-        $criteria->compare('params', $this->params, true);
-        $criteria->compare('useragent', $this->params, true);
+        $criteria->compare('useragent', $this->useragent, true);
+        $criteria->compare('group', $this->group, true);
         $criteria->compare('time', $this->time, true);
 
         return new CActiveDataProvider($this, [
