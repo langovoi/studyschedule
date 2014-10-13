@@ -33,9 +33,15 @@ class Subjects extends CActiveRecord
     {
         return [
             ['name', 'required'],
+            ['name', 'unique', 'caseSensitive' => false],
             ['owner_id', 'numerical', 'integerOnly' => true],
             ['id, name, owner_id', 'safe', 'on' => 'search'],
         ];
+    }
+
+    public function byName() {
+        $this->dbCriteria->order = 'name ASC';
+        return $this;
     }
 
     /**

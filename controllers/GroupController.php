@@ -238,13 +238,13 @@ class GroupController extends Controller
         $subjects = ['' => '-'];
         $teachers = ['' => '-'];
         $semester = Semesters::model()->byStartDate()->find();
-        foreach (Classrooms::model()->findAll() as $classroom) {
+        foreach (Classrooms::model()->byName()->findAll() as $classroom) {
             $classrooms[$classroom->id] = $classroom->name;
         }
-        foreach (Subjects::model()->findAll() as $subject) {
+        foreach (Subjects::model()->byName()->findAll() as $subject) {
             $subjects[$subject->id] = $subject->name;
         }
-        foreach (Teachers::model()->findAll() as $teacher) {
+        foreach (Teachers::model()->byLastName()->findAll() as $teacher) {
             $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
         }
 
@@ -270,13 +270,13 @@ class GroupController extends Controller
         $subjects = ['' => '-'];
         $teachers = ['' => '-'];
         $semester = Semesters::model()->byStartDate()->find();
-        foreach (Classrooms::model()->findAll() as $classroom) {
+        foreach (Classrooms::model()->byName()->findAll() as $classroom) {
             $classrooms[$classroom->id] = $classroom->name;
         }
-        foreach (Subjects::model()->findAll() as $subject) {
+        foreach (Subjects::model()->byName()->findAll() as $subject) {
             $subjects[$subject->id] = $subject->name;
         }
-        foreach (Teachers::model()->findAll() as $teacher) {
+        foreach (Teachers::model()->byLastName()->findAll() as $teacher) {
             $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
         }
 

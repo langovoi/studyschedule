@@ -34,6 +34,7 @@ class Classrooms extends CActiveRecord
     {
         return [
             ['name', 'required'],
+            ['name', 'unique', 'caseSensitive' => false],
             ['owner_id', 'numerical', 'integerOnly' => true],
             ['name', 'length', 'max' => 255],
             ['id, name, owner_id', 'safe', 'on' => 'search'],
