@@ -10,14 +10,13 @@ var es = require('event-stream');
 var bower_js = [
     './bower_components/jquery/dist/jquery.js',
     './bower_components/bootstrap/dist/js/bootstrap.js',
+    './bower_components/select2/select2.js',
+    './bower_components/select2/select2_locale_ru.js',
 ];
 
 var bower_css = [
     './bower_components/bootstrap/dist/css/bootstrap.css',
-];
-
-var bower_copy = [
-    './bower_components/bootstrap/dist/fonts/**/*',
+    './bower_components/select2/select2.css',
 ];
 
 gulp.task('clean', function () {
@@ -51,15 +50,17 @@ gulp.task('js', function () {
 });
 
 gulp.task('copy', function () {
-    gulp.src(bower_copy, {base: './bower_components/bootstrap/dist/'})
+    gulp.src(['./bower_components/bootstrap/dist/fonts/**/*'], {base: './bower_components/bootstrap/dist/'})
         .pipe(gulp.dest('web'));
+    gulp.src(['./bower_components/select2/select2.png', './bower_components/select2/select2x2.png'], {base: './bower_components/select2/'})
+        .pipe(gulp.dest('web/css'));
 });
 
 gulp.task('watch', function () {
-    gulp.watch(bower_js.concat(['frontend/js/*.js']), ['js']);
-    gulp.watch(['frontend/images/*'], ['images']);
-    gulp.watch(bower_css.concat(['frontend/css/*.css']).concat(['frontend/scss/*.scss']), ['css']);
-    gulp.watch(bower_copy, ['copy']);
+    gulp.watch(bower_js.concat(['frontend/js/**/*.js']), ['js']);
+    gulp.watch(['frontend/images/**/*'], ['images']);
+    gulp.watch(bower_css.concat(['frontend/css/**/*.css']).concat(['frontend/scss/*.scss']), ['css']);
+    gulp.watch(['./bower_components/**/*'], ['copy']);
 });
 
 gulp.task('default', ['clean', 'images', 'css', 'copy', 'js']);
