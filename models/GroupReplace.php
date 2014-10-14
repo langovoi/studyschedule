@@ -46,6 +46,7 @@ class GroupReplace extends CActiveRecord
             ['comment', 'safe'],
             ['cancel', 'checkCancel'],
             ['date', 'date', 'format' => 'yyyy-MM-dd'],
+            ['number', 'numberCheck'],
             ['owner', 'safe'],
             ['id, date, group_id, number, cancel, classroom_id, teacher_id, subject_id, comment, owner', 'safe', 'on' => 'search'],
         ];
@@ -57,6 +58,13 @@ class GroupReplace extends CActiveRecord
         if (!$value) {
             if (!$this->subject_id)
                 $this->addError('subject_id', 'Выберите предмет');
+        }
+    }
+
+    public function numberCheck($attribute) {
+        if(GroupReplace::model()->findByAttributes(['group_id' => $this->group_id, 'date' => $this->date, 'number' => $this->number])) {
+            $this->addError($attribute, 'На данную дату и пару уже есть замена');
+            $this->addError('date', 'На данную дату и пару уже есть замена');
         }
     }
 
