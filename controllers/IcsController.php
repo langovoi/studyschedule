@@ -63,6 +63,10 @@ class IcsController extends Controller
             $calendar = new Calendar();
             $calendar->setProdId('-//Sc0Rp1D//KKEP//RU');
             $calendar->setTimezone(new DateTimeZone('Europe/Moscow'));
+            $calendar->setCustomHeaders([
+                'X-PUBLISHED-TTL' => 'PT1H',
+                'REFRESH-INTERVAL' => 'VALUE=DURATION:PT1H',
+            ]);
             $count_days = 24;
             $start_date = time() - 60 * 60 * 24 * ($count_days / 2);
             $end_date = time() + 60 * 60 * 24 * ($count_days / 2);
