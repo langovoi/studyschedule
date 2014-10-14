@@ -46,7 +46,7 @@ class GroupReplace extends CActiveRecord
             ['comment', 'safe'],
             ['cancel', 'checkCancel'],
             ['date', 'date', 'format' => 'yyyy-MM-dd'],
-            ['owner' , 'safe'],
+            ['owner', 'safe'],
             ['id, date, group_id, number, cancel, classroom_id, teacher_id, subject_id, comment, owner', 'safe', 'on' => 'search'],
         ];
     }
@@ -68,7 +68,8 @@ class GroupReplace extends CActiveRecord
             $this->subject_id = null;
             $this->comment = null;
         }
-        $this->owner = Yii::app()->user->name;
+        if (!Yii::app() instanceof CConsoleApplication)
+            $this->owner = Yii::app()->user->name;
         return parent::beforeSave();
     }
 
