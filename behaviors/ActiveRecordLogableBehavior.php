@@ -32,7 +32,7 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
                     $log->model = get_class($this->Owner);
                     $log->idModel = $this->Owner->getPrimaryKey();
                     $log->field = $name;
-                    $log->creationdate = new CDbExpression('NOW()');
+                    $log->creationdate = date("Y-m-d H:i:s");
                     $log->userid = Yii::app()->user->id;
                     $log->save();
                 }
@@ -46,7 +46,7 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
             $log->model = get_class($this->Owner);
             $log->idModel = $this->Owner->getPrimaryKey();
             $log->field = '';
-            $log->creationdate = new CDbExpression('NOW()');
+            $log->creationdate = date("Y-m-d H:i:s");
             $log->userid = Yii::app()->user->id;
             $log->save();
         }
@@ -62,7 +62,7 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
         $log->model = get_class($this->Owner);
         $log->idModel = $this->Owner->getPrimaryKey();
         $log->field = '';
-        $log->creationdate = new CDbExpression('NOW()');
+        $log->creationdate = date("Y-m-d H:i:s");
         $log->userid = Yii::app()->user->id;
         $log->save();
     }
