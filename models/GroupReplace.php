@@ -10,6 +10,7 @@
  * @property integer $teacher_id
  * @property integer $subject_id
  * @property string $comment
+ * @property string $owner
  *
  * @property Subjects $subject
  * @property Classrooms $classroom
@@ -45,7 +46,8 @@ class GroupReplace extends CActiveRecord
             ['comment', 'safe'],
             ['cancel', 'checkCancel'],
             ['date', 'date', 'format' => 'yyyy-MM-dd'],
-            ['id, date, group_id, number, cancel, classroom_id, teacher_id, subject_id, comment', 'safe', 'on' => 'search'],
+            ['owner' , 'safe'],
+            ['id, date, group_id, number, cancel, classroom_id, teacher_id, subject_id, comment, owner', 'safe', 'on' => 'search'],
         ];
     }
 
@@ -66,6 +68,7 @@ class GroupReplace extends CActiveRecord
             $this->subject_id = null;
             $this->comment = null;
         }
+        $this->owner = Yii::app()->user->name;
         return parent::beforeSave();
     }
 
@@ -103,6 +106,7 @@ class GroupReplace extends CActiveRecord
             'teacher_id' => 'Преподователь',
             'subject_id' => 'Предмет',
             'comment' => 'Комментарий',
+            'owner' => 'Создал(а)',
         ];
     }
 
@@ -121,6 +125,7 @@ class GroupReplace extends CActiveRecord
         $criteria->compare('classroom_id', $this->classroom_id);
         $criteria->compare('teacher_id', $this->teacher_id);
         $criteria->compare('subject_id', $this->subject_id);
+        $criteria->compare('owner', $this->owner);
         $criteria->compare('comment', $this->comment, true);
 
         return new CActiveDataProvider($this, [

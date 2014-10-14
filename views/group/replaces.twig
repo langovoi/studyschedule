@@ -33,6 +33,7 @@
                             <th>Преподователь</th>
                             <th>Кабинет</th>
                             <th>Комментарий</th>
+                            <th>Создал</th>
                             <th>Действия</th>
                         </tr>
                         </thead>
@@ -56,6 +57,9 @@
                                 </td>
                                 <td>
                                     {% if replace['comment'] %}{{ replace.comment }}{% else %}-{% endif %}
+                                </td>
+                                <td>
+                                    {% if replace['owner'] %}{{ replace.owner }}{% else %}-{% endif %}
                                 </td>
                                 <td>
                                     <a href="{{ this.createUrl('updateReplace', {id: group.number, replace_id: replace.id}) }}"
