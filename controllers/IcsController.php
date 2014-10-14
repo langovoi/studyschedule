@@ -27,12 +27,17 @@ class IcsController extends Controller
 
     public function actionGroup($id)
     {
+        if (!($unique_ics_id = Yii::app()->session->get('unique_ics_id', false))) {
+            $unique_ics_id = uniqid();
+            Yii::app()->session->add('unique_ics_id', $unique_ics_id);
+        }
         $analytics = new IcsAnalytics();
         $analytics->setAttributes([
             'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'None',
             'group' => $id,
             'time' => date("Y-m-d H:i:s"),
-            'ip' => get_client_ip()
+            'ip' => get_client_ip(),
+            'unique_id' => $unique_ics_id
         ]);
         $analytics->save();
         $group = new Group();

@@ -6,6 +6,7 @@
  * @property string $useragent
  * @property string $group
  * @property string $time
+ * @property string $unique_id
  */
 class IcsAnalytics extends CActiveRecord
 {
@@ -23,8 +24,8 @@ class IcsAnalytics extends CActiveRecord
     public function rules()
     {
         return [
-            ['ip, ip, group, useragent, time', 'required'],
-            ['ip, ip, group, useragent, time', 'safe', 'on' => 'search'],
+            ['ip, ip, group, useragent, time, unique_id', 'required'],
+            ['ip, ip, group, useragent, time, unique_id', 'safe', 'on' => 'search'],
         ];
     }
 
@@ -48,6 +49,7 @@ class IcsAnalytics extends CActiveRecord
             'useragent' => 'User Agent',
             'group' => 'Group',
             'time' => 'Time',
+            'unique_id' => 'Unique ID',
         ];
     }
 
@@ -62,6 +64,7 @@ class IcsAnalytics extends CActiveRecord
         $criteria->compare('ip', $this->ip, true);
         $criteria->compare('useragent', $this->useragent, true);
         $criteria->compare('group', $this->group, true);
+        $criteria->compare('unique_id', $this->unique_id, true);
         $criteria->compare('time', $this->time, true);
 
         return new CActiveDataProvider($this, [
