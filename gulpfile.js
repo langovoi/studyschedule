@@ -25,7 +25,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('images', function () {
-    gulp.src(['frontend/images/*'])
+    gulp.src(['frontend/images/**/*'])
         .pipe(imagemin())
         .pipe(gulp.dest('web/images'));
 });

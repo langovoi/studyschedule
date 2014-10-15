@@ -1,0 +1,59 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Настройка на iOS для группы №{{ group.number }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Настройка на iOS для группы №{{ group.number }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Шаг первый</h2>
+            <p>
+                Перейдите в Настройки => Почта, адреса, календари => Добавить учетную запись
+            </p>
+            <img src="/images/help/ios/step-1.png" style="width: 320px" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Шаг второй</h2>
+            <p>
+                Выберите "Другое", введите данную ссылку: {{ App.createAbsoluteUrl('ics', {'group': group.number}) }}
+                и нажмите "Далее" в верхнем правом углу
+            </p>
+            <img src="/images/help/ios/step-2.png" style="width: 320px" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Шаг третий</h2>
+            <p>
+                Введите желаемое название календаря в поле "Описание" и нажмите "Сохранить"
+            </p>
+            <img src="/images/help/ios/step-3.png" style="width: 320px" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Шаг четвертый</h2>
+            <p>
+                Перейдите в раздел "Загрузка данных" и внизу выберете желаемый интервал обновления
+            </p>
+            <img src="/images/help/ios/step-4.png" style="width: 320px; margin-bottom: 10px; display: block;" />
+            <img src="/images/help/ios/step-5.png" style="width: 320px" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Шаг пятый</h2>
+            <p>
+                Теперь вы можете смотреть ваше расписание в календаре!
+            </p>
+            <img src="/images/help/ios/step-6.png" style="width: 320px;" />
+        </div>
+    </div>
+{% endblock %}
