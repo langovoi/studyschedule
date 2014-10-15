@@ -47,6 +47,7 @@ class GroupReplace extends CActiveRecord
             ['cancel', 'checkCancel'],
             ['date', 'date', 'format' => 'yyyy-MM-dd'],
             ['number', 'numberCheck'],
+            ['date', 'dateCheck'],
             ['owner', 'safe'],
             ['id, date, group_id, number, cancel, classroom_id, teacher_id, subject_id, comment, owner', 'safe', 'on' => 'search'],
         ];
@@ -61,11 +62,21 @@ class GroupReplace extends CActiveRecord
         }
     }
 
-    public function numberCheck($attribute) {
-        if(GroupReplace::model()->findByAttributes(['group_id' => $this->group_id, 'date' => $this->date, 'number' => $this->number])) {
+    public function numberCheck($attribute)
+    {
+        if (GroupReplace::model()->findByAttributes(['group_id' => $this->group_id, 'date' => $this->date, $attribute => $this->$attribute])) {
             $this->addError($attribute, 'На данную дату и пару уже есть замена');
             $this->addError('date', 'На данную дату и пару уже есть замена');
         }
+    }
+
+    public function dateCheck($attribute)
+    {
+        /** @var Semesters $semester */
+        $semester = Semesters::model()->byStartDate()->find();
+        $time = strtotime($this->$attribute);
+        if($time < strtotime($semester->start_date) || $time > strtotime($semester->end_date))
+            $this->addError($attribute, 'Дата не может быть за пределами текущего семестра');
     }
 
     public function beforeSave()
