@@ -54,9 +54,9 @@
                 </div>
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>#}
-            {% if not App.user.isGuest() %}
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a>Текущая неделя: {{ this.getCurrentWeekNumber() }}</a></li>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a>Текущая неделя: {{ this.getCurrentWeekNumber() }}</a></li>
+                {% if not App.user.isGuest() %}
                     {% if this.getCountUserNotifications() %}
                         <li><a href="{{ App.createUrl('user/notifications') }}">Оповещения <span
                                     class="badge">{{ this.getCountUserNotifications() }}</span></a></li>{% endif %}
@@ -67,8 +67,10 @@
                         </ul>
                     </li>
                     <li><a href="{{ App.createUrl('site/logout') }}">Выйти</a></li>
-                </ul>
-            {% endif %}
+                {% else %}
+                    <li><a href="{{ App.createUrl('site/login') }}">Войти</a></li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>
