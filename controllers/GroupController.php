@@ -226,7 +226,7 @@ class GroupController extends Controller
     {
         /** @var Semesters $semester */
         $semester = Semesters::model()->byStartDate()->find();
-        $replaces = GroupReplace::model()->byDate()->findAllByAttributes(['group_id' => self::$group->id], 'date >= :start_date AND date <= :end_date', [':start_date' => $semester->start_date, ':end_date' => $semester->end_date]);
+        $replaces = GroupReplace::model()->byDate()->findAllByAttributes(['group_id' => self::$group->id], 'date >= :start_date AND date <= :end_date AND date >= :current_date', [':current_date' => date('Y-m-d'), ':start_date' => $semester->start_date, ':end_date' => $semester->end_date]);
 
         $this->render('replaces', ['replaces' => $replaces, 'group' => self::$group]);
     }
@@ -266,6 +266,8 @@ class GroupController extends Controller
         $model = GroupReplace::model()->findByPk($replace_id);
         if (!$model)
             throw new CHttpException(404, 'Замена не найдена');
+        if(strtotime($model->date) < strtotime(date('Y-m-d')))
+            throw new CHttpException(403, 'Нельзя редактировать старую замену!');
         $classrooms = ['' => '-'];
         $subjects = ['' => '-'];
         $teachers = ['' => '-'];
@@ -298,6 +300,8 @@ class GroupController extends Controller
         $model = GroupReplace::model()->findByPk($replace_id);
         if (!$model)
             throw new CHttpException(404, 'Элемент не найден');
+        if(strtotime($model->date) < strtotime(date('Y-m-d')))
+            throw new CHttpException(403, 'Нельзя удалить старую замену!');
         if ($confirm) {
             if ($model->delete())
                 Yii::app()->user->setFlash('success', 'Замена успешно удален');

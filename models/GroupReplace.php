@@ -75,6 +75,10 @@ class GroupReplace extends CActiveRecord
         /** @var Semesters $semester */
         $semester = Semesters::model()->byStartDate()->find();
         $time = strtotime($this->$attribute);
+        if($time < strtotime(date('Y-m-d'))) {
+            $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
+            return false;
+        }
         if($time < strtotime($semester->start_date) || $time > strtotime($semester->end_date))
             $this->addError($attribute, 'Дата не может быть за пределами текущего семестра');
     }
