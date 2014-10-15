@@ -22,7 +22,7 @@
         <div class="col-md-4">
             <h2>Шаг второй</h2>
             <p>
-                Выберите "Другое", введите данную ссылку: {{ App.createAbsoluteUrl('ics', {'group': group.number}) }}
+                Выберите "Другое", введите данную ссылку: <b>{{ App.createAbsoluteUrl('ics/group', {'id': group.number}) }}</b>
                 и нажмите "Далее" в верхнем правом углу
             </p>
             <img src="/images/help/ios/step-2.png" style="width: 320px" />
