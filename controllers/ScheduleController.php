@@ -36,8 +36,14 @@ class ScheduleController extends Controller
             $time_one_day = 60 * 60 * 24;
             for ($i = $current_time; $i <= $current_time + $time_one_day * 7; $i = $i + $time_one_day) {
                 $week_day = date('N', $i);
-                if ($week_day == 7) continue;
                 $date = date('d.n.Y', $i);
+                /** @var Holiday $holiday */
+                if ($week_day == 7 || ($holiday = Holiday::model()->findByAttributes(['date' => date('Y-m-d', $i)]))) {
+                    $schedule[$date] = ['holiday' => true];
+                    if($holiday)
+                        $schedule[$date]['name'] = $holiday->name;
+                    continue;
+                }
                 $schedule[$date] = [];
                 $week_number = (date('W', $i) - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
                 $schedule_elements = ScheduleElement::model()->findAllByAttributes(['group_id' => $group->id, 'semester_id' => $semester->id, 'week_number' => $week_number, 'week_day' => $week_day]);

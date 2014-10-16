@@ -38,22 +38,29 @@
                                     <tr>
                                         <th colspan="4">{{ date }}</th>
                                     </tr>
-                                    {% for i in 1..5 %}
-                                        <tr {% if elements[i]|length and elements[i]['replace'] %}class="success"{% endif %}>
-                                            <th style="width: 20px;">{{ i }}</th>
-                                            {% if elements[i] == 0 %}
-                                                <td colspan="3">Нет</td>
-                                            {% else %}
-                                                {% if not elements[i]['cancel'] %}
-                                                    <td>{{ elements[i]['subject'] }}</td>
-                                                    <td>{% if elements[i]['teacher'] %}{{ elements[i]['teacher'] }}{% else %}-{% endif %}</td>
-                                                    <td>{% if elements[i]['classroom'] %}{{ elements[i]['classroom'] }}{% else %}-{% endif %}</td>
-                                                {% else %}
-                                                    <td colspan="3">Отменена</td>
-                                                {% endif %}
-                                            {% endif %}
+                                    {% if elements['holiday'] and elements['holiday'] == 1 %}
+                                        <tr>
+                                            <th colspan="4">
+                                                Выходной {% if elements['name'] %}- {{ elements['name'] }}{% endif %}</th>
                                         </tr>
-                                    {% endfor %}
+                                    {% else %}
+                                        {% for i in 1..5 %}
+                                            <tr {% if elements[i]|length and elements[i]['replace'] %}class="success"{% endif %}>
+                                                <th style="width: 20px;">{{ i }}</th>
+                                                {% if elements[i] == 0 %}
+                                                    <td colspan="3">Нет</td>
+                                                {% else %}
+                                                    {% if not elements[i]['cancel'] %}
+                                                        <td>{{ elements[i]['subject'] }}</td>
+                                                        <td>{% if elements[i]['teacher'] %}{{ elements[i]['teacher'] }}{% else %}-{% endif %}</td>
+                                                        <td>{% if elements[i]['classroom'] %}{{ elements[i]['classroom'] }}{% else %}-{% endif %}</td>
+                                                    {% else %}
+                                                        <td colspan="3">Отменена</td>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
                                 {% endfor %}
                             </table>
                         </div>
