@@ -253,7 +253,7 @@ class GroupController extends Controller
             $model->setAttributes($replace);
             $model->setAttributes(['group_id' => self::$group->id]);
             if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'Замена успешно создано');
+                Yii::app()->user->setFlash('success', 'Замена успешна создана');
                 $this->redirect(['replaces', 'id' => self::$group->number]);
             }
         }
@@ -287,7 +287,7 @@ class GroupController extends Controller
             $model->setAttributes($replace);
             $model->setAttributes(['group_id' => self::$group->id]);
             if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'Замена успешно обновлена');
+                Yii::app()->user->setFlash('success', 'Замена успешна обновлена');
                 $this->redirect(['replaces', 'id' => self::$group->number]);
             }
         }
@@ -304,7 +304,7 @@ class GroupController extends Controller
             throw new CHttpException(403, 'Нельзя удалить старую замену!');
         if ($confirm) {
             if ($model->delete())
-                Yii::app()->user->setFlash('success', 'Замена успешно удален');
+                Yii::app()->user->setFlash('success', 'Замена успешна удален');
             else Yii::app()->user->setFlash('error', 'Ошибка удаления замены');
             $this->redirect(['replaces', 'id' => self::$group->number]);
         } else {
