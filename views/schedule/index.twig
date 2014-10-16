@@ -1,0 +1,65 @@
+{% extends '/views/layouts/main.twig' %}
+{% block title %}Расписание {% if group %}группы №{{ group }}{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Расписание {% if group %}группы №{{ group }}{% endif %}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {% if not group %}
+                    <p>
+                        Заполните форму ниже, чтобы получить расписание
+                    </p>
+                {% endif %}
+                {{ C.Html.beginForm(['index'], 'get') }}
+                <div class="form-group">
+                    {{ C.Html.label('Группа', 'group') }}
+                    {{ C.Html.dropDownList('group', group, group_list, {'class': 'form-control' }) }}
+                </div>
+                {{ C.Html.submitButton('Показать', {class: 'btn btn-success'}) }}
+                {{ C.Html.endForm() }}
+            </div>
+        </div>
+        {% if group and schedule|length %}
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Расписание на ближайщее время</div>
+                        <div class="panel-body">
+                            <div class="alert alert-warning">Строки помеченные зеленым - <b>замены</b></div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                {% for date,elements in schedule %}
+                                    <tr>
+                                        <th colspan="4" style="text-align: center">{{ date }}</th>
+                                    </tr>
+                                    {% for i in 1..5 %}
+                                        <tr {% if elements[i]|length and elements[i]['replace'] %}class="success"{% endif %}>
+                                            <th style="width: 20px;">{{ i }}</th>
+                                            {% if elements[i] == 0 %}
+                                                <td colspan="3">Нет</td>
+                                            {% else %}
+                                                {% if not elements[i]['cancel'] %}
+                                                    <td>{{ elements[i]['subject'] }}</td>
+                                                    <td>{% if elements[i]['teacher'] %}{{ elements[i]['teacher'] }}{% else %}-{% endif %}</td>
+                                                    <td>{% if elements[i]['classroom'] %}{{ elements[i]['classroom'] }}{% else %}-{% endif %}</td>
+                                                {% else %}
+                                                    <td colspan="3">Отменена</td>
+                                                {% endif %}
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

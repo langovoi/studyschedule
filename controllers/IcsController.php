@@ -102,7 +102,7 @@ class IcsController extends Controller
                         $location = new Location();
                         $desc = [];
                         if ($schedule_element->teacher_id)
-                            $desc[] = $schedule_element->teacher->lastname . ' ' . mb_substr($schedule_element->teacher->firstname, 0, 1, "UTF-8") . '.' . mb_substr($schedule_element->teacher->middlename, 0, 1, "UTF-8");
+                            $desc[] = $schedule_element->teacher->lastname . ' ' . mb_substr($schedule_element->teacher->firstname, 0, 1, "UTF-8") . '.' . mb_substr($schedule_element->teacher->middlename, 0, 1, "UTF-8") . '.';
                         if ($schedule_element->classroom_id)
                             $desc[] = $schedule_element->classroom->name;
                         $location->setName(implode(' | ', $desc));
