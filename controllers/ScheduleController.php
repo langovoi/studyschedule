@@ -20,7 +20,7 @@ class ScheduleController extends Controller
     {
         /** @var Group $group */
         if ($group != false)
-            $group = Group::model()->findByAttributes(['number' => $group])ж
+            $group = Group::model()->findByAttributes(['number' => $group]);
         if (!$group)
             throw new CHttpException(404, 'Данной группы не найден');
         /** @var Semesters $semester */
