@@ -32,6 +32,7 @@ class Group extends CActiveRecord
     {
         return [
             ['number, owner_id', 'numerical', 'integerOnly' => true],
+            ['number', 'unique'],
             ['id, number, owner_id', 'safe', 'on' => 'search'],
         ];
     }
