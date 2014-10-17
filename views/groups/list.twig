@@ -16,8 +16,9 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <a href="{{ this.createUrl('create') }}" class="btn btn-default pull-right"><span
-                            class="glyphicon glyphicon-plus"></span></a>
+                <a href="{{ this.createUrl('create') }}" class="btn btn-default pull-right">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
             </div>
         </div>
         <div class="row">
@@ -62,10 +63,13 @@
                                             <span class="glyphicon glyphicon-cog"></span> Настройки
                                         </a>
                                         <a href="{{ this.createUrl('update', {id: group.id}) }}"
-                                           class="btn btn-sm btn-default"><span
-                                                    class="glyphicon glyphicon-pencil"></span></a>
+                                           class="btn btn-sm btn-default">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </a>
                                         <a href="{{ this.createUrl('delete', {id: group.id}) }}"
-                                           class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                           class="btn btn-sm btn-danger">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}
