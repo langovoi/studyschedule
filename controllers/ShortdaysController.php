@@ -33,18 +33,18 @@ class ShortDaysController extends Controller
     {
         $model = new ShortDay();
         $semester = Semesters::model()->byStartDate()->find();
-        if (($model = $model->findByPk($id)) && strtotime($model->date) >= time()) {
+        if (($model = $model->findByPk($id)) && strtotime($model->date) >= strtotime(date('Y-m-d'))) {
             if (Yii::app()->request->isPostRequest) {
                 $holiday = Yii::app()->request->getParam('ShortDay');
                 $model->setAttributes($holiday);
                 if ($model->save()) {
-                    Yii::app()->user->setFlash('success', 'Скоращенный день успешно сохранен');
+                    Yii::app()->user->setFlash('success', 'Сокращенный день успешно сохранен');
                     $this->redirect(['index']);
                 }
             }
             $this->render('form', ['model' => $model, 'semester' => $semester]);
         } else
-            throw new CHttpException(404, 'Скоращенный день не найден');
+            throw new CHttpException(404, 'Сокращенный день не найден');
     }
 
     public function actionCreate()
@@ -55,7 +55,7 @@ class ShortDaysController extends Controller
             $holiday = Yii::app()->request->getParam('ShortDay');
             $model->setAttributes($holiday);
             if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'Скоращенный день успешно создан');
+                Yii::app()->user->setFlash('success', 'Сокращенный день успешно создан');
                 $this->redirect(['index']);
             }
         }
@@ -65,7 +65,7 @@ class ShortDaysController extends Controller
     public function actionDelete($id, $confirm = 0)
     {
         $model = new ShortDay();
-        if (($model = $model->findByPk($id)) && strtotime($model->date) >= time()) {
+        if (($model = $model->findByPk($id)) && strtotime($model->date) >= strtotime(date('Y-m-d'))) {
             if ($confirm) {
                 $model->delete();
                 $this->redirect(['index']);
@@ -73,6 +73,6 @@ class ShortDaysController extends Controller
                 $this->render('delete', ['model' => $model]);
             }
         } else
-            throw new CHttpException(404, 'Скоращенный день не найден');
+            throw new CHttpException(404, 'Сокращенный день не найден');
     }
 }

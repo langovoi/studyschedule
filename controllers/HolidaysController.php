@@ -35,7 +35,7 @@ class HolidaysController extends Controller
     {
         $model = new Holiday();
         $semester = Semesters::model()->byStartDate()->find();
-        if (($model = $model->findByPk($id)) && strtotime($model->date) >= time()) {
+        if (($model = $model->findByPk($id)) && strtotime($model->date) >= strtotime(date('Y-m-d'))) {
             if (Yii::app()->request->isPostRequest) {
                 $holiday = Yii::app()->request->getParam('Holiday');
                 $model->setAttributes($holiday);
@@ -67,7 +67,7 @@ class HolidaysController extends Controller
     public function actionDelete($id, $confirm = 0)
     {
         $model = new Holiday();
-        if (($model = $model->findByPk($id)) && strtotime($model->date) >= time()) {
+        if (($model = $model->findByPk($id)) && strtotime($model->date) >= strtotime(date('Y-m-d'))) {
             if ($confirm) {
                 $model->delete();
                 $this->redirect(['index']);

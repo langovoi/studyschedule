@@ -40,11 +40,34 @@ class Semesters extends CActiveRecord
             ['week_number, call_list, call_list_short', 'numerical', 'integerOnly' => true],
             ['name', 'length', 'max' => 255],
             ['start_date, end_date', 'date', 'format' => 'yyyy-MM-dd'],
+            ['start_date,end_date', 'dateCheck'],
+            ['start_date', 'dateIntervalCheck', 'end' => 'end_date'],
             ['id, name, start_date, end_date, week_number, call_list, call_list_short', 'safe', 'on' => 'search'],
         ];
     }
 
-    public function byStartDate() {
+    public function dateCheck($attribute)
+    {
+        /** @var Semesters $semester */
+        $semester = Semesters::model()->byStartDate()->find();
+        $time = strtotime($this->$attribute);
+        if ($time < strtotime(date('Y-m-d'))) {
+            $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
+        }
+    }
+
+    public function dateIntervalCheck($attribute, $params)
+    {
+        $time_start = strtotime($this->$attribute);
+        $time_end = strtotime($this->$params['end']);
+        if ($time_start >= $time_end) {
+            $this->addError($attribute, 'Дата начала должна быть меньше даты конца');
+            $this->addError($params['end'], 'Дата конца должна быть больше даты начала');
+        }
+    }
+
+    public function byStartDate()
+    {
         $this->dbCriteria->order = 'start_date DESC';
         return $this;
     }

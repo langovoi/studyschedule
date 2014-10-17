@@ -11,7 +11,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                {% if logs|length %}
+                {% if models|length %}
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -23,9 +23,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for log in logs %}
+                            {% for model in models %}
                                 <tr>
-                                    {% for attribute in log.attributes %}
+                                    {% for attribute in model.attributes %}
                                         <td>{{ attribute }}</td>
                                     {% endfor %}
                                 </tr>
@@ -33,17 +33,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <ul class="pagination">
-                        {% for i in 1..pages %}
-                            <li {% if page == i %}class='disabled'{% endif %}><a
-                                        href="{{ this.createUrl('index', {page: i}) }}">{{ i }}</a></li>
-                        {% endfor %}
-                        {#{% if page != pages %}
-                            {% for i in page+1..(page+3 < pages ? page+3 : pages) %}
-                                <li><a href="{{ this.createUrl('index', {page: i}) }}">{{ i }}</a></li>
-                            {% endfor %}
-                        {% endif %}#}
-                    </ul>
+                    {% include '/views/particle/pagination.twig' with {pages: pages} %}
                 {% else %}
                     <div class="alert alert-warning">Нет логов...</div>
                 {% endif %}

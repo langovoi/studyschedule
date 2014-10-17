@@ -18,15 +18,16 @@ class IcsAnalyticsController extends Controller
         ];
     }
 
-    public function actionIndex($page = 1)
+    public function actionIndex()
     {
-        $logs = new IcsAnalytics();
+        $criteria = new CDbCriteria();
+        $count = IcsAnalytics::model()->count($criteria);
+        $pages = new CPagination($count);
         $model = new IcsAnalytics();
-        $count = $logs->count();
-        if (($page - 1) * 10 < $count || $page == 1) {
-            $logs = $logs->findAll(['order' => 'time DESC, id DESC', 'limit' => 10, 'offset' => ($page - 1) * 10]);
-            $this->render('list', ['logs' => $logs, 'model' => $model, 'pages' => ceil($count / 10), 'page' => $page]);
-        } else
-            throw new CHttpException(404, 'Такой страницы нет :(');
+        $criteria->order = 'time DESC, id DESC';
+        $pages->pageSize = 10;
+        $pages->applyLimit($criteria);
+        $models = IcsAnalytics::model()->findAll($criteria);
+        $this->render('list', ['models' => $models, 'model' => $model, 'pages' => $pages]);
     }
 }

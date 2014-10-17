@@ -81,6 +81,10 @@ class GroupReplace extends CActiveRecord
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
             return false;
         }
+        elseif(date('N', $time) == 7) {
+            $this->addError($attribute, 'Нельзя установить дату на воскресенье');
+            return false;
+        }
         if ($time < strtotime($semester->start_date) || $time > strtotime($semester->end_date))
             $this->addError($attribute, 'Дата не может быть за пределами текущего семестра');
     }
