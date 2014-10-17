@@ -15,20 +15,22 @@
             <ul class="nav navbar-nav">
                 <li><a href="{{ App.createUrl('help') }}">Помощь</a></li>
                 {% if not App.user.isGuest() %}
-                    <li><a href="{{ App.createUrl('site') }}">Мои группы</a></li>
+                    <li><a href="{{ App.createUrl('site') }}">Группы</a></li>
                     {% if App.user.checkAccess('admin') %}
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Пользователи<span
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Администрирование <span
                                         class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ App.createUrl('users') }}">Список</a></li>
-                                <li><a href="{{ App.createUrl('users/create') }}">Добавить пользователя</a></li>
-                                {#<li class="divider"></li>#}
+                                <li><a href="{{ App.createUrl('users') }}">Пользователи</a></li>
+                                <li><a href="{{ App.createUrl('groups') }}">Группы</a></li>
+                                <li><a href="{{ App.createUrl('log/index') }}">Лог</a></li>
+                                <li><a href="{{ App.createUrl('icsanalytics') }}">ICS</a></li>
+                                <li><a href="{{ App.createUrl('calllists') }}">Списки звонков</a></li>
+                                <li><a href="{{ App.createUrl('semesters') }}">Семестры</a></li>
+                                <li><a href="{{ App.createUrl('holidays') }}">Выходные</a></li>
+                                <li><a href="{{ App.createUrl('shortdays') }}">Сокращенные дни</a></li>
                             </ul>
                         </li>
-                        <li><a href="{{ App.createUrl('groups') }}">Группы</a></li>
-                        <li><a href="{{ App.createUrl('log/index') }}">Лог</a></li>
-                        <li><a href="{{ App.createUrl('icsanalytics') }}">ICS</a></li>
                     {% endif %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справочники <span
@@ -37,12 +39,6 @@
                             <li><a href="{{ App.createUrl('teachers') }}">Преподаватели</a></li>
                             <li><a href="{{ App.createUrl('classrooms') }}">Кабинеты</a></li>
                             <li><a href="{{ App.createUrl('subjects') }}">Предметы</a></li>
-                            {% if App.user.checkAccess('admin') %}
-                                <li><a href="{{ App.createUrl('calllists') }}">Списки звонков</a></li>
-                                <li><a href="{{ App.createUrl('semesters') }}">Семестры</a></li>
-                                <li><a href="{{ App.createUrl('holidays') }}">Выходные</a></li>
-                                <li><a href="{{ App.createUrl('shortdays') }}">Сокращенные дни</a></li>
-                            {% endif %}
                             {#<li class="divider"></li>#}
                         </ul>
                     </li>
@@ -55,18 +51,18 @@
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>#}
             <ul class="nav navbar-nav navbar-right">
-                <li><a>Текущая неделя: {{ this.getCurrentWeekNumber() }}</a></li>
+                {#<li><a>Текущая неделя: {{ this.getCurrentWeekNumber() }}</a></li>#}
                 {% if not App.user.isGuest() %}
                     {% if this.getCountUserNotifications() %}
                         <li><a href="{{ App.createUrl('user/notifications') }}">Оповещения <span
                                     class="badge">{{ this.getCountUserNotifications() }}</span></a></li>{% endif %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Настройки <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Профиль <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="{{ App.createUrl('user/changepassword') }}">Сменить пароль</a></li>
+                            <li><a href="{{ App.createUrl('site/logout') }}">Выйти</a></li>
                         </ul>
                     </li>
-                    <li><a href="{{ App.createUrl('site/logout') }}">Выйти</a></li>
                 {% else %}
                     <li><a href="{{ App.createUrl('site/login') }}">Войти</a></li>
                 {% endif %}
