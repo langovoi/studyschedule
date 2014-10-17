@@ -4,32 +4,33 @@
 
 {% block content %}
     <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Помощь</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Как настроить на телефоне?</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <p>
-                Заполните форму ниже, чтобы получить инструкцию
-            </p>
-            {{ C.Html.beginForm(['phone'], 'get') }}
-            <div class="form-group">
-                {{ C.Html.label('Группа', 'group') }}
-                {{ C.Html.dropDownList('group', '', group_list, {'class': 'form-control' }) }}
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Помощь</h1>
             </div>
-            <div class="form-group">
-                {{ C.Html.label('Мобильная система', 'os') }}
-                {{ C.Html.dropDownList('os', '', os_list, {'class': 'form-control' }) }}
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Как настроить на телефоне?</h2>
             </div>
-            {{ C.Html.submitButton('Показать', {class: 'btn btn-success'}) }}
-            {{ C.Html.endForm() }}
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <p>
+                    Заполните форму ниже, чтобы получить инструкцию
+                </p>
+                {{ C.Html.beginForm(['phone'], 'get') }}
+                <div class="form-group">
+                    {{ C.Html.label('Группа', 'group') }}
+                    {{ C.Html.dropDownList('group', '', group_list, {'class': 'form-control' }) }}
+                </div>
+                <div class="form-group">
+                    {{ C.Html.label('Мобильная система', 'os') }}
+                    {{ C.Html.dropDownList('os', '', os_list, {'class': 'form-control' }) }}
+                </div>
+                {{ C.Html.submitButton('Показать', {class: 'btn btn-success'}) }}
+                {{ C.Html.endForm() }}
+            </div>
         </div>
     </div>
 {% endblock %}
