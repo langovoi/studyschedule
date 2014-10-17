@@ -1,6 +1,8 @@
 {% extends '/views/layouts/main.twig' %}
 {% block title %}Расписание {% if group %}группы №{{ group }}{% endif %}{% endblock %}
 
+{% set week_days = {1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница', 6: 'Суббота', 7: 'Воскресенье'} %}
+
 {% block content %}
     <div class="container-fluid">
         <div class="row">
@@ -35,9 +37,9 @@
                         <table class="table table-bordered table-hover">
                             {% for date,elements in schedule %}
                                 <tr>
-                                    <th colspan="2">{{ date }}</th>
+                                    <th colspan="2">{{ date }}, {{ week_days[date|date('N')] }}</th>
                                 </tr>
-                                {% if elements['holiday'] and elements['holiday'] == 1 %}
+                                {% if elements['holiday'] and elements['holiday'] %}
                                     <tr>
                                         <th colspan="2">
                                             Выходной {% if elements['name'] %}- {{ elements['name'] }}{% endif %}
