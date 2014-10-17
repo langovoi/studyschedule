@@ -32,7 +32,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Расписание на ближайшее время</div>
                         <div class="panel-body">
-                            <div class="alert alert-info">Строки помеченные зеленым - <b>замены</b></div>
+                            <div class="alert alert-success">Строки помеченные зеленым - <b>замены</b></div>
                         </div>
                         <table class="table table-bordered table-hover">
                             {% for date,elements in schedule if date|date('N') != 7 %}
