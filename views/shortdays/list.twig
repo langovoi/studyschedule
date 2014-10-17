@@ -23,33 +23,35 @@
         <div class="row">
             <div class="col-md-12">
                 {% if short_days|length %}
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            {% set labels = model.attributeLabels() %}
-                            {% for attribute,value in model.attributes %}
-                                <th>{{ labels[attribute] }}</th>
-                            {% endfor %}
-                            <th>Действия</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for short_day in short_days %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
                             <tr>
-                                {% for attribute in short_day.attributes %}
-                                    <td>{{ attribute }}</td>
+                                {% set labels = model.attributeLabels() %}
+                                {% for attribute,value in model.attributes %}
+                                    <th>{{ labels[attribute] }}</th>
                                 {% endfor %}
-                                <td>
-                                    <a href="{{ this.createUrl('update', {id: short_day.id}) }}"
-                                       class="btn btn-sm btn-default"><span
-                                                class="glyphicon glyphicon-pencil"></span></a>
-                                    <a href="{{ this.createUrl('delete', {id: short_day.id}) }}"
-                                       class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
-                                </td>
+                                <th>Действия</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for short_day in short_days %}
+                                <tr>
+                                    {% for attribute in short_day.attributes %}
+                                        <td>{{ attribute }}</td>
+                                    {% endfor %}
+                                    <td>
+                                        <a href="{{ this.createUrl('update', {id: short_day.id}) }}"
+                                           class="btn btn-sm btn-default"><span
+                                                    class="glyphicon glyphicon-pencil"></span></a>
+                                        <a href="{{ this.createUrl('delete', {id: short_day.id}) }}"
+                                           class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 {% else %}
                     <div class="alert alert-warning">Для текущего семестра нет сокращенных дней</div>
                 {% endif %}
