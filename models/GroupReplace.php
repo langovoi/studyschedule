@@ -64,9 +64,11 @@ class GroupReplace extends CActiveRecord
 
     public function numberCheck($attribute)
     {
-        if (GroupReplace::model()->findByAttributes(['group_id' => $this->group_id, 'date' => $this->date, $attribute => $this->$attribute])) {
-            $this->addError($attribute, 'На данную дату и пару уже есть замена');
-            $this->addError('date', 'На данную дату и пару уже есть замена');
+        if (($replace = GroupReplace::model()->findByAttributes(['group_id' => $this->group_id, 'date' => $this->date, $attribute => $this->$attribute]))) {
+            if ($this->isNewRecord || $replace->id != $replace->id) {
+                $this->addError($attribute, 'На данную дату и пару уже есть замена');
+                $this->addError('date', 'На данную дату и пару уже есть замена');
+            }
         }
     }
 
@@ -75,11 +77,11 @@ class GroupReplace extends CActiveRecord
         /** @var Semesters $semester */
         $semester = Semesters::model()->byStartDate()->find();
         $time = strtotime($this->$attribute);
-        if($time < strtotime(date('Y-m-d'))) {
+        if ($time < strtotime(date('Y-m-d'))) {
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
             return false;
         }
-        if($time < strtotime($semester->start_date) || $time > strtotime($semester->end_date))
+        if ($time < strtotime($semester->start_date) || $time > strtotime($semester->end_date))
             $this->addError($attribute, 'Дата не может быть за пределами текущего семестра');
     }
 
