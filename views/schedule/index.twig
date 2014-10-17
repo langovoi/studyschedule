@@ -35,7 +35,7 @@
                             <div class="alert alert-info">Строки помеченные зеленым - <b>замены</b></div>
                         </div>
                         <table class="table table-bordered table-hover">
-                            {% for date,elements in schedule %}
+                            {% for date,elements in schedule if date|date('N') != 7 %}
                                 <tr>
                                     <th colspan="2">{{ date }}, {{ week_days[date|date('N')] }}</th>
                                 </tr>
