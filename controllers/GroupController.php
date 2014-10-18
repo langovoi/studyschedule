@@ -266,7 +266,7 @@ class GroupController extends Controller
         $model = GroupReplace::model()->findByPk($replace_id);
         if (!$model)
             throw new CHttpException(404, 'Замена не найдена');
-        if(strtotime($model->date) < strtotime(date('Y-m-d')))
+        if (strtotime($model->date) < strtotime(date('Y-m-d')))
             throw new CHttpException(403, 'Нельзя редактировать старую замену!');
         $classrooms = ['' => '-'];
         $subjects = ['' => '-'];
@@ -281,7 +281,6 @@ class GroupController extends Controller
         foreach (Teachers::model()->byLastName()->findAll() as $teacher) {
             $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
         }
-
         if (Yii::app()->request->isPostRequest) {
             $replace = Yii::app()->request->getParam('GroupReplace');
             $model->setAttributes($replace);
@@ -300,7 +299,7 @@ class GroupController extends Controller
         $model = GroupReplace::model()->findByPk($replace_id);
         if (!$model)
             throw new CHttpException(404, 'Элемент не найден');
-        if(strtotime($model->date) < strtotime(date('Y-m-d')))
+        if (strtotime($model->date) < strtotime(date('Y-m-d')))
             throw new CHttpException(403, 'Нельзя удалить старую замену!');
         if ($confirm) {
             if ($model->delete())

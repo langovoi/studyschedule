@@ -11,32 +11,10 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                {% if models|length %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                {% set labels = model.attributeLabels() %}
-                                {% for attribute,value in model.attributes %}
-                                    <th>{{ labels[attribute] }}</th>
-                                {% endfor %}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for model in models %}
-                                <tr>
-                                    {% for attribute in model.attributes %}
-                                        <td>{{ attribute }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% include '/views/particle/pagination.twig' with {pages: pages} %}
-                {% else %}
-                    <div class="alert alert-warning">Нет логов...</div>
-                {% endif %}
+
+                <div class="table-responsive">
+                    {{ void(this.widget('bootstrap.widgets.BsGridView', {'dataProvider': dataProvider})) }}
+                </div>
             </div>
         </div>
     </div>

@@ -27,6 +27,7 @@
         "twig/twig": "1.6.5",
         "yiiext/twig-renderer": "dev-master",
         "jsvrcek/ics": "dev-master",
-        "vernes/YiiMailer": "dev-master"
+        "vernes/YiiMailer": "dev-master",
+        "drmabuse/yii-bootstrap-3-module": "dev-master"
     }
 }

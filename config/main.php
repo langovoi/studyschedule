@@ -21,10 +21,14 @@ return [
     'import' => [
         'application.models.*',
         'application.components.*',
-        'application.vendor.vernes.YiiMailer.YiiMailer'
+        'application.vendor.vernes.YiiMailer.YiiMailer',
+        'bootstrap.behaviors.*',
+        'bootstrap.helpers.*',
+        'bootstrap.widgets.*',
     ],
     'aliases' => [
         'Jsvrcek' => 'application.vendor.jsvrcek.ics.src.Jsvrcek',
+        'bootstrap' => 'application.vendor.drmabuse.yii-bootstrap-3-module',
     ],
     'modules' => $modules,
     'components' => [

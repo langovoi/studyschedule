@@ -20,14 +20,11 @@ class LogController extends Controller
 
     public function actionIndex()
     {
-        $criteria = new CDbCriteria();
-        $count = ActiveRecordLog::model()->count($criteria);
-        $pages = new CPagination($count);
-        $model = new ActiveRecordLog();
-        $criteria->order = 'creationdate DESC, id DESC';
-        $pages->pageSize = 10;
-        $pages->applyLimit($criteria);
-        $models = ActiveRecordLog::model()->findAll($criteria);
-        $this->render('list', ['models' => $models, 'model' => $model, 'pages' => $pages]);
+        $dataProvider = new CActiveDataProvider('ActiveRecordLog', [
+            'sort' => [
+                'defaultOrder' => 'creationdate DESC, id DESC',
+            ]
+        ]);
+        $this->render('list', ['dataProvider' => $dataProvider]);
     }
 }
