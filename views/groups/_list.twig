@@ -1,0 +1,47 @@
+{{ void(this.widget('bootstrap.widgets.BsGridView', {
+'dataProvider': dataProvider,
+'filter': model,
+'type': constant('BsHtml::GRID_TYPE_STRIPED'),
+'columns': [
+{
+'name': 'number'
+},
+{
+'name': 'owner_id',
+'value': '$data->owner_id ? $data->owner->username : "-"',
+'filter': C.Html.listData(model.model('Users').findAll(), 'id', 'username')
+},
+{
+'class': 'BsButtonColumn',
+'template': '{schedule} {replaces} {moderators} {update} {delete}',
+'buttons': {
+'schedule' : {
+'label': '<span class="glyphicon glyphicon-calendar"></span> Расписание',
+'url': 'Yii::app()->createUrl("group/schedule", array("id"=>$data->number))',
+'options': {'class': 'btn btn-sm btn-default'}
+},
+'replaces' : {
+'label': '<span class="glyphicon glyphicon-indent-left"></span> Замены',
+'url': 'Yii::app()->createUrl("group/replaces", array("id"=>$data->number))',
+'options': {'class': 'btn btn-sm btn-default'}
+},
+'moderators' : {
+'label': '<span class="glyphicon glyphicon-user"></span> Модераторы',
+'url': 'Yii::app()->createUrl("group/moderators", array("id"=>$data->number))',
+'options': {'class': 'btn btn-sm btn-default'}
+},
+'update' : {
+'label': '<span class="glyphicon glyphicon-pencil"></span>',
+'url': 'Yii::app()->createUrl("groups/update", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-default'}
+},
+'delete' : {
+'label': '<span class="glyphicon glyphicon-trash"></span>',
+'url': 'Yii::app()->createUrl("groups/delete", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-danger'},
+'click': 'true',
+}
+}
+}
+]
+})) }}

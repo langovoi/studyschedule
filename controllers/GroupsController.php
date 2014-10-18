@@ -19,10 +19,15 @@ class GroupsController extends Controller
 
     public function actionIndex()
     {
-        $teachers = new Group();
-        $teachers = $teachers->findAll();
-        $model = new Group;
-        $this->render('list', ['groups' => $teachers, 'model' => $model]);
+        $dataProvider = new CActiveDataProvider('Group');
+        $model = new Group('search');
+        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+            $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        else {
+            $model->setAttributes(Yii::app()->request->getParam('Group'));
+            $dataProvider = $model->search();
+            $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        }
     }
 
     public function actionUpdate($id)
