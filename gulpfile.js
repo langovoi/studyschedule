@@ -8,7 +8,6 @@ var sass = require('gulp-sass');
 var es = require('event-stream');
 
 var bower_js = [
-    './bower_components/jquery/dist/jquery.js',
     './bower_components/bootstrap/dist/js/bootstrap.js',
     './bower_components/select2/select2.js',
     './bower_components/select2/select2_locale_ru.js',

@@ -11,9 +11,8 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-
                 <div class="table-responsive">
-                    {{ void(this.widget('bootstrap.widgets.BsGridView', {'dataProvider': dataProvider})) }}
+                    {% include '/views/icsanalytics/_list.twig' %}
                 </div>
             </div>
         </div>

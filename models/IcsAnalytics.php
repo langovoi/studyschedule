@@ -61,10 +61,10 @@ class IcsAnalytics extends CActiveRecord
         $criteria = new CDbCriteria;
 
         $criteria->compare('id', $this->id);
-        $criteria->compare('ip', $this->ip, true);
+        $criteria->compare('ip', $this->ip);
         $criteria->compare('useragent', $this->useragent, true);
-        $criteria->compare('group', $this->group, true);
-        $criteria->compare('unique_id', $this->unique_id, true);
+        $criteria->compare('group', $this->group);
+        $criteria->compare('unique_id', $this->unique_id);
         $criteria->compare('time', $this->time, true);
 
         return new CActiveDataProvider($this, [

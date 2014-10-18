@@ -1,0 +1,12 @@
+{{ void(this.widget('bootstrap.widgets.BsGridView', {
+'dataProvider': dataProvider,
+'filter': model,
+'type': constant('BsHtml::GRID_TYPE_STRIPED'),
+'columns': [
+'ip',
+'useragent',
+'time',
+'group',
+'unique_id'
+]
+})) }}

@@ -25,6 +25,13 @@ class IcsAnalyticsController extends Controller
                 'defaultOrder' => 'time DESC, id DESC',
             ]
         ]);
-        $this->render('list', ['dataProvider' => $dataProvider]);
+        $model = new IcsAnalytics('search');
+        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+            $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        else {
+            $model->setAttributes(Yii::app()->request->getParam('IcsAnalytics'));
+            $dataProvider = $model->search();
+            $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        }
     }
 }
