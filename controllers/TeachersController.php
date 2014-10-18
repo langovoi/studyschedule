@@ -28,13 +28,7 @@ class TeachersController extends Controller
     public function actionUpdate($id)
     {
         $model = new Teachers();
-        $users = new Users();
-        $users = $users->findAll();
-        $users_list = [];
-        $users_list[''] = '-';
-        foreach ($users as $user) {
-            $users_list[$user->id] = $user->username;
-        }
+        $users_list = CHtml::listData(Users::model()->findAll(), 'id', 'username');
         if ($model = $model->findByPk($id)) {
             if (Yii::app()->user->checkAccess('admin') || $model->owner_id == Yii::app()->user->id) {
                 if (Yii::app()->request->isPostRequest) {
@@ -57,13 +51,7 @@ class TeachersController extends Controller
     public function actionCreate()
     {
         $model = new Teachers('insert');
-        $users = new Users();
-        $users = $users->findAll();
-        $users_list = [];
-        $users_list[''] = '-';
-        foreach ($users as $user) {
-            $users_list[$user->id] = $user->username;
-        }
+        $users_list = CHtml::listData(Users::model()->findAll(), 'id', 'username');
         if (Yii::app()->request->isPostRequest) {
             $classroom = Yii::app()->request->getParam('Teachers');
             $model->setAttributes($classroom);

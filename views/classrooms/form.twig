@@ -28,7 +28,7 @@
                 {% if App.user.checkAccess('admin') %}
                     <div class="form-group">
                         {{ form.label(model, 'owner_id') }}
-                        {{ form.dropDownList(model, 'owner_id', users_list, {'class': 'form-control', 'placeholder': model.attributeLabels().owner_id }) }}
+                        {{ form.dropDownList(model, 'owner_id', users_list, {'class': 'form-control', 'placeholder': model.attributeLabels().owner_id, 'empty': '-' }) }}
                     </div>
                     {{ form.error(model, 'owner_id') }}
                 {% endif %}

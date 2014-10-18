@@ -27,9 +27,7 @@ class ScheduleController extends Controller
         $current_time = strtotime($current_date);
         if ($current_time < strtotime($semester->start_date) || $current_time > strtotime($semester->end_date))
             throw new CHttpException(404, 'Сейчас нет семестра :-(');
-        $group_list = [];
-        foreach (Group::model()->findAll() as $group_model)
-            $group_list[$group_model->number] = $group_model->number;
+        $group_list = CHtml::listData(Group::model()->findAll(), 'number', 'number');
 
         $schedule = [];
         if ($group) {

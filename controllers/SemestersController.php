@@ -28,13 +28,7 @@ class SemestersController extends Controller
     public function actionUpdate($id)
     {
         $model = new Semesters();
-        $call_lists = new CallLists();
-        $call_lists = $call_lists->findAll();
-        $call_lists_array = [];
-        $call_lists_array[''] = 'Выберите список';
-        foreach ($call_lists as $call_list) {
-            $call_lists_array[$call_list->id] = $call_list->name;
-        }
+        $call_lists = CHtml::listData(CallLists::model()->findAll(), 'id', 'name');
         if ($model = $model->findByPk($id)) {
             if (Yii::app()->request->isPostRequest) {
                 $semester = Yii::app()->request->getParam('Semesters');
@@ -44,7 +38,7 @@ class SemestersController extends Controller
                     $this->redirect(['index']);
                 }
             }
-            $this->render('form', ['model' => $model, 'call_lists' => $call_lists_array]);
+            $this->render('form', ['model' => $model, 'call_lists' => $call_lists]);
         } else
             throw new CHttpException(404, 'Семестр не найден');
     }
@@ -52,14 +46,7 @@ class SemestersController extends Controller
     public function actionCreate()
     {
         $model = new Semesters('insert');
-        $call_lists = new CallLists();
-        $call_lists = $call_lists->findAll();
-        $call_lists_array = [];
-        $call_lists_array[''] = 'Выберите список';
-        foreach ($call_lists as $call_list) {
-            $call_lists_array[$call_list->id] = $call_list->name;
-        }
-
+        $call_lists = CHtml::listData(CallLists::model()->findAll(), 'id', 'name');
         if (Yii::app()->request->isPostRequest) {
             $semester = Yii::app()->request->getParam('Semesters');
             $model->setAttributes($semester);
@@ -68,7 +55,7 @@ class SemestersController extends Controller
                 $this->redirect(['index']);
             }
         }
-        $this->render('form', ['model' => $model, 'call_lists' => $call_lists_array]);
+        $this->render('form', ['model' => $model, 'call_lists' => $call_lists]);
     }
 
     public function actionDelete($id, $confirm = 0)

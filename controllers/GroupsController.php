@@ -33,13 +33,7 @@ class GroupsController extends Controller
     public function actionUpdate($id)
     {
         $model = new Group();
-        $users = new Users();
-        $users = $users->findAll();
-        $users_list = [];
-        $users_list[''] = '-';
-        foreach ($users as $user) {
-            $users_list[$user->id] = $user->username;
-        }
+        $users_list = CHtml::listData(Users::model()->findAll(), 'id', 'username');
         if ($model = $model->findByPk($id)) {
             if (Yii::app()->request->isPostRequest) {
                 $model->setAttributes(Yii::app()->request->getParam('Group'));
@@ -56,13 +50,7 @@ class GroupsController extends Controller
     public function actionCreate()
     {
         $model = new Group('insert');
-        $users = new Users();
-        $users = $users->findAll();
-        $users_list = [];
-        $users_list[''] = '-';
-        foreach ($users as $user) {
-            $users_list[$user->id] = $user->username;
-        }
+        $users_list = CHtml::listData(Users::model()->findAll(), 'id', 'username');
         if (Yii::app()->request->isPostRequest) {
             $group = Yii::app()->request->getParam('Group');
             $model->setAttributes($group);

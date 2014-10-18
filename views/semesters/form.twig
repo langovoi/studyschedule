@@ -42,12 +42,12 @@
                 {{ form.error(model, 'end_date') }}
                 <div class="form-group">
                     {{ form.label(model, 'call_list') }}
-                    {{ form.dropDownList(model, 'call_list', call_lists, {'class': 'form-control', 'placeholder': model.attributeLabels().call_list }) }}
+                    {{ form.dropDownList(model, 'call_list', call_lists, {'class': 'form-control', 'placeholder': model.attributeLabels().call_list, 'empty': '-' }) }}
                 </div>
                 {{ form.error(model, 'call_list') }}
                 <div class="form-group">
                     {{ form.label(model, 'call_list_short') }}
-                    {{ form.dropDownList(model, 'call_list_short', call_lists, {'class': 'form-control', 'placeholder': model.attributeLabels().call_list_short }) }}
+                    {{ form.dropDownList(model, 'call_list_short', call_lists, {'class': 'form-control', 'placeholder': model.attributeLabels().call_list_short, 'empty': '-' }) }}
                 </div>
                 {{ form.error(model, 'call_list_short') }}
                 <div class="form-group text-center">

@@ -86,18 +86,11 @@ class GroupController extends Controller
                 $this->redirect(['schedule', 'id' => self::$group->number]);
             }
         }
-        $classrooms = ['' => '-'];
-        $subjects = ['' => '-'];
-        $teachers = ['' => '-'];
-        foreach (Classrooms::model()->byName()->findAll() as $classroom) {
-            $classrooms[$classroom->id] = $classroom->name;
-        }
-        foreach (Subjects::model()->byName()->findAll() as $subject) {
-            $subjects[$subject->id] = $subject->name;
-        }
-        foreach (Teachers::model()->byLastName()->findAll() as $teacher) {
-            $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
-        }
+        $classrooms = CHtml::listData(Classrooms::model()->byName()->findAll(), 'id', 'name');
+        $subjects = CHtml::listData(Subjects::model()->byName()->findAll(), 'id', 'name');
+        $teachers = CHtml::listData(Teachers::model()->byLastName()->findAll(), 'id', function ($model) {
+            return join(' ', [$model->lastname, $model->firstname, $model->middlename]);
+        });
         $numbers = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
         if (($elements = ScheduleElement::model()->findAllByAttributes(['group_id' => self::$group->id, 'week_number' => $week_number, 'week_day' => $week_day, 'semester_id' => $semester->id])))
             foreach ($elements as $element) {
@@ -129,18 +122,11 @@ class GroupController extends Controller
                 $this->redirect(['schedule', 'id' => self::$group->number]);
             }
         }
-        $classrooms = ['' => '-'];
-        $subjects = ['' => '-'];
-        $teachers = ['' => '-'];
-        foreach (Classrooms::model()->byName()->findAll() as $classroom) {
-            $classrooms[$classroom->id] = $classroom->name;
-        }
-        foreach (Subjects::model()->byName()->findAll() as $subject) {
-            $subjects[$subject->id] = $subject->name;
-        }
-        foreach (Teachers::model()->byLastName()->findAll() as $teacher) {
-            $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
-        }
+        $classrooms = CHtml::listData(Classrooms::model()->byName()->findAll(), 'id', 'name');
+        $subjects = CHtml::listData(Subjects::model()->byName()->findAll(), 'id', 'name');
+        $teachers = CHtml::listData(Teachers::model()->byLastName()->findAll(), 'id', function ($model) {
+            return join(' ', [$model->lastname, $model->firstname, $model->middlename]);
+        });
         $numbers = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
         if (($elements = ScheduleElement::model()->findAllByAttributes(['group_id' => self::$group->id, 'week_number' => $model->week_number, 'week_day' => $model->week_day, 'semester_id' => $semester->id])))
             foreach ($elements as $element) {
@@ -234,20 +220,12 @@ class GroupController extends Controller
     public function actionCreateReplace()
     {
         $model = new GroupReplace();
-        $classrooms = ['' => '-'];
-        $subjects = ['' => '-'];
-        $teachers = ['' => '-'];
+        $classrooms = CHtml::listData(Classrooms::model()->byName()->findAll(), 'id', 'name');
+        $subjects = CHtml::listData(Subjects::model()->byName()->findAll(), 'id', 'name');
+        $teachers = CHtml::listData(Teachers::model()->byLastName()->findAll(), 'id', function ($model) {
+            return join(' ', [$model->lastname, $model->firstname, $model->middlename]);
+        });
         $semester = Semesters::model()->byStartDate()->find();
-        foreach (Classrooms::model()->byName()->findAll() as $classroom) {
-            $classrooms[$classroom->id] = $classroom->name;
-        }
-        foreach (Subjects::model()->byName()->findAll() as $subject) {
-            $subjects[$subject->id] = $subject->name;
-        }
-        foreach (Teachers::model()->byLastName()->findAll() as $teacher) {
-            $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
-        }
-
         if (Yii::app()->request->isPostRequest) {
             $replace = Yii::app()->request->getParam('GroupReplace');
             $model->setAttributes($replace);
@@ -268,19 +246,12 @@ class GroupController extends Controller
             throw new CHttpException(404, 'Замена не найдена');
         if (strtotime($model->date) < strtotime(date('Y-m-d')))
             throw new CHttpException(403, 'Нельзя редактировать старую замену!');
-        $classrooms = ['' => '-'];
-        $subjects = ['' => '-'];
-        $teachers = ['' => '-'];
+        $classrooms = CHtml::listData(Classrooms::model()->byName()->findAll(), 'id', 'name');
+        $subjects = CHtml::listData(Subjects::model()->byName()->findAll(), 'id', 'name');
+        $teachers = CHtml::listData(Teachers::model()->byLastName()->findAll(), 'id', function ($model) {
+            return join(' ', [$model->lastname, $model->firstname, $model->middlename]);
+        });
         $semester = Semesters::model()->byStartDate()->find();
-        foreach (Classrooms::model()->byName()->findAll() as $classroom) {
-            $classrooms[$classroom->id] = $classroom->name;
-        }
-        foreach (Subjects::model()->byName()->findAll() as $subject) {
-            $subjects[$subject->id] = $subject->name;
-        }
-        foreach (Teachers::model()->byLastName()->findAll() as $teacher) {
-            $teachers[$teacher->id] = join(' ', [$teacher->lastname, $teacher->firstname, $teacher->middlename]);
-        }
         if (Yii::app()->request->isPostRequest) {
             $replace = Yii::app()->request->getParam('GroupReplace');
             $model->setAttributes($replace);

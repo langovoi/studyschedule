@@ -31,12 +31,12 @@
                 {{ form.error(model, 'subject_id') }}
                 <div class="form-group">
                     {{ form.label(model, 'teacher_id') }}
-                    {{ form.dropDownList(model, 'teacher_id', teachers, {'class': 'form-control js-select2', 'placeholder': model.attributeLabels().teacher_id }) }}
+                    {{ form.dropDownList(model, 'teacher_id', teachers, {'class': 'form-control js-select2', 'placeholder': model.attributeLabels().teacher_id, 'empty': '-' }) }}
                 </div>
                 {{ form.error(model, 'teacher_id') }}
                 <div class="form-group">
                     {{ form.label(model, 'classroom_id') }}
-                    {{ form.dropDownList(model, 'classroom_id', classrooms, {'class': 'form-control js-select2', 'placeholder': model.attributeLabels().classroom_id }) }}
+                    {{ form.dropDownList(model, 'classroom_id', classrooms, {'class': 'form-control js-select2', 'placeholder': model.attributeLabels().classroom_id, 'empty': '-' }) }}
                 </div>
                 {{ form.error(model, 'classroom_id') }}
                 <div class="form-group text-center">

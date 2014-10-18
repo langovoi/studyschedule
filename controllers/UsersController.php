@@ -21,11 +21,9 @@ class UsersController extends Controller
     {
         $users = new Users();
         $users = $users->findAll();
-        $users_rights = [];
-        $auth_manager = Yii::app()->authManager;
-        foreach ($users as $user) {
-            $users_rights[$user->id] = $auth_manager->getAuthAssignments($user->id);
-        }
+        $users_rights = CHtml::listData(Users::model()->findAll(), 'id', function ($model) {
+            return Yii::app()->authManager->getAuthAssignments($model->id);
+        });
         $model = new Users;
         $this->render('list', ['users' => $users, 'model' => $model, 'users_rights' => $users_rights]);
     }

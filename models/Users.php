@@ -39,6 +39,8 @@ class Users extends CActiveRecord
             ['username, email', 'unique', 'except' => 'login'],
             ['email', 'email', 'except' => 'login'],
             ['username', 'length', 'max' => 120],
+            ['username', 'unique', 'except' => 'login'],
+            ['username', 'match', 'pattern' => '/^[A-Za-z0-9]+$/', 'message' => 'Логин может состоять только из латиницы и цифр'],
             ['email', 'length', 'max' => 255],
             ['password', 'length', 'max' => 32],
             ['id, username, email', 'safe', 'on' => 'search'],
