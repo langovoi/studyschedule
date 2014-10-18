@@ -3,12 +3,18 @@
 'filter': model,
 'type': constant('BsHtml::GRID_TYPE_STRIPED'),
 'columns': [
-'action',
+{
+    'name': 'action',
+    'filter': {'CREATE': 'CREATE', 'UPDATE': 'UPDATE', 'DELETE': 'DELETE'}
+},
 'description',
 'model',
 'idModel',
 'field',
-'userid',
+{
+    'name': 'userid',
+    'value': '($user = Users::model()->findByPk($data->userid)) ? $user->username . " (".$data->userid.")" : $data->id'
+},
 'creationdate',
 ]
 })) }}
