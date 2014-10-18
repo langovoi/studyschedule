@@ -1,6 +1,7 @@
 {{ void(this.widget('bootstrap.widgets.BsGridView', {
 'dataProvider': dataProvider,
 'filter': model,
+'template':'{summary} {pager} {items} {pager}',
 'type': constant('BsHtml::GRID_TYPE_STRIPED'),
 'columns': [
 {
