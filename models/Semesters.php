@@ -48,11 +48,11 @@ class Semesters extends CActiveRecord
 
     public function dateCheck($attribute)
     {
-        /** @var Semesters $semester */
-        $semester = Semesters::model()->byStartDate()->find();
         $time = strtotime($this->$attribute);
         if ($time < strtotime(date('Y-m-d'))) {
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
+        } elseif(($semester = Semesters::model()->find('start_date <= :date AND end_date >= :date', [':date' => $this->$attribute]))) {
+            $this->addError($attribute, 'Уже есть семестр который перекрывают данную дату');
         }
     }
 
