@@ -36,7 +36,7 @@ class ScheduleController extends Controller
                 $week_day = date('N', $i);
                 $date = date('d.n.Y', $i);
                 /** @var Holiday $holiday */
-                if ($week_day == 7 || ($holiday = Holiday::model()->findByAttributes(['date' => date('Y-m-d', $i)]))) {
+                if (($holiday = Holiday::model()->findByAttributes(['date' => date('Y-m-d', $i)])) || $week_day == 7) {
                     $schedule[$date] = ['holiday' => true];
                     if($holiday)
                         $schedule[$date]['name'] = $holiday->name;
