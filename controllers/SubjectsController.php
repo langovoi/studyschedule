@@ -30,6 +30,9 @@ class SubjectsController extends Controller
         else {
             $model->setAttributes(Yii::app()->request->getParam('Subjects'));
             $dataProvider = $model->search();
+            $dataProvider->setSort([
+                'defaultOrder' => 'name ASC',
+            ]);
             $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
         }
     }

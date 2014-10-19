@@ -31,6 +31,9 @@ class LogController extends Controller
         else {
             $model->setAttributes(Yii::app()->request->getParam('ActiveRecordLog'));
             $dataProvider = $model->search();
+            $dataProvider->setSort([
+                'defaultOrder' => 'creationdate DESC, id DESC',
+            ]);
             $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
         }
     }

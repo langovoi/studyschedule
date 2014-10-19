@@ -31,6 +31,9 @@ class IcsAnalyticsController extends Controller
         else {
             $model->setAttributes(Yii::app()->request->getParam('IcsAnalytics'));
             $dataProvider = $model->search();
+            $dataProvider->setSort([
+                'defaultOrder' => 'time DESC, id DESC',
+            ]);
             $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
         }
     }

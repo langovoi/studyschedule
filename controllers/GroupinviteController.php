@@ -30,6 +30,9 @@ class GroupInviteController extends Controller
         else {
             $model->setAttributes(Yii::app()->request->getParam('Invite'));
             $dataProvider = $model->search();
+            $dataProvider->setSort([
+                'defaultOrder' => 'time DESC',
+            ]);
             $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
         }
     }

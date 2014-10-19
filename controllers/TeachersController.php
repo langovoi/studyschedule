@@ -30,6 +30,9 @@ class TeachersController extends Controller
         else {
             $model->setAttributes(Yii::app()->request->getParam('Teachers'));
             $dataProvider = $model->search();
+            $dataProvider->setSort([
+                'defaultOrder' => 'lastname ASC, firstname ASC, middlename ASC',
+            ]);
             $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
         }
     }
