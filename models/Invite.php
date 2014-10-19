@@ -7,11 +7,17 @@
  * @property string $email
  * @property string $text
  * @property string $time
+ * @property string $hash
  * @property integer $status
  */
 class Invite extends CActiveRecord
 {
     public $captcha;
+
+    const INVITE_ACCEPT = 1;
+    const INVITE_CREATE = 0;
+    const INVITE_USED = 2;
+    const INVITE_DECLINE = -1;
 
     /**
      * @return string
@@ -32,16 +38,25 @@ class Invite extends CActiveRecord
             ['group_number, status', 'numerical', 'integerOnly' => true],
             ['group_number', 'groupCheck'],
             ['email', 'email'],
+            ['email', 'emailCheck'],
             ['captcha', 'captcha', 'captchaAction' => 'help/captcha', 'on' => 'insert'],
-            ['time', 'safe'],
+            ['time, hash', 'safe'],
             ['id, group_number, name, email, text, status', 'safe', 'on' => 'search'],
         ];
     }
 
+    public function emailCheck($attribute)
+    {
+        if (Users::model()->findByAttributes(['email' => $this->$attribute]))
+            $this->addError($attribute, 'Данная почта уже занята в системе');
+    }
+
     public function beforeSave()
     {
-        if ($this->getScenario() == 'insert')
+        if ($this->getScenario() == 'insert') {
             $this->setAttribute('time', date("Y-m-d H:i:s"));
+            $this->setAttribute('hash', md5($this->email . $this->group_number . uniqid()));
+        }
         return parent::beforeSave();
     }
 

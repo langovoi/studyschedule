@@ -8,8 +8,30 @@
 'email',
 'group_number',
 {
-    'name': 'text',
-    'filter': false
+'name': 'text',
+'filter': false
 },
+{
+'name': 'status',
+'value': '$data->status == 1 ? "Одобрена" : ($data->status == 0 ? "В обработке" : "Отклонена")'
+},
+{
+'class': 'BsButtonColumn',
+'template': '{accept} {decline}',
+'buttons': {
+'accept' : {
+'label': '<span class="glyphicon glyphicon-ok"></span>',
+'url': 'Yii::app()->createUrl("groupinvite/accept", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-success'},
+'visible': '$data->status == 0',
+},
+'decline' : {
+'label': '<span class="glyphicon glyphicon-remove"></span>',
+'url': 'Yii::app()->createUrl("groupinvite/decline", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-danger'},
+'visible': '$data->status == 0',
+},
+}
+}
 ]
 })) }}

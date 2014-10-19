@@ -25,6 +25,16 @@
                     {{ form.passwordField(model, 'password', {'class': 'form-control', 'placeholder': model.attributeLabels().password }) }}
                 </div>
                 {{ form.error(model, 'password') }}
+                <div class="form-group">
+                    {{ form.label(model, 'firstname') }}
+                    {{ form.textField(model, 'firstname', {'class': 'form-control', 'placeholder': model.attributeLabels().firstname }) }}
+                </div>
+                {{ form.error(model, 'firstname') }}
+                <div class="form-group">
+                    {{ form.label(model, 'lastname') }}
+                    {{ form.textField(model, 'lastname', {'class': 'form-control', 'placeholder': model.attributeLabels().lastname }) }}
+                </div>
+                {{ form.error(model, 'lastname') }}
                 <div class="form-group text-center">
                     {{ C.Html.submitButton('Зарегистрироваться', {'class': 'btn btn-success'}) }}
                 </div>

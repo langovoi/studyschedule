@@ -71,9 +71,14 @@ class SiteController extends Controller
             throw new CHttpException(403);
     }
 
-    public function actionInvite($hash)
+    public function actionInvite($hash, $type = 1)
     {
-        $invite = GroupInvite::model()->with('group')->findByAttributes(['status' => 0, 'hash' => $hash]);
+        if (!in_array($type, [1, 2]))
+            throw new CHttpException(404, 'Данный тип не существует');
+        if ($type == 1)
+            $invite = GroupInvite::model()->with('group')->findByAttributes(['status' => GroupInvite::INVITE_CREATE, 'hash' => $hash]);
+        else
+            $invite = Invite::model()->findByAttributes(['status' => Invite::INVITE_ACCEPT, 'hash' => $hash]);
         if (!$invite)
             throw new CHttpException(404, 'Данное приглашение не найдено или было отменено');
         $model = new Users();
@@ -85,19 +90,34 @@ class SiteController extends Controller
                 'password' => md5($user['password'])
             ]);
             if ($model->save()) {
+                Yii::app()->authManager->assign('user', $model->id);
                 $user_identity = new UserIdentity($model->username, $model->password);
                 $user_identity->authenticate();
                 Yii::app()->user->login($user_identity, 60 * 60 * 24 * 7);
-                $invite->setAttribute('status', GroupInvite::INVITE_ACCEPT);
-                $invite->save();
-                $group_member = new GroupMember();
-                $group_member->setAttributes([
-                    'group_id' => $invite->group_id,
-                    'user_id' => $model->id
-                ]);
-                Yii::app()->authManager->assign('user', $model->id);
-                $group_member->save();
-                $this->redirect(['site/index']);
+                switch ($type) {
+                    case 1: {
+                        $invite->setAttribute('status', GroupInvite::INVITE_ACCEPT);
+                        $invite->save();
+                        $group_member = new GroupMember();
+                        $group_member->setAttributes([
+                            'group_id' => $invite->group_id,
+                            'user_id' => $model->id
+                        ]);
+                        $group_member->save();
+                        break;
+                    }
+                    case 2: {
+                        $invite->setAttribute('status', Invite::INVITE_USED);
+                        $invite->save();
+                        $group = new Group();
+                        $group->setAttributes([
+                            'number' => $invite->group_number,
+                            'owner_id' => $model->id
+                        ]);
+                        $group->save();
+                    }
+                }
+                $this->redirect(['site/dashboard']);
             }
         }
         $this->render('invite', ['model' => $model]);
