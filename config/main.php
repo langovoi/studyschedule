@@ -80,6 +80,6 @@ return [
     ],
     'params' => [
         'YiiMailer' => $mail,
-        'adminEmail' => 'webmaster@example.com',
+        'adminEmail' => 'marklangovoi@gmail.com',
     ],
 ];

@@ -1,0 +1,50 @@
+{% extends '/views/layouts/main.twig' %}
+{% block title %}Обратная связь{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                {% include '/views/particle/notice.twig' %}
+                {% set form = this.beginWidget('CActiveForm',
+                {
+                'errorMessageCssClass': 'alert alert-danger'
+                }) %}
+                <div class="form-group text-center">
+                    <h1>Обратная связь</h1>
+                </div>
+                {% include '/views/particle/notice.twig' %}
+                <div class="form-group">
+                    {{ form.label(model, 'name') }}
+                    {{ form.textField(model, 'name', {'class': 'form-control', 'placeholder': model.attributeLabels().name }) }}
+                </div>
+                {{ form.error(model, 'name') }}
+                <div class="form-group">
+                    {{ form.label(model, 'email') }}
+                    {{ form.emailField(model, 'email', {'class': 'form-control', 'placeholder': model.attributeLabels().email }) }}
+                </div>
+                {{ form.error(model, 'email') }}
+                <div class="form-group">
+                    {{ form.label(model, 'subject') }}
+                    {{ form.textField(model, 'subject', {'class': 'form-control', 'placeholder': model.attributeLabels().subject }) }}
+                </div>
+                {{ form.error(model, 'subject') }}
+                <div class="form-group">
+                    {{ form.label(model, 'text') }}
+                    {{ form.textArea(model, 'text', {'class': 'form-control', 'placeholder': model.attributeLabels().text, 'style': 'resize: vertical;' })  }}
+                </div>
+                {{ form.error(model, 'text') }}
+                <div class="form-group">
+                    {{ form.label(model, 'captcha') }}
+                    {{ form.textField(model, 'captcha', {'class': 'form-control', 'placeholder': model.attributeLabels().captcha }) }}
+                    {{ void(this.widget('CCaptcha')) }}
+                </div>
+                {{ form.error(model, 'captcha') }}
+                <div class="form-group text-center">
+                    {{ C.Html.submitButton('Отправить', {'class': 'btn btn-success'}) }}
+                </div>
+                {{ void(this.endWidget()) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

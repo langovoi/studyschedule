@@ -6,6 +6,8 @@
  * @property string $username
  * @property string $email
  * @property string $password
+ * @property string $fistname
+ * @property string $lastname
  * @property array $groups
  */
 class Users extends CActiveRecord
@@ -37,7 +39,7 @@ class Users extends CActiveRecord
     public function rules()
     {
         return [
-            ['username, email, password', 'required', 'except' => 'login, change_password'],
+            ['username, email, password, firstname, lastname', 'required', 'except' => 'login, change_password'],
             ['username, email', 'unique', 'except' => 'login, change_password'],
             ['email', 'email', 'except' => 'login,change_password'],
             ['username', 'length', 'max' => 120],
@@ -83,6 +85,8 @@ class Users extends CActiveRecord
             'new_password' => 'Новый пароль',
             'repeat_password' => 'Повторите пароль',
             'groups' => 'Группа',
+            'firstname' => 'Имя',
+            'lastname' => 'Фамилия',
         ];
     }
 

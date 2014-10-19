@@ -36,6 +36,16 @@
                 </div>
                 {{ form.error(model, 'email') }}
                 <div class="form-group">
+                    {{ form.label(model, 'firstname') }}
+                    {{ form.textField(model, 'firstname', {'class': 'form-control', 'placeholder': model.attributeLabels().firstname }) }}
+                </div>
+                {{ form.error(model, 'firstname') }}
+                <div class="form-group">
+                    {{ form.label(model, 'lastname') }}
+                    {{ form.textField(model, 'lastname', {'class': 'form-control', 'placeholder': model.attributeLabels().lastname }) }}
+                </div>
+                {{ form.error(model, 'lastname') }}
+                <div class="form-group">
                     {{ C.Html.label('Группа',get_class(model) ~'[rights]') }}
                     {{ C.Html.dropDownList(get_class(model) ~'[rights]', user_right, auth_items, {'class': 'form-control', 'placeholder': 'Группа' }) }}
                 </div>

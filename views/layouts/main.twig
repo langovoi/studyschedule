@@ -11,7 +11,7 @@
 <body>
 {% include 'views/particle/menu.twig' %}
 {% block content %}{% endblock %}
-<footer><a href="http://vk.com/marklangovoi" target="_blank">Марк Ланговой</a> &copy; {% if "now"|date('Y') != 2014 %}2014-{{ "now"|date('Y') }}{% else %}{{ "now"|date('Y') }}{% endif %}</footer>
+<footer><a href="{{ App.createUrl('feedback') }}">Обратная связь</a> | Создал <a href="http://vk.com/marklangovoi" target="_blank">Марк Ланговой</a> &copy; {% if "now"|date('Y') != 2014 %}2014-{{ "now"|date('Y') }}{% else %}{{ "now"|date('Y') }}{% endif %}</footer>
 {% if constant('YII_DEBUG') == 0 %}
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">

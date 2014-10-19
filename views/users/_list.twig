@@ -6,9 +6,11 @@
 'columns': [
 'username',
 'email',
+'firstname',
+'lastname',
 {
-    'header': 'Группа',
-    'value': 'count($data->groups) ? join(", ", array_keys($data->groups)) : "Нет"'
+'header': 'Группа',
+'value': 'count($data->groups) ? join(", ", array_keys($data->groups)) : "Нет"'
 },
 {
 'class': 'BsButtonColumn',
