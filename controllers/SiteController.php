@@ -29,7 +29,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $this->render('index');
+        /** @var Semesters $semester */
+        $semester = Semesters::model()->byStartDate()->find();
+        $this->render('index', ['group_count' => Group::model()->count(), 'replace_count' => GroupReplace::model()->count('date >= :start_semester AND date <= :end_semester', [':start_semester' => $semester->start_date, ':end_semester' => $semester->end_date]), 'ics_count' => IcsAnalytics::model()->count('time LIKE :date', [':date' => date('Y-m-d') . '%'])]);
     }
 
     public function actionError()

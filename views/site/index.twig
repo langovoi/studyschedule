@@ -36,5 +36,21 @@
                 </p>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Статистика</h2>
+            </div>
+        </div>
+        <!--noindex-->
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    <b>Количество групп в системе:</b> {{ group_count }} <br />
+                    <b>Количество замен, в этом семестре:</b> {{ replace_count }} <br />
+                    <b>Количество запросов к расписанию, за сегодня:</b> {{ ics_count }} <br />
+                </p>
+            </div>
+        </div>
+        <!--/noindex-->
     </div>
 {% endblock %}
