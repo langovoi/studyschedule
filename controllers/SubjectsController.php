@@ -19,10 +19,19 @@ class SubjectsController extends Controller
 
     public function actionIndex()
     {
-        $subjects = new Subjects();
-        $subjects = $subjects->findAll();
-        $model = new Subjects();
-        $this->render('list', ['subjects' => $subjects, 'model' => $model]);
+        $dataProvider = new CActiveDataProvider('Subjects', [
+            'sort' => [
+                'defaultOrder' => 'name ASC',
+            ]
+        ]);
+        $model = new Subjects('search');
+        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+            $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        else {
+            $model->setAttributes(Yii::app()->request->getParam('Subjects'));
+            $dataProvider = $model->search();
+            $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        }
     }
 
     public function actionUpdate($id)

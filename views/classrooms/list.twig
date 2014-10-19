@@ -22,48 +22,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                {% if classrooms|length %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                {% set labels = model.attributeLabels() %}
-                                {% for attribute,value in model.attributes %}
-                                    <th>{{ labels[attribute] }}</th>
-                                {% endfor %}
-                                <th>Действия</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for classroom in classrooms %}
-                                <tr>
-                                    {% for attribute,value in classroom.attributes %}
-                                        {% if attribute != 'owner_id' %}
-                                            <td>{{ value }}</td>
-                                        {% else %}
-                                            <td>{% if value %}{{ classroom.owner.username }}{% else %}-Нет-{% endif %}</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                    <td>
-                                        {% if App.user.checkAccess('admin') or classroom['owner_id'] and App.user.id == classroom.owner_id %}
-                                            <a href="{{ this.createUrl('update', {id: classroom.id}) }}"
-                                               class="btn btn-sm btn-default"><span
-                                                        class="glyphicon glyphicon-pencil"></span></a>
-                                            <a href="{{ this.createUrl('delete', {id: classroom.id}) }}"
-                                               class="btn btn-sm btn-danger"><span
-                                                        class="glyphicon glyphicon-trash"></span></a>
-                                        {% else %}
-                                            Нет доступа
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="alert alert-warning">Нет кабинетов</div>
-                {% endif %}
+                {% include '/views/classrooms/_list.twig' %}
             </div>
         </div>
     </div>

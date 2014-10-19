@@ -19,10 +19,19 @@ class TeachersController extends Controller
 
     public function actionIndex()
     {
-        $teachers = new Teachers();
-        $teachers = $teachers->byLastName()->findAll();
-        $model = new Teachers;
-        $this->render('list', ['teachers' => $teachers, 'model' => $model]);
+        $dataProvider = new CActiveDataProvider('Teachers', [
+            'sort' => [
+                'defaultOrder' => 'lastname ASC, firstname ASC, middlename ASC',
+            ]
+        ]);
+        $model = new Teachers('search');
+        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+            $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        else {
+            $model->setAttributes(Yii::app()->request->getParam('Teachers'));
+            $dataProvider = $model->search();
+            $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        }
     }
 
     public function actionUpdate($id)

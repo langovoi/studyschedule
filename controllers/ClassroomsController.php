@@ -19,10 +19,19 @@ class ClassroomsController extends Controller
 
     public function actionIndex()
     {
-        $classroms = new Classrooms();
-        $classroms = $classroms->byName()->findAll();
-        $model = new Classrooms;
-        $this->render('list', ['classrooms' => $classroms, 'model' => $model]);
+        $dataProvider = new CActiveDataProvider('Classrooms', [
+            'sort' => [
+                'defaultOrder' => 'name ASC',
+            ]
+        ]);
+        $model = new Classrooms('search');
+        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+            $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        else {
+            $model->setAttributes(Yii::app()->request->getParam('Classrooms'));
+            $dataProvider = $model->search();
+            $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        }
     }
 
     public function actionUpdate($id)

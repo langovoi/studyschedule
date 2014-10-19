@@ -19,13 +19,15 @@ class UsersController extends Controller
 
     public function actionIndex()
     {
-        $users = new Users();
-        $users = $users->findAll();
-        $users_rights = CHtml::listData(Users::model()->findAll(), 'id', function ($model) {
-            return Yii::app()->authManager->getAuthAssignments($model->id);
-        });
-        $model = new Users;
-        $this->render('list', ['users' => $users, 'model' => $model, 'users_rights' => $users_rights]);
+        $dataProvider = new CActiveDataProvider('Users');
+        $model = new Users('search');
+        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+            $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        else {
+            $model->setAttributes(Yii::app()->request->getParam('Users'));
+            $dataProvider = $model->search();
+            $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        }
     }
 
     public function actionUpdate($id)

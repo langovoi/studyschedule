@@ -6,6 +6,7 @@
  * @property string $username
  * @property string $email
  * @property string $password
+ * @property array $groups
  */
 class Users extends CActiveRecord
 {
@@ -20,6 +21,7 @@ class Users extends CActiveRecord
     public $old_password;
     public $new_password;
     public $repeat_password;
+    public $groups = [];
 
     /**
      * @return string
@@ -80,7 +82,13 @@ class Users extends CActiveRecord
             'old_password' => 'Старый пароль',
             'new_password' => 'Новый пароль',
             'repeat_password' => 'Повторите пароль',
+            'groups' => 'Группа',
         ];
+    }
+
+    public function afterFind()
+    {
+        $this->groups = Yii::app()->authManager->getAuthAssignments($this->id);
     }
 
     /**
