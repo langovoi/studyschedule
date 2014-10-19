@@ -13,7 +13,7 @@
 },
 {
 'name': 'status',
-'value': '$data->status == 1 ? "Одобрена" : ($data->status == 0 ? "В обработке" : "Отклонена")'
+'value': '$data->status == 1 ? "Одобрена" : ($data->status == 0 ? "В обработке" : ($data->status == 2 ? "Активна" : "Отклонена"))'
 },
 {
 'class': 'BsButtonColumn',
