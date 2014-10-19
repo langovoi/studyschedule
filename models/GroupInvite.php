@@ -93,7 +93,7 @@ class GroupInvite extends CActiveRecord
     public function beforeSave()
     {
         if ($this->getScenario() == 'insert') {
-            $this->hash = md5($this->email . $this->group_id);
+            $this->hash = md5($this->email . $this->group_id . uniqid());
         }
         return parent::beforeSave();
     }
