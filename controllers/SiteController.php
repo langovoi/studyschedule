@@ -12,7 +12,7 @@ class SiteController extends Controller
     public function accessRules()
     {
         return [
-            ['allow', 'users' => ['*'], 'actions' => ['index', 'login', 'error', 'invite']],
+            ['allow', 'users' => ['*'], 'actions' => ['index', 'login', 'error', 'invite', 'captcha']],
             ['allow', 'users' => ['@'], 'actions' => ['logout', 'dashboard']],
             ['deny', 'users' => ['*']],
         ];

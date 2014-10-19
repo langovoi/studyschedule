@@ -18,6 +18,15 @@ class HelpController extends Controller
         ];
     }
 
+    public function actions()
+    {
+        return [
+            'captcha' => [
+                'class' => 'CCaptchaAction',
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $group_list = [];
@@ -34,6 +43,20 @@ class HelpController extends Controller
         if (!$group)
             throw new CHttpException(404, "Данной группы не найдено");
         $this->render('phone/' . $os, ['group' => $group]);
+    }
 
+    public function actionInvite()
+    {
+        $model = new Invite();
+        if (Yii::app()->request->isPostRequest) {
+            $params = Yii::app()->request->getParam('Invite');
+            $model->setAttributes($params);
+            $model->setAttribute('index.twigstatus', 0);
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'Ваше заявка отправлена, спасибо!');
+                $model->unsetAttributes();
+            }
+        }
+        $this->render('invite', ['model' => $model]);
     }
 }

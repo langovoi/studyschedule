@@ -1,0 +1,15 @@
+{{ void(this.widget('bootstrap.widgets.BsGridView', {
+'dataProvider': dataProvider,
+'template':'{summary} {pager} <div class="table table-responsive">{items}</div> {pager}',
+'type': constant('BsHtml::GRID_TYPE_STRIPED'),
+'columns': [
+'time',
+'name',
+'email',
+'group_number',
+{
+    'name': 'text',
+    'filter': false
+},
+]
+})) }}
