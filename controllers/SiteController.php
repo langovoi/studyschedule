@@ -12,19 +12,24 @@ class SiteController extends Controller
     public function accessRules()
     {
         return [
-            ['allow', 'users' => ['*'], 'actions' => ['login', 'error', 'invite']],
-            ['allow', 'users' => ['@'], 'actions' => ['logout', 'index']],
+            ['allow', 'users' => ['*'], 'actions' => ['index', 'login', 'error', 'invite']],
+            ['allow', 'users' => ['@'], 'actions' => ['logout', 'dashboard']],
             ['deny', 'users' => ['*']],
         ];
     }
 
-    public function actionIndex()
+    public function actionDashboard()
     {
         $groups = new Group();
         $groups = $groups->findAllByAttributes(['owner_id' => Yii::app()->user->getId()]);
         $groups_member = new GroupMember();
         $groups_member = $groups_member->findAllByAttributes(['user_id' => Yii::app()->user->getId()]);
-        $this->render('index', ['groups' => $groups, 'groups_member' => $groups_member]);
+        $this->render('dashboard', ['groups' => $groups, 'groups_member' => $groups_member]);
+    }
+
+    public function actionIndex()
+    {
+        $this->render('index');
     }
 
     public function actionError()

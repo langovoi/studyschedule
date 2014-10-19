@@ -54,7 +54,7 @@ return [
             'caseSensitive' => false,
             'rules' => [
                 '<action:(login|logout)>' => 'site/<action>',
-                'dashboard' => 'site/index',
+                'dashboard' => 'site/dashboard',
                 'invite' => 'site/invite',
                 'ics/<id:\d+>' => 'ics/group',
                 'ics/<id:\d+>.ics' => 'ics/group',

@@ -1,105 +1,37 @@
 {% extends '/views/layouts/main.twig' %}
 
-{% block title %}Мои группы{% endblock %}
+{% block title %}Главная{% endblock %}
 
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1>Мои группы</h1>
+                <h2>Немного истории</h2>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                {% include '/views/particle/notice.twig' %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {% if groups|length %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Номер группы</th>
-                                <th>Действия</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for group in groups %}
-                                <tr>
-                                    <td>
-                                        {{ group.number }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ this.createUrl('group/schedule', {id: group.number}) }}"
-                                           class="btn btn-sm btn-default">
-                                            <span class="glyphicon glyphicon-calendar"></span> Расписание
-                                        </a>
-                                        <a href="{{ this.createUrl('group/replaces', {id: group.number}) }}"
-                                           class="btn btn-sm btn-default">
-                                            <span class="glyphicon glyphicon-indent-left"></span> Замены
-                                        </a>
-                                        <a href="{{ this.createUrl('group/moderators', {id: group.number}) }}"
-                                           class="btn btn-sm btn-default">
-                                            <span class="glyphicon glyphicon-user"></span> Модераторы
-                                        </a>
-                                        {#<a href="{{ this.createUrl('group/settings', {id: group.number}) }}"
-                                           class="btn btn-sm btn-default">
-                                            <span class="glyphicon glyphicon-cog"></span> Настройки
-                                        </a>#}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="alert alert-warning">У вас нет групп</div>
-                {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Мои модерируемые группы</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {% if groups_member|length %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Номер группы</th>
-                                <th>Действия</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for member in groups_member %}
-                                <tr>
-                                    <td>
-                                        {{ member.group.number }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ this.createUrl('group/schedule', {id: member.group.number}) }}"
-                                           class="btn btn-sm btn-default">
-                                            <span class="glyphicon glyphicon-calendar"></span> Расписание
-                                        </a>
-                                        <a href="{{ this.createUrl('group/replaces', {id: member.group.number}) }}"
-                                           class="btn btn-sm btn-default">
-                                            <span class="glyphicon glyphicon-indent-left"></span> Замены
-                                        </a>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="alert alert-warning">У вас нет модерируемых групп</div>
-                {% endif %}
+                <p>
+                    Еще будучи на втором курсе я подумал что будет удобно видеть расписание где-нибудь в календаре
+                    телефона, чем постоянно искать фотографии расписания и узнавать какие были замены. Тогда же была
+                    сделана кривая, работающая через одного место система, которая так и не пошла.
+                </p>
+
+                <p>
+                    Позже, уже на третьем курсе я переписал систему с нуля, сделав ее только для моей группы. У нас была
+                    такая же синхранизация расписания в календарь + каждый день в группу ВК приходило расписание на
+                    завтра. В конце третьего курса я сделал курсовую по данной системе и на все лето забыл о ней.
+                </p>
+
+                <p>
+                    В начале 4 курса одногруппники просили возобновить работу систему, но мне было лень переделывать ее. В
+                    середине сентября мне предложили оформлить систему на конкурс и вот с этого момента началась
+                    разработка системы которую вы видите сейчас.
+                </p>
+
+                <p>
+                    Исходники данной системы вы можете найте на сайт <a href="https://github.com/sc0rp1d/schedule" target="_blank">Github</a>.
+                </p>
             </div>
         </div>
     </div>
