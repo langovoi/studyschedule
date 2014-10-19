@@ -19,12 +19,16 @@ class UserController extends Controller
 
     public function actionChangePassword()
     {
-        $model = new Users();
+        $model = Users::model();
         if (Yii::app()->request->isPostRequest) {
             $user = Yii::app()->request->getParam('Users');
-            $model = $model->findByPk(Yii::app()->user->getId());
+            $model = Users::model()->findByPk(Yii::app()->user->getId());
             $model->setScenario('change_password');
-            $model->setAttributes($user);
+            $model->setAttributes([
+                'new_password' => $user['new_password'],
+                'old_password' => $user['old_password'],
+                'repeat_password' => $user['repeat_password'],
+            ]);
             if ($model->validate()) {
                 $model->password = md5($model->new_password);
                 if ($model->save(false))

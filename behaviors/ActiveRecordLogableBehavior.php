@@ -7,10 +7,10 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
     public function afterSave($event)
     {
         if (!Yii::app() instanceof CConsoleApplication) {
-            if (!$this->Owner->isNewRecord) {
+            if (!$this->owner->isNewRecord) {
 
                 // new attributes
-                $newattributes = $this->Owner->getAttributes();
+                $newattributes = $this->owner->getAttributes();
                 $oldattributes = $this->getOldAttributes();
 
                 // compare old and new
@@ -25,13 +25,13 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
                         //$changes = $name . ' ('.$old.') => ('.$value.'), ';
 
                         $log = new ActiveRecordLog;
-                        $log->description = 'User ' . Yii::app()->user->Name
+                        $log->description = 'User ' . Yii::app()->user->name
                             . ' changed ' . $name . ' for '
-                            . get_class($this->Owner)
-                            . '[' . $this->Owner->getPrimaryKey() . '].';
+                            . get_class($this->owner)
+                            . '[' . $this->owner->getPrimaryKey() . '].';
                         $log->action = 'UPDATE';
-                        $log->model = get_class($this->Owner);
-                        $log->idModel = $this->Owner->getPrimaryKey();
+                        $log->model = get_class($this->owner);
+                        $log->idModel = $this->owner->getPrimaryKey();
                         $log->field = $name;
                         $log->creationdate = date("Y-m-d H:i:s");
                         $log->userid = Yii::app()->user->id;
@@ -40,12 +40,12 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
                 }
             } else {
                 $log = new ActiveRecordLog;
-                $log->description = 'User ' . Yii::app()->user->Name
-                    . ' created ' . get_class($this->Owner)
-                    . '[' . $this->Owner->getPrimaryKey() . '].';
+                $log->description = 'User ' . Yii::app()->user->name
+                    . ' created ' . get_class($this->owner)
+                    . '[' . $this->owner->getPrimaryKey() . '].';
                 $log->action = 'CREATE';
-                $log->model = get_class($this->Owner);
-                $log->idModel = $this->Owner->getPrimaryKey();
+                $log->model = get_class($this->owner);
+                $log->idModel = $this->owner->getPrimaryKey();
                 $log->field = '';
                 $log->creationdate = date("Y-m-d H:i:s");
                 $log->userid = Yii::app()->user->id;
@@ -58,12 +58,12 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
     {
         if (!Yii::app() instanceof CConsoleApplication) {
             $log = new ActiveRecordLog;
-            $log->description = 'User ' . Yii::app()->user->Name . ' deleted '
-                . get_class($this->Owner)
-                . '[' . $this->Owner->getPrimaryKey() . '].';
+            $log->description = 'User ' . Yii::app()->user->name . ' deleted '
+                . get_class($this->owner)
+                . '[' . $this->owner->getPrimaryKey() . '].';
             $log->action = 'DELETE';
-            $log->model = get_class($this->Owner);
-            $log->idModel = $this->Owner->getPrimaryKey();
+            $log->model = get_class($this->owner);
+            $log->idModel = $this->owner->getPrimaryKey();
             $log->field = '';
             $log->creationdate = date("Y-m-d H:i:s");
             $log->userid = Yii::app()->user->id;
@@ -74,7 +74,7 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
     public function afterFind($event)
     {
         // Save old values
-        $this->setOldAttributes($this->Owner->getAttributes());
+        $this->setOldAttributes($this->owner->getAttributes());
     }
 
     public function getOldAttributes()
