@@ -25,6 +25,7 @@ class IcsAnalytics extends CActiveRecord
     {
         return [
             ['ip, ip, group, useragent, time, unique_id', 'required'],
+            ['group', 'numerical', 'integerOnly' => true],
             ['ip, ip, group, useragent, time, unique_id', 'safe', 'on' => 'search'],
         ];
     }
@@ -46,10 +47,10 @@ class IcsAnalytics extends CActiveRecord
         return [
             'id' => 'ID',
             'ip' => 'Ip',
-            'useragent' => 'User Agent',
-            'group' => 'Group',
-            'time' => 'Time',
-            'unique_id' => 'Unique ID',
+            'useragent' => 'Юзер-агент',
+            'group' => 'Группа',
+            'time' => 'Время',
+            'unique_id' => 'Уникальный ID',
         ];
     }
 
@@ -60,12 +61,12 @@ class IcsAnalytics extends CActiveRecord
     {
         $criteria = new CDbCriteria;
 
-        $criteria->compare('id', $this->id);
-        $criteria->compare('ip', $this->ip);
-        $criteria->compare('useragent', $this->useragent, true);
-        $criteria->compare('group', $this->group);
-        $criteria->compare('unique_id', $this->unique_id);
-        $criteria->compare('time', $this->time, true);
+        $criteria->compare('`id`', $this->id);
+        $criteria->compare('`ip`', $this->ip);
+        $criteria->compare('`useragent`', $this->useragent, true);
+        $criteria->compare('`group`', $this->group);
+        $criteria->compare('`unique_id`', $this->unique_id);
+        $criteria->compare('`time`', $this->time, true);
 
         return new CActiveDataProvider($this, [
             'criteria' => $criteria,
