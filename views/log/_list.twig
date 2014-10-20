@@ -14,7 +14,7 @@
 'field',
 {
     'name': 'userid',
-    'value': '($user = Users::model()->findByPk($data->userid)) ? $user->username . " (".$data->userid.")" : $data->id'
+    'value': '$data->userid ? (($user = Users::model()->findByPk($data->userid)) ? $user->username . " (".$data->userid.")" : $data->id) : "-"'
 },
 'creationdate',
 ]
