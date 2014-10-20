@@ -12,6 +12,14 @@
  */
 class Invite extends CActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            'ActiveRecordLogableBehavior' =>
+                'application.behaviors.ActiveRecordLogableBehavior',
+        ];
+    }
+
     public $captcha;
 
     const INVITE_ACCEPT = 1;
@@ -86,6 +94,7 @@ class Invite extends CActiveRecord
             'email' => 'E-mail',
             'text' => 'Почему мы должны одобрить заявку',
             'status' => 'Статус',
+            'captcha' => 'Код проверки',
         ];
     }
 
