@@ -16,6 +16,15 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                <div class="alert alert-info">
+                    Модераторы - это люди, которые будут помогать вам вести расписания. Они могут
+                    добавлять/редактировать
+                    удалять замены и расписание
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 {% if members|length %}
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -37,7 +46,9 @@
                                     </td>
                                     <td>
                                         <a href="{{ this.createUrl('deleteModerator', {id: group.number, member_id: member.id}) }}"
-                                           class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                           class="btn btn-sm btn-danger">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -56,9 +67,15 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <a href="{{ this.createUrl('createInvite', {id: group.number}) }}"
-                   class="btn btn-default pull-right"><span
-                            class="glyphicon glyphicon-plus"></span></a>
+                <div class="alert alert-info">
+                    Вы можете отправить приглашение на почту, если пользователь примет приглашение, он пройдет
+                    регистрацию и станет модератором вашей группы.
+                </div>
+                <a href="{{ this.createUrl('createInvite', {id: group.number}) }}" class="btn btn-default pull-right">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+
+                <div class="clearfix"></div>
             </div>
         </div>
         <div class="row">
@@ -91,16 +108,12 @@
                                     <td>
                                         {% if invite.status == 0 %}
                                             <a href="{{ this.createUrl('deleteInvite', {id: group.number, invite_id: invite.id}) }}"
-                                               class="btn btn-sm btn-danger"><span
-                                                        class="glyphicon glyphicon-trash"></span></a>
+                                               class="btn btn-sm btn-danger">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </a>
                                         {% else %}
                                             -
                                         {% endif %}
-                                        {#
-                                        <a href="{{ this.createUrl('group/schedule', {id: group.number}) }}"
-                                           class="btn btn-sm btn-default">Расписание</a>
-                                        <a href="{{ this.createUrl('delete', {id: group.id}) }}"
-                                           class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>#}
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -1,6 +1,6 @@
 {% extends '/views/layouts/main.twig' %}
 
-{% block title %}Расписание группы #{{ group.number }}{% endblock %}
+{% block title %}Редактирование расписания группы #{{ group.number }}{% endblock %}
 
 {% set week_days = {1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница', 6: 'Суббота'} %}
 
@@ -8,12 +8,23 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1>Расписание группы #{{ group.number }}</h1>
+                {% include '/views/particle/notice.twig' %}
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                {% include '/views/particle/notice.twig' %}
+                <h1>Редактирование расписания группы #{{ group.number }}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    В данном разделе вы должны заполнить основное, двухнедельное расписание вашей группы. При
+                    наступление
+                    нового семестра, данное расписание будет очищено. <br/>
+                    Пары вроде иностранного языка (которые деляются на несколько подгрупп) нужно вносить как одну пару
+                    без преподователя и кабинета.
+                </div>
             </div>
         </div>
         {% for week_number in 1..2 %}
@@ -31,8 +42,9 @@
                             </div>
                             <div class="col-md-3">
                                 <a href="{{ this.createUrl('createScheduleElement', {week_number: week_number, week_day: key, id: group.number}) }}"
-                                   class="btn btn-default btn-xs"><span
-                                            class="glyphicon glyphicon-plus"></span></a>
+                                   class="btn btn-default btn-xs">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </a>
                             </div>
                         </div>
                         <div class="row">
@@ -48,11 +60,13 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <a href="{{ this.createUrl('updateScheduleElement', {element_id: lesson.id, id: group.number}) }}"
-                                                       class="btn btn-default btn-xs"><span
-                                                                class="glyphicon glyphicon-pencil"></span></a>
+                                                       class="btn btn-default btn-xs">
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                    </a>
                                                     <a href="{{ this.createUrl('deleteScheduleElement', {element_id: lesson.id, id: group.number}) }}"
-                                                       class="btn btn-default btn-xs"><span
-                                                                class="glyphicon glyphicon-trash"></span></a>
+                                                       class="btn btn-default btn-xs">
+                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% endfor %}

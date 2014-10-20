@@ -16,9 +16,16 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                <div class="alert alert-info">
+                    В данном разделе вы должны вносить замены, которые получаете от учебной части.
+                    Дата вводится в формате ГГГГ-ММ-ДД. <br />
+                    Пары вроде иностранного языка (которые деляются на несколько подгрупп) нужно вносить как одну пару
+                    без преподователя и кабинета.
+                </div>
                 <a href="{{ this.createUrl('createReplace', {id: group.number}) }}"
-                   class="btn btn-default pull-right"><span
-                            class="glyphicon glyphicon-plus"></span></a>
+                   class="btn btn-default pull-right">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
             </div>
         </div>
         <div class="row">
@@ -34,7 +41,7 @@
                                 <th>Преподаватель</th>
                                 <th>Кабинет</th>
                                 <th>Комментарий</th>
-                                <th>Создал</th>
+                                <th>Создал(а)</th>
                                 <th>Действия</th>
                             </tr>
                             </thead>
@@ -64,10 +71,13 @@
                                     </td>
                                     <td>
                                         <a href="{{ this.createUrl('updateReplace', {id: group.number, replace_id: replace.id}) }}"
-                                           class="btn btn-sm btn-default"><span
-                                                    class="glyphicon glyphicon-pencil"></span></a>
+                                           class="btn btn-sm btn-default">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </a>
                                         <a href="{{ this.createUrl('deleteReplace', {id: group.number, replace_id: replace.id}) }}"
-                                           class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                           class="btn btn-sm btn-danger">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}
