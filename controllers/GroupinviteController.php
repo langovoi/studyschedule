@@ -39,7 +39,7 @@ class GroupInviteController extends Controller
 
     public function actionAccept($id)
     {
-        if (!($model = Invite::model()->findByPk($id)))
+        if (!($model = Invite::model()->findByPk($id)) || $model->status != Invite::INVITE_CREATE)
             throw new CHttpException(404);
         $mail = new YiiMailer();
         $mail->setView('invite/accept');
@@ -60,7 +60,7 @@ class GroupInviteController extends Controller
 
     public function actionDecline($id)
     {
-        if (!($model = Invite::model()->findByPk($id)))
+        if (!($model = Invite::model()->findByPk($id)) || $model->status != Invite::INVITE_CREATE)
             throw new CHttpException(404);
         $mail = new YiiMailer();
         $mail->setView('invite/decline');
