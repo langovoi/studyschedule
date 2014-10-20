@@ -22,7 +22,6 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
                     }
 
                     if ($value != $old) {
-                        //$changes = $name . ' ('.$old.') => ('.$value.'), ';
 
                         $log = new ActiveRecordLog;
                         $log->description = 'User ' . Yii::app()->user->name
@@ -34,7 +33,7 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
                         $log->idModel = $this->owner->getPrimaryKey();
                         $log->field = $name;
                         $log->creationdate = date("Y-m-d H:i:s");
-                        $log->userid = Yii::app()->user->id;
+                        $log->userid = Yii::app()->user->isGuest ? null : Yii::app()->user->id;
                         $log->save();
                     }
                 }
@@ -48,7 +47,7 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
                 $log->idModel = $this->owner->getPrimaryKey();
                 $log->field = '';
                 $log->creationdate = date("Y-m-d H:i:s");
-                $log->userid = Yii::app()->user->id;
+                $log->userid = Yii::app()->user->isGuest ? null : Yii::app()->user->id;
                 $log->save();
             }
         }
@@ -66,7 +65,7 @@ class ActiveRecordLogableBehavior extends CActiveRecordBehavior
             $log->idModel = $this->owner->getPrimaryKey();
             $log->field = '';
             $log->creationdate = date("Y-m-d H:i:s");
-            $log->userid = Yii::app()->user->id;
+            $log->userid = Yii::app()->user->isGuest ? null : Yii::app()->user->id;
             $log->save();
         }
     }
