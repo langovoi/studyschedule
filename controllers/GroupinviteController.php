@@ -62,13 +62,6 @@ class GroupInviteController extends Controller
     {
         if (!($model = Invite::model()->findByPk($id)) || !in_array($model->status, [Invite::INVITE_CREATE, Invite::INVITE_ACCEPT]))
             throw new CHttpException(404);
-        $model->status = Invite::INVITE_DECLINE;
-        if ($model->save())
-            Yii::app()->user->setFlash('success', 'Заявка успешно отклонена');
-        else {
-            Yii::app()->user->setFlash('error', 'Ошибка при смене статуса');
-            $this->redirect(['index']);
-        }
         if ($model->status == Invite::INVITE_CREATE) {
             $mail = new YiiMailer();
             $mail->setView('invite/decline');
@@ -76,8 +69,16 @@ class GroupInviteController extends Controller
             $mail->setTo($model->email);
             $mail->setSubject('Заявка на создание');
             $mail->send();
-            if (!$mail->send())
+            if (!$mail->send()) {
                 Yii::app()->user->setFlash('error', 'Ошибка при отправке письма');
+                $this->redirect(['index']);
+            }
+        }
+        $model->status = Invite::INVITE_DECLINE;
+        if ($model->save())
+            Yii::app()->user->setFlash('success', 'Заявка успешно отклонена');
+        else {
+            Yii::app()->user->setFlash('error', 'Ошибка при смене статуса');
         }
         $this->redirect(['index']);
     }
