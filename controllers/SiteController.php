@@ -77,7 +77,7 @@ class SiteController extends Controller
             throw new CHttpException(404, 'Данный тип не существует');
         if ($type == 1)
             $invite = GroupInvite::model()->with('group')->findByAttributes(['status' => GroupInvite::INVITE_CREATE, 'hash' => $hash]);
-        else
+        elseif($type == 2)
             $invite = Invite::model()->findByAttributes(['status' => Invite::INVITE_ACCEPT, 'hash' => $hash]);
         if (!$invite)
             throw new CHttpException(404, 'Данное приглашение не найдено или было отменено');
@@ -108,7 +108,7 @@ class SiteController extends Controller
                     }
                     case 2: {
                         $invite->setAttribute('status', Invite::INVITE_USED);
-                        $invite->save();
+                        $invite->save(false);
                         $group = new Group();
                         $group->setAttributes([
                             'number' => $invite->group_number,
