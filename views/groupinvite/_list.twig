@@ -13,7 +13,7 @@
 },
 {
 'name': 'status',
-'value': '$data->status == 1 ? "Одобрена" : ($data->status == 0 ? "В обработке" : ($data->status == 2 ? "Активна" : "Отклонена"))'
+'value': '$data->status == 1 ? "Одобрена" : ($data->status == Invite::INVITE_CREATE ? "В обработке" : ($data->status == 2 ? "Активна" : "Отклонена"))'
 },
 {
 'class': 'BsButtonColumn',
@@ -23,13 +23,13 @@
 'label': '<span class="glyphicon glyphicon-ok"></span>',
 'url': 'Yii::app()->createUrl("groupinvite/accept", array("id"=>$data->id))',
 'options': {'class': 'btn btn-sm btn-success'},
-'visible': '$data->status == 0',
+'visible': '$data->status == Invite::INVITE_CREATE',
 },
 'decline' : {
 'label': '<span class="glyphicon glyphicon-remove"></span>',
 'url': 'Yii::app()->createUrl("groupinvite/decline", array("id"=>$data->id))',
 'options': {'class': 'btn btn-sm btn-danger'},
-'visible': '$data->status == 0',
+'visible': 'in_array($data->status, [Invite::INVITE_CREATE, Invite::INVITE_ACCEPT])',
 },
 }
 }
