@@ -1,0 +1,27 @@
+{{ void(this.widget('bootstrap.widgets.BsGridView', {
+'dataProvider': dataProvider,
+'template':'{summary} {pager} <div class="table table-responsive">{items}</div> {pager}',
+'type': constant('BsHtml::GRID_TYPE_STRIPED'),
+'columns': [
+    'name',
+    'start_date',
+    'end_date',
+{
+'class': 'BsButtonColumn',
+'template': '{update} {delete}',
+'buttons': {
+'update' : {
+'label': '<span class="glyphicon glyphicon-pencil"></span>',
+'url': 'Yii::app()->createUrl("semesters/update", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-default'}
+},
+'delete' : {
+'label': '<span class="glyphicon glyphicon-trash"></span>',
+'url': 'Yii::app()->createUrl("semesters/delete", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-danger'},
+'click': 'true',
+}
+}
+}
+]
+})) }}

@@ -19,10 +19,15 @@ class SemestersController extends Controller
 
     public function actionIndex()
     {
-        $semesters = new Semesters();
-        $semesters = $semesters->findAll();
-        $model = new Semesters;
-        $this->render('list', ['semesters' => $semesters, 'model' => $model]);
+        $dataProvider = new CActiveDataProvider('Semesters');
+        $model = new Semesters('search');
+        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+            $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        else {
+            $model->setAttributes(Yii::app()->request->getParam('Semesters'));
+            $dataProvider = $model->search();
+            $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
+        }
     }
 
     public function actionUpdate($id)
