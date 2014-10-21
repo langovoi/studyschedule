@@ -11,6 +11,12 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                <a class="btn btn-default" href="{{ this.createUrl('chart') }}">По дням</a>
+                <a class="btn btn-default" href="{{ this.createUrl('chart', {type: 'hour'}) }}">По часам</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 {{ void(this.widget('highcharts.HighstockWidget', {
                 'options': {
                 'title': {'text': ''},
