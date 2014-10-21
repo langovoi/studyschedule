@@ -25,10 +25,12 @@ return [
         'bootstrap.behaviors.*',
         'bootstrap.helpers.*',
         'bootstrap.widgets.*',
+        'highcharts.*',
     ],
     'aliases' => [
         'Jsvrcek' => 'application.vendor.jsvrcek.ics.src.Jsvrcek',
         'bootstrap' => 'application.vendor.drmabuse.yii-bootstrap-3-module',
+        'highcharts' => 'application.vendor.miloschuman.yii-highcharts.highcharts',
     ],
     'modules' => $modules,
     'components' => [

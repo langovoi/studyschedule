@@ -37,4 +37,23 @@ class IcsAnalyticsController extends Controller
             $this->renderPartial('_list', ['dataProvider' => $dataProvider, 'model' => $model]);
         }
     }
+
+    public function actionChart()
+    {
+        $data = [];
+        $temp_data = [];
+        $criteria = new CDbCriteria();
+        $criteria->select = 'COUNT(*) as count, time';
+        $criteria->group = 'time';
+        /** @var IcsAnalytics $ics_analytic_element */
+        foreach (IcsAnalytics::model()->findAll($criteria) as $ics_analytic_element) {
+            $time = strtotime(explode(' ', $ics_analytic_element->time)[0]) * 1000;
+            if (isset($temp_data[$time]))
+                $temp_data[$time] += (int)$ics_analytic_element->count;
+            else $temp_data[$time] = (int)$ics_analytic_element->count;
+        }
+        foreach($temp_data as $date => $count)
+            $data[] = [$date, $count];
+        $this->render('chart', ['series' => [['name' => 'Количество запросов:', 'data' => $data]]]);
+    }
 }

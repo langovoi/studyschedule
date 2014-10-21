@@ -1,0 +1,35 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}График доступа к ICS{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>График доступа к ICS</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ void(this.widget('highcharts.HighstockWidget', {
+                'options': {
+                'title': {'text': ''},
+                'xAxis': {
+                type: 'datetime',
+                title: {
+                text: 'Дата'
+                }
+                },
+                yAxis: {
+                title: {
+                text: 'Количество запросов'
+                },
+                min: 0
+                },
+                series: series
+                }
+                })) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -10,6 +10,8 @@
  */
 class IcsAnalytics extends CActiveRecord
 {
+
+    public $count;
     /**
      * @return string
      */
