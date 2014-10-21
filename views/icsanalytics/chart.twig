@@ -38,4 +38,11 @@
             </div>
         </div>
     </div>
+    {{ void(App.clientScript.registerScript('highcharts-utc', "
+Highcharts.setOptions({
+                global : {
+                    useUTC : false
+                }
+            });
+            ")) }}
 {% endblock %}
