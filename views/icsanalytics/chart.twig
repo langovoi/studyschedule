@@ -13,12 +13,16 @@
             <div class="col-md-12">
                 <a class="btn btn-default" href="{{ this.createUrl('chart') }}">По дням</a>
                 <a class="btn btn-default" href="{{ this.createUrl('chart', {type: 'hour'}) }}">По часам</a>
+                <a class="btn btn-default" href="{{ this.createUrl('chart', {by_groups: true}) }}">По группам и дням</a>
+                <a class="btn btn-default" href="{{ this.createUrl('chart', {type: 'hour', by_groups: true}) }}">По
+                    группам и часам</a>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 {{ void(this.widget('highcharts.HighstockWidget', {
                 'options': {
+                legend: {enabled: true},
                 'title': {'text': ''},
                 'xAxis': {
                 type: 'datetime',
