@@ -62,8 +62,8 @@ class IcsAnalyticsController extends Controller
                 $criteria->addSearchCondition('useragent', 'Android');
                 $data_temp['Android'] = IcsAnalytics::model()->findAll($criteria);
                 $criteria = new CDbCriteria();
-                $criteria->addSearchCondition('useragent', 'iOS');
-                $criteria->addSearchCondition('useragent', 'Mac');
+                $criteria->compare('useragent', 'iOS', true, 'OR');
+                $criteria->compare('useragent', 'Mac', true, 'OR');
                 $data_temp['iOS/Mac'] = IcsAnalytics::model()->findAll($criteria);
                 $criteria = new CDbCriteria();
                 $criteria->addSearchCondition('useragent', 'Android', true, 'AND', 'NOT LIKE');
