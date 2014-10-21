@@ -38,43 +38,76 @@ class IcsAnalyticsController extends Controller
         }
     }
 
-    public function actionChart($type = 'day', $by_groups = false)
+    public function actionChart($interval = 'day', $group = 'all')
     {
-        if (!in_array($type, ['day', 'hour']))
+        if (!in_array($interval, ['day', 'hour']))
             throw new CHttpException(404);
-        $data = [];
-        $temp_data = [];
-        $criteria = new CDbCriteria();
-        $criteria->select = ['COUNT(*) as count', 'time', '`group`'];
-        $criteria->group = 'time';
-        /** @var IcsAnalytics $ics_analytic_element */
-        foreach (IcsAnalytics::model()->findAll($criteria) as $ics_analytic_element) {
-            $exploded = explode(' ', $ics_analytic_element->time);
-            $date = $exploded[0];
-            if ($type == 'hour') {
-                $time = explode(':', $exploded[1])[0];
-            } else $time = '00';
-            $time = strtotime($date . ' ' . $time . ':00:00') * 1000;
-            if (!$by_groups) {
-                if (isset($temp_data[$time]))
-                    $temp_data[$time]++;
-                else $temp_data[$time] = 1;
-            } else {
-                if (isset($temp_data[$ics_analytic_element->group][$time]))
-                    $temp_data[$ics_analytic_element->group][$time]++;
-                else $temp_data[$ics_analytic_element->group][$time] = 1;
+        if (!in_array($group, ['all', 'groups', 'platforms']))
+            throw new CHttpException(404);
+        $series = [];
+        switch ($group) {
+            case 'groups':
+                $data_temp = [];
+                /** @var IcsAnalytics $element */
+                foreach (IcsAnalytics::model()->findAll() as $element) {
+                    $data_temp[$element->group][] = $element;
+                }
+                foreach ($data_temp as $group => $data) {
+                    $series[] = ['name' => $group, 'data' => $this->dataCountByInterval($data, $interval)];
+                }
+                break;
+            case 'platforms':
+                $data_temp = [];
+                $criteria = new CDbCriteria();
+                $criteria->addSearchCondition('useragent', 'Android');
+                $data_temp['Android'] = IcsAnalytics::model()->findAll($criteria);
+                $criteria = new CDbCriteria();
+                $criteria->addSearchCondition('useragent', 'iOS');
+                $criteria->addSearchCondition('useragent', 'Mac');
+                $data_temp['iOS/Mac'] = IcsAnalytics::model()->findAll($criteria);
+                $criteria = new CDbCriteria();
+                $criteria->addSearchCondition('useragent', 'Android', true, 'AND', 'NOT LIKE');
+                $criteria->addSearchCondition('useragent', 'iOS', true, 'AND', 'NOT LIKE');
+                $data_temp['Другие'] = IcsAnalytics::model()->findAll($criteria);
+                foreach ($data_temp as $group => $data) {
+                    $series[] = ['name' => $group, 'data' => $this->dataCountByInterval($data, $interval)];
+                }
+                break;
+            case 'all':
+            default:
+                $series[] = ['name' => 'Всего', 'data' => $this->dataCountByInterval(IcsAnalytics::model()->findAll(), $interval)];
+        }
+        $this->render('chart', ['series' => $series, 'interval' => $interval, 'group' => $group]);
+    }
+
+    private function dataCountByInterval($data, $interval)
+    {
+        if (!in_array($interval, ['day', 'hour']))
+            return false;
+        $data_temp = [];
+        $return = [];
+        /** @var IcsAnalytics $data_element */
+        foreach ($data as $data_element) {
+            $datetime = explode(' ', $data_element->time);
+            $time = explode(':', $datetime[1]);
+            switch ($interval) {
+                case 'hour':
+                    $timestamp = strtotime($datetime[0] . ' ' . $time[0] . ':00:00');
+                    if (!isset($data_temp[$timestamp]))
+                        $data_temp[$timestamp] = 1;
+                    else $data_temp[$timestamp]++;
+                    break;
+                case 'day':
+                default:
+                    $timestamp = strtotime($datetime[0] . ' 00:00:00');
+                    if (!isset($data_temp[$timestamp]))
+                        $data_temp[$timestamp] = 1;
+                    else $data_temp[$timestamp]++;
             }
         }
-        if (!$by_groups)
-            foreach ($temp_data as $date => $count)
-                $data[] = [$date, $count];
-        else
-            foreach ($temp_data as $group => $values) {
-                $group_data = ['name' => (string)$group, 'data' => []];
-                foreach ($values as $date => $count)
-                    $group_data['data'][] = [$date, $count];
-                $data[] = $group_data;
-            }
-        $this->render('chart', ['series' => ($by_groups == false ? [['name' => 'Количество запросов:', 'data' => $data]] : $data)]);
+        foreach ($data_temp as $time => $count) {
+            $return[] = [(int)($time * 1000), (int)$count];
+        }
+        return $return;
     }
 }
