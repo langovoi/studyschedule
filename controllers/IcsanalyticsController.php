@@ -52,8 +52,8 @@ class IcsAnalyticsController extends Controller
                 foreach (IcsAnalytics::model()->findAll() as $element) {
                     $data_temp[$element->group][] = $element;
                 }
-                foreach ($data_temp as $group => $data) {
-                    $series[] = ['name' => $group, 'data' => $this->dataCountByInterval($data, $interval)];
+                foreach ($data_temp as $chart_name => $data) {
+                    $series[] = ['name' => $chart_name, 'data' => $this->dataCountByInterval($data, $interval)];
                 }
                 break;
             case 'platforms':
@@ -69,8 +69,8 @@ class IcsAnalyticsController extends Controller
                 $criteria->addSearchCondition('useragent', 'Android', true, 'AND', 'NOT LIKE');
                 $criteria->addSearchCondition('useragent', 'iOS', true, 'AND', 'NOT LIKE');
                 $data_temp['Другие'] = IcsAnalytics::model()->findAll($criteria);
-                foreach ($data_temp as $group => $data) {
-                    $series[] = ['name' => $group, 'data' => $this->dataCountByInterval($data, $interval)];
+                foreach ($data_temp as $chart_name => $data) {
+                    $series[] = ['name' => $chart_name, 'data' => $this->dataCountByInterval($data, $interval)];
                 }
                 break;
             case 'all':
