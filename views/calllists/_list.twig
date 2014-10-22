@@ -1,0 +1,31 @@
+{{ void(this.widget('bootstrap.widgets.BsGridView', {
+'dataProvider': dataProvider,
+'filter': model,
+'template':'{summary} {pager} <div class="table table-responsive">{items}</div> {pager}',
+'type': constant('BsHtml::GRID_TYPE_STRIPED'),
+'columns': [
+'name',
+{
+'class': 'BsButtonColumn',
+'template': '{elements} {update} {delete}',
+'buttons': {
+'elements' : {
+'label': '<span class="glyphicon glyphicon-wrench"></span>',
+'url': 'Yii::app()->createUrl("calllistselements/index", array("list_id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-default'},
+},
+'update' : {
+'label': '<span class="glyphicon glyphicon-pencil"></span>',
+'url': 'Yii::app()->createUrl("calllists/update", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-default'},
+},
+'delete' : {
+'label': '<span class="glyphicon glyphicon-trash"></span>',
+'url': 'Yii::app()->createUrl("calllists/delete", array("id"=>$data->id))',
+'options': {'class': 'btn btn-sm btn-danger'},
+'click': 'true'
+}
+}
+}
+]
+})) }}

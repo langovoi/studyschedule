@@ -37,26 +37,22 @@ class CallListsElements extends CActiveRecord
             ['start_time, end_time', 'required'],
             ['number, call_list_id', 'numerical', 'integerOnly' => true],
             ['start_time, end_time', 'match', 'pattern' => '/(2[0-3]|[01][0-9]):[0-5][0-9]/', 'message' => 'Поле должно быть в формате ЧЧ:ММ'],
+            ['start_time, end_time', 'timeCheck'],
+            ['number', 'numberCheck'],
             ['id, number, start_time, end_time, call_list_id', 'safe', 'on' => 'search'],
         ];
     }
 
-    public function beforeValidate()
+    public function numberCheck($attribute)
     {
-        if (parent::beforeValidate()) {
-            $validator = CValidator::createValidator('unique', $this, 'call_list_id', [
-                'criteria' => [
-                    'condition' => '`number`=:number',
-                    'params' => [
-                        ':number' => $this->number
-                    ]
-                ]
-            ]);
-            $this->getValidatorList()->insertAt(0, $validator);
+        if (($model = CallListsElements::model()->findByAttributes([$attribute => $this->$attribute, 'call_list_id' => $this->call_list_id])) && $model->id !== $this->id)
+            $this->addError($attribute, 'В данном списке уже есть элемент с этим номером пары');
+    }
 
-            return true;
-        }
-        return false;
+    public function timeCheck($attribute)
+    {
+        if (($model = CallListsElements::model()->find('start_time <= :time AND end_time >= :time AND call_list_id = :call_list_id', [':time' => $this->$attribute, ':call_list_id' => $this->call_list_id])) && $model->id !== $this->id)
+            $this->addError($attribute, 'Время пары не может пересекаться с другой');
     }
 
     /**
@@ -109,6 +105,8 @@ class CallListsElements extends CActiveRecord
         array_pop($end_time);
         $this->start_time = implode(':', $start_time);
         $this->end_time = implode(':', $end_time);
+
+        return parent::afterFind();
     }
 
     /**
