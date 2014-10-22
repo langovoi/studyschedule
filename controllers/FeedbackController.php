@@ -2,6 +2,7 @@
 
 class FeedbackController extends Controller
 {
+
     public function filters()
     {
         return [

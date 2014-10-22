@@ -49,7 +49,8 @@ class ScheduleElement extends CActiveRecord
         ];
     }
 
-    function byNumber() {
+    function byNumber()
+    {
         $this->dbCriteria->order = 'number ASC';
         return $this;
     }
@@ -115,5 +116,25 @@ class ScheduleElement extends CActiveRecord
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    public static function getUsedNumber($group_id, $semester_id, $week_number, $week_day)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->select = 'number';
+        $criteria->order = 'number ASC';
+        $criteria->compare('group_id', $group_id);
+        $criteria->compare('semester_id', $semester_id);
+        $criteria->compare('week_number', $week_number);
+        $criteria->compare('week_day', $week_day);
+        $data = self::model()->findAll($criteria);
+        return $data ? array_values(CHtml::listData($data, 'number', 'number')) : [];
+    }
+
+    public static function getFreeNumber($group_id, $semester_id, $week_number, $week_day, $expect = [])
+    {
+        $numbers = array_merge(array_diff([1, 2, 3, 4, 5], self::getUsedNumber($group_id, $semester_id, $week_number, $week_day)), is_array($expect) ? $expect : [$expect]);
+        sort($numbers);
+        return $numbers;
     }
 }

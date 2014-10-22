@@ -67,12 +67,6 @@ class GroupReplace extends CActiveRecord
         ];
     }
 
-    public function byDate()
-    {
-        $this->dbCriteria->order = 'date DESC';
-        return $this;
-    }
-
     /**
      * @return array
      */
@@ -132,27 +126,22 @@ class GroupReplace extends CActiveRecord
             $this->subject_id = null;
             $this->comment = null;
         }
-        if (!Yii::app() instanceof CConsoleApplication && $this->scenario == 'insert')
+        if (!Yii::app() instanceof CConsoleApplication && $this->isNewRecord)
             $this->owner = Yii::app()->user->name;
         return parent::beforeSave();
     }
 
     public function checkCancel($attribute)
     {
-        $value = $this->$attribute;
-        if (!$value) {
-            if (!$this->subject_id)
-                $this->addError('subject_id', 'Выберите предмет');
-        }
+        if (!$this->$attribute && !$this->subject_id)
+            $this->addError('subject_id', 'Выберите предмет');
     }
 
     public function numberCheck($attribute)
     {
-        if (($replace = GroupReplace::model()->findByAttributes(['group_id' => $this->group_id, 'date' => $this->date, $attribute => $this->$attribute]))) {
-            if ($this->isNewRecord || $replace->id != $replace->id) {
-                $this->addError($attribute, 'На данную дату и пару уже есть замена');
-                $this->addError('date', 'На данную дату и пару уже есть замена');
-            }
+        if (($replace = GroupReplace::model()->findByAttributes(['group_id' => $this->group_id, 'date' => $this->date, $attribute => $this->$attribute])) && ($this->isNewRecord || $replace->id != $replace->id)) {
+            $this->addError($attribute, 'На данную дату и пару уже есть замена');
+            $this->addError('date', 'На данную дату и пару уже есть замена');
         }
     }
 
@@ -161,14 +150,17 @@ class GroupReplace extends CActiveRecord
         /** @var Semesters $semester */
         $semester = Semesters::model()->actual();
         $time = strtotime($this->$attribute);
-        if ($time < strtotime(date('Y-m-d'))) {
+        if ($time < strtotime(date('Y-m-d')))
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
-            return false;
-        } elseif (date('N', $time) == 7) {
+        elseif (date('N', $time) == 7)
             $this->addError($attribute, 'Нельзя установить дату на воскресенье');
-            return false;
-        }
-        if ($time < strtotime($semester->start_date) || $time > strtotime($semester->end_date))
+        elseif (!$semester && ($time < strtotime($semester->start_date) || $time > strtotime($semester->end_date)))
             $this->addError($attribute, 'Дата не может быть за пределами текущего семестра');
+    }
+
+    public function byDate()
+    {
+        $this->dbCriteria->order = 'date DESC';
+        return $this;
     }
 }

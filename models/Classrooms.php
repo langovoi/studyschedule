@@ -98,7 +98,7 @@ class Classrooms extends CActiveRecord
 
     protected function beforeSave()
     {
-        if (!Yii::app()->user->checkAccess('admin') && !Yii::app() instanceof CConsoleApplication && $this->scenario == 'insert')
+        if (!Yii::app()->user->checkAccess('admin') && !Yii::app() instanceof CConsoleApplication && $this->isNewRecord)
             $this->owner_id = Yii::app()->user->getId();
         return parent::beforeSave();
     }
