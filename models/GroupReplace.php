@@ -80,8 +80,7 @@ class GroupReplace extends CActiveRecord
         if ($time < strtotime(date('Y-m-d'))) {
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
             return false;
-        }
-        elseif(date('N', $time) == 7) {
+        } elseif (date('N', $time) == 7) {
             $this->addError($attribute, 'Нельзя установить дату на воскресенье');
             return false;
         }
@@ -97,7 +96,7 @@ class GroupReplace extends CActiveRecord
             $this->subject_id = null;
             $this->comment = null;
         }
-        if (!Yii::app() instanceof CConsoleApplication)
+        if (!Yii::app() instanceof CConsoleApplication && $this->scenario == 'insert')
             $this->owner = Yii::app()->user->name;
         return parent::beforeSave();
     }
