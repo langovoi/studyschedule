@@ -22,10 +22,10 @@ class ScheduleController extends Controller
         if ($group != false && !($group = Group::model()->findByAttributes(['number' => $group])))
             throw new CHttpException(404, 'Данной группы не найден');
         /** @var Semesters $semester */
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         $current_date = date('Y-m-d');
         $current_time = strtotime($current_date);
-        if ($current_time < strtotime($semester->start_date) || $current_time > strtotime($semester->end_date))
+        if (!$semester)
             throw new CHttpException(404, 'Сейчас нет семестра :-(');
         $group_list = CHtml::listData(Group::model()->findAll(), 'number', 'number');
 
@@ -38,7 +38,7 @@ class ScheduleController extends Controller
                 /** @var Holiday $holiday */
                 if (($holiday = Holiday::model()->findByAttributes(['date' => date('Y-m-d', $i)])) || $week_day == 7) {
                     $schedule[$date] = ['holiday' => true];
-                    if($holiday)
+                    if ($holiday)
                         $schedule[$date]['name'] = $holiday->name;
                     continue;
                 }

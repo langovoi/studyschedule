@@ -28,7 +28,7 @@ class Controller extends CController
 
     public function getCurrentWeekNumber()
     {
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         $week_number = (date('W') - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
         return $week_number;
     }

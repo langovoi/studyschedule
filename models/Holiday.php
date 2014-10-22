@@ -39,7 +39,7 @@ class Holiday extends CActiveRecord
     public function dateCheck($attribute)
     {
         /** @var Semesters $semester */
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         $time = strtotime($this->$attribute);
         if ($time < strtotime(date('Y-m-d'))) {
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');

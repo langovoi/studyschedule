@@ -46,10 +46,10 @@ class IcsController extends Controller
         /** @var Group $group */
         if (!($group = $group->findByAttributes(['number' => $id])))
             throw new CHttpException(404, 'Группа не найдена');
-        $semester = Semesters::model()->byStartDate()->with(['call_list', 'call_list_short'])->find();
+        $semester = Semesters::model()->with(['call_list', 'call_list_short'])->actual();
         /** @var Semesters $semester */
         if (!$semester)
-            throw new CHttpException(404, 'Нет семестров');
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         /** @var CallListElements[] $call_list */
         /** @var CallListElements[] $call_list_short */
         $call_list = [];
@@ -70,9 +70,11 @@ class IcsController extends Controller
                 'REFRESH-INTERVAL' => 'VALUE=DURATION:PT1H',
             ]);
             $count_days = 24;
-            $start_date = time() - 60 * 60 * 24 * ($count_days / 2);
-            $end_date = time() + 60 * 60 * 24 * ($count_days / 2);
-            for ($i = $start_date; $i <= $end_date; $i = $i + 60 * 60 * 24) {
+            $start_date = strtotime('-' . $count_days / 2 . ' days', strtotime(date('Y-m-d')));
+            $end_date = strtotime('+' . $count_days / 2 . ' days', strtotime(date('Y-m-d')));
+            for ($i = $start_date; $i <= $end_date; $i = strtotime('+1 days', $i)) {
+                if ($i < strtotime($semester->start_date)) continue;
+                if ($i > strtotime($semester->end_date)) break;
                 if (date('N', $i) == 7 || Holiday::model()->findByAttributes(['date' => date('Y-m-d', $i)])) continue;
                 if (date('N', $i) == 6 || ShortDay::model()->findByAttributes(['date' => date('Y-m-d', $i)]))
                     $current_call_list = $call_list_short;

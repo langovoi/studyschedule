@@ -30,7 +30,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         /** @var Semesters $semester */
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         $this->render('index', ['group_count' => Group::model()->count(), 'replace_count' => GroupReplace::model()->count('date >= :start_semester AND date <= :end_semester', [':start_semester' => $semester->start_date, ':end_semester' => $semester->end_date]), 'ics_count' => IcsAnalytics::model()->count('time LIKE :date', [':date' => date('Y-m-d') . '%'])]);
     }
 

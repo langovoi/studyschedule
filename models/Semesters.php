@@ -49,9 +49,9 @@ class Semesters extends CActiveRecord
     public function dateCheck($attribute)
     {
         $time = strtotime($this->$attribute);
-        if ($time < strtotime(date('Y-m-d'))) {
+        if ($this->scenario == 'insert' && $time < strtotime(date('Y-m-d'))) {
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
-        } elseif(($semester = Semesters::model()->find('start_date <= :date AND end_date >= :date', [':date' => $this->$attribute]))) {
+        } elseif(($semester = Semesters::model()->find('start_date <= :date AND end_date >= :date', [':date' => $this->$attribute])) && $semester->id !== $this->id) {
             $this->addError($attribute, 'Уже есть семестр который перекрывают данную дату');
         }
     }
@@ -126,5 +126,9 @@ class Semesters extends CActiveRecord
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    public function actual() {
+        return $this->find('start_date <= :date AND end_date >= :date', [':date' => date('Y-m-d')]);
     }
 }

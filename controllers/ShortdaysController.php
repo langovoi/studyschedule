@@ -20,7 +20,7 @@ class ShortDaysController extends Controller
     public function actionIndex()
     {
         $short_days = new ShortDay();
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         if ($semester)
             $short_days = $short_days->findAllByAttributes([], 'date >= :start_date AND date <= :end_date', [':start_date' => $semester->start_date, ':end_date' => $semester->end_date]);
         else
@@ -32,7 +32,7 @@ class ShortDaysController extends Controller
     public function actionUpdate($id)
     {
         $model = new ShortDay();
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         if (($model = $model->findByPk($id)) && strtotime($model->date) >= strtotime(date('Y-m-d'))) {
             if (Yii::app()->request->isPostRequest) {
                 $holiday = Yii::app()->request->getParam('ShortDay');
@@ -50,7 +50,7 @@ class ShortDaysController extends Controller
     public function actionCreate()
     {
         $model = new ShortDay('insert');
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         if (Yii::app()->request->isPostRequest) {
             $holiday = Yii::app()->request->getParam('ShortDay');
             $model->setAttributes($holiday);

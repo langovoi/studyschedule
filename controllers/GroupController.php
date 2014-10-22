@@ -56,7 +56,9 @@ class GroupController extends Controller
     {
         $schedule = [];
         $schedule_model = new ScheduleElement();
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
+        if(!$semester)
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         for ($i = 1; $i <= 2; $i++) {
             for ($j = 1; $j <= 6; $j++) {
                 $criteria = new CDbCriteria();
@@ -71,7 +73,9 @@ class GroupController extends Controller
     public function actionCreateScheduleElement($week_number, $week_day)
     {
         $model = new ScheduleElement();
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
+        if(!$semester)
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         if (Yii::app()->request->isPostRequest) {
             $schedule_element = Yii::app()->request->getParam('ScheduleElement');
             $model->setAttributes($schedule_element);
@@ -103,7 +107,9 @@ class GroupController extends Controller
     public function actionUpdateScheduleElement($element_id)
     {
         $model = ScheduleElement::model()->findByPk($element_id);
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
+        if(!$semester)
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         if (!$model || $model->semester_id != $semester->id)
             throw new CHttpException(404, 'Элемент не найден');
         if (Yii::app()->request->isPostRequest) {
@@ -139,7 +145,9 @@ class GroupController extends Controller
     public function actionDeleteScheduleElement($element_id, $confirm = 0)
     {
         $model = ScheduleElement::model()->with('teacher', 'classroom', 'subject')->findByPk($element_id);
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
+        if(!$semester)
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         if (!$model || $model->semester_id != $semester->id)
             throw new CHttpException(404, 'Элемент не найден');
         if ($confirm) {
@@ -211,7 +219,9 @@ class GroupController extends Controller
     public function actionReplaces()
     {
         /** @var Semesters $semester */
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
+        if (!$semester)
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         $replaces = GroupReplace::model()->byDate()->findAllByAttributes(['group_id' => self::$group->id], 'date >= :start_date AND date <= :end_date AND date >= :current_date', [':current_date' => date('Y-m-d'), ':start_date' => $semester->start_date, ':end_date' => $semester->end_date]);
 
         $this->render('replaces', ['replaces' => $replaces, 'group' => self::$group]);
@@ -219,13 +229,15 @@ class GroupController extends Controller
 
     public function actionCreateReplace()
     {
+        $semester = Semesters::model()->actual();
+        if(!$semester)
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         $model = new GroupReplace();
         $classrooms = CHtml::listData(Classrooms::model()->byName()->findAll(), 'id', 'name');
         $subjects = CHtml::listData(Subjects::model()->byName()->findAll(), 'id', 'name');
         $teachers = CHtml::listData(Teachers::model()->byLastName()->findAll(), 'id', function ($model) {
             return join(' ', [$model->lastname, $model->firstname, $model->middlename]);
         });
-        $semester = Semesters::model()->byStartDate()->find();
         if (Yii::app()->request->isPostRequest) {
             $replace = Yii::app()->request->getParam('GroupReplace');
             $model->setAttributes($replace);
@@ -241,6 +253,9 @@ class GroupController extends Controller
 
     public function actionUpdateReplace($replace_id)
     {
+        $semester = Semesters::model()->actual();
+        if(!$semester)
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
         $model = GroupReplace::model()->findByPk($replace_id);
         if (!$model)
             throw new CHttpException(404, 'Замена не найдена');
@@ -251,7 +266,6 @@ class GroupController extends Controller
         $teachers = CHtml::listData(Teachers::model()->byLastName()->findAll(), 'id', function ($model) {
             return join(' ', [$model->lastname, $model->firstname, $model->middlename]);
         });
-        $semester = Semesters::model()->byStartDate()->find();
         if (Yii::app()->request->isPostRequest) {
             $replace = Yii::app()->request->getParam('GroupReplace');
             $model->setAttributes($replace);

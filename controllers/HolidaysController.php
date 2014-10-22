@@ -34,7 +34,7 @@ class HolidaysController extends Controller
     public function actionUpdate($id)
     {
         $model = new Holiday();
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         if (($model = $model->findByPk($id)) && strtotime($model->date) >= strtotime(date('Y-m-d'))) {
             if (Yii::app()->request->isPostRequest) {
                 $holiday = Yii::app()->request->getParam('Holiday');
@@ -52,7 +52,7 @@ class HolidaysController extends Controller
     public function actionCreate()
     {
         $model = new Holiday('insert');
-        $semester = Semesters::model()->byStartDate()->find();
+        $semester = Semesters::model()->actual();
         if (Yii::app()->request->isPostRequest) {
             $holiday = Yii::app()->request->getParam('Holiday');
             $model->setAttributes($holiday);
