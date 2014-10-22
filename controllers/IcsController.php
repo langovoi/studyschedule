@@ -27,7 +27,7 @@ class IcsController extends Controller
 
     public function actionGroup($id)
     {
-        if(!isset($_SERVER['HTTP_USER_AGENT']))
+        if (!isset($_SERVER['HTTP_USER_AGENT']))
             throw new CHttpException(403, 'У вас нет useragent, поэтому сюда вам нельзя');
         if (!($unique_ics_id = Yii::app()->session->get('unique_ics_id', false))) {
             $unique_ics_id = uniqid();
@@ -110,6 +110,8 @@ class IcsController extends Controller
                         $location->setName(implode(' | ', $desc));
                         $event->addLocation($location);
                     }
+                    if ($schedule_element instanceof GroupReplace && strlen($schedule_element->comment))
+                        $event->setDescription($schedule_element->comment);
                     $calendar->addEvent($event);
                 }
                 $replaces = GroupReplace::model()->findAllByAttributes(['group_id' => $group->id, 'date' => date('Y-m-d', $i), 'number' => $numbers]);
@@ -137,6 +139,8 @@ class IcsController extends Controller
                             $location->setName(implode(' | ', $desc));
                             $event->addLocation($location);
                         }
+                        if ($schedule_element instanceof GroupReplace && strlen($schedule_element->comment))
+                            $event->setDescription($schedule_element->comment);
                         $calendar->addEvent($event);
                     }
             }
