@@ -8,6 +8,7 @@
  */
 class CallLists extends CActiveRecord
 {
+
     public function behaviors()
     {
         return [
@@ -31,6 +32,7 @@ class CallLists extends CActiveRecord
     {
         return [
             ['name', 'required'],
+            ['name', 'unique'],
             ['name', 'length', 'max' => 255],
             ['id, name', 'safe', 'on' => 'search'],
         ];

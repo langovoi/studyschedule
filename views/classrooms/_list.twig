@@ -6,6 +6,12 @@
 'columns': [
 'name',
 {
+'name': 'owner_id',
+'filter': C.Html.listData(model.model('Users').findAll(), 'id', 'username'),
+'value': '$data->owner_id ? $data->owner->username : "-"',
+'visible': App.user.checkAccess('admin')
+},
+{
 'class': 'BsButtonColumn',
 'template': '{update} {delete}',
 'buttons': {

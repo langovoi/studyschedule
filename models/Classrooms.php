@@ -11,6 +11,7 @@
  */
 class Classrooms extends CActiveRecord
 {
+
     public function behaviors()
     {
         return [
@@ -41,7 +42,8 @@ class Classrooms extends CActiveRecord
         ];
     }
 
-    public function byName() {
+    public function byName()
+    {
         $this->dbCriteria->order = 'name ASC';
         return $this;
     }
@@ -92,5 +94,12 @@ class Classrooms extends CActiveRecord
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    protected function beforeSave()
+    {
+        if (!Yii::app()->user->checkAccess('admin') && !Yii::app() instanceof CConsoleApplication && $this->scenario == 'insert')
+            $this->owner_id = Yii::app()->user->getId();
+        return parent::beforeSave();
     }
 }

@@ -37,29 +37,6 @@ class ClassroomsController extends Controller
         }
     }
 
-    public function actionUpdate($id)
-    {
-        $model = new Classrooms();
-        $users_list = CHtml::listData(Users::model()->findAll(), 'id', 'username');
-        if ($model = $model->findByPk($id)) {
-            if (Yii::app()->user->checkAccess('admin') || $model->owner_id == Yii::app()->user->id) {
-                if (Yii::app()->request->isPostRequest) {
-                    $model->setAttributes(Yii::app()->request->getParam('Classrooms'));
-                    if (!Yii::app()->user->checkAccess('admin')) {
-                        $model->setAttribute('owner_id', Yii::app()->user->id);
-                    }
-                    if ($model->save()) {
-                        Yii::app()->user->setFlash('success', 'Кабинет успешно сохранен');
-                        $this->redirect(['index']);
-                    }
-                }
-            } else
-                throw new CHttpException(403, 'Нельзя редактировать чужой объект');
-            $this->render('form', ['model' => $model, 'users_list' => $users_list]);
-        } else
-            throw new CHttpException(404, 'Кабинет не найден');
-    }
-
     public function actionCreate()
     {
         $model = new Classrooms('insert');
@@ -67,9 +44,6 @@ class ClassroomsController extends Controller
         if (Yii::app()->request->isPostRequest) {
             $classroom = Yii::app()->request->getParam('Classrooms');
             $model->setAttributes($classroom);
-            if (!Yii::app()->user->checkAccess('admin')) {
-                $model->setAttribute('owner_id', Yii::app()->user->id);
-            }
             if ($model->save()) {
                 Yii::app()->user->setFlash('success', 'Кабинет успешно создан');
                 $this->redirect(['index']);
@@ -78,20 +52,39 @@ class ClassroomsController extends Controller
         $this->render('form', ['model' => $model, 'users_list' => $users_list]);
     }
 
+    public function actionUpdate($id)
+    {
+        $model = Classrooms::model()->findByPk($id);
+        if (!$model)
+            throw new CHttpException(404, 'Кабинет не найден');
+        $users_list = CHtml::listData(Users::model()->findAll(), 'id', 'username');
+        if (!Yii::app()->user->checkAccess('admin') && $model->owner_id !== Yii::app()->user->id)
+            throw new CHttpException(403, 'Нельзя редактировать чужой объект');
+        if (Yii::app()->request->isPostRequest) {
+            $model->setAttributes(Yii::app()->request->getParam('Classrooms'));
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'Кабинет успешно сохранен');
+                $this->redirect(['index']);
+            }
+        }
+        $this->render('form', ['model' => $model, 'users_list' => $users_list]);
+    }
+
     public function actionDelete($id, $confirm = 0)
     {
-        $model = new Classrooms();
-        if ($model = $model->findByPk($id)) {
-            if (Yii::app()->user->checkAccess('admin') || $model->owner_id == Yii::app()->user->id) {
-                if ($confirm) {
-                    $model->delete();
-                    $this->redirect(['index']);
-                } else {
-                    $this->render('delete', ['model' => $model]);
-                }
-            } else
-                throw new CHttpException(403, 'Нельзя удалить чужой объект');
-        } else
+        $model = Classrooms::model()->findByPk($id);
+        if (!$model)
             throw new CHttpException(404, 'Кабинет не найден');
+        if (!Yii::app()->user->checkAccess('admin') && $model->owner_id != Yii::app()->user->id)
+            throw new CHttpException(403, 'Нельзя удалить чужой объект');
+        if ($confirm) {
+            if ($model->delete()) {
+                Yii::app()->user->setFlash('success', 'Кабинет успешно удален');
+                $this->redirect(['index']);
+            } else {
+                Yii::app()->user->setFlash('error', 'Ошибка при удалении');
+            }
+        }
+        $this->render('delete', ['model' => $model]);
     }
 }

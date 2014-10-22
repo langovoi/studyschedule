@@ -11,6 +11,7 @@
  */
 class CallListsElements extends CActiveRecord
 {
+
     public function behaviors()
     {
         return [
@@ -41,18 +42,6 @@ class CallListsElements extends CActiveRecord
             ['number', 'numberCheck'],
             ['id, number, start_time, end_time, call_list_id', 'safe', 'on' => 'search'],
         ];
-    }
-
-    public function numberCheck($attribute)
-    {
-        if (($model = CallListsElements::model()->findByAttributes([$attribute => $this->$attribute, 'call_list_id' => $this->call_list_id])) && $model->id !== $this->id)
-            $this->addError($attribute, 'В данном списке уже есть элемент с этим номером пары');
-    }
-
-    public function timeCheck($attribute)
-    {
-        if (($model = CallListsElements::model()->find('start_time <= :time AND end_time >= :time AND call_list_id = :call_list_id', [':time' => $this->$attribute, ':call_list_id' => $this->call_list_id])) && $model->id !== $this->id)
-            $this->addError($attribute, 'Время пары не может пересекаться с другой');
     }
 
     /**
@@ -97,18 +86,6 @@ class CallListsElements extends CActiveRecord
         ]);
     }
 
-    protected function afterFind()
-    {
-        $start_time = explode(':', $this->start_time);
-        array_pop($start_time);
-        $end_time = explode(':', $this->end_time);
-        array_pop($end_time);
-        $this->start_time = implode(':', $start_time);
-        $this->end_time = implode(':', $end_time);
-
-        return parent::afterFind();
-    }
-
     /**
      * @param string $className
      * @return CallListsElements
@@ -116,5 +93,25 @@ class CallListsElements extends CActiveRecord
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    protected function afterFind()
+    {
+        $this->start_time = substr($this->start_time, 0, 5);
+        $this->end_time = substr($this->end_time, 0, 5);
+
+        return parent::afterFind();
+    }
+
+    public function numberCheck($attribute)
+    {
+        if (($model = CallListsElements::model()->findByAttributes([$attribute => $this->$attribute, 'call_list_id' => $this->call_list_id])) && $model->id !== $this->id)
+            $this->addError($attribute, 'В данном списке уже есть элемент с этим номером пары');
+    }
+
+    public function timeCheck($attribute)
+    {
+        if (($model = CallListsElements::model()->find('start_time <= :time AND end_time >= :time AND call_list_id = :call_list_id', [':time' => $this->$attribute, ':call_list_id' => $this->call_list_id])) && $model->id !== $this->id)
+            $this->addError($attribute, 'Время пары не может пересекаться с другой');
     }
 }
