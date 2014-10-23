@@ -50,6 +50,7 @@ class VkCommand extends CConsoleCommand
         foreach ($schedule as $number => $groups) {
             $schedule_text .= $number . ') ' . implode(', ', $groups) . PHP_EOL;
         }
+        $schedule_text .= PHP_EOL . 'Данные предоставлены проектом @studyschedule (Расписание ККЭП)';
 
         $params = http_build_query([
             'owner_id' => $this->owner_id,
