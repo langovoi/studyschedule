@@ -2,6 +2,10 @@
 
 class VkCommand extends CConsoleCommand
 {
+
+    public $access_token = false;
+    public $owner_id = false;
+
     public function actionWhoHasSubjectTomorrow($subject_id)
     {
         $semester = Semesters::model()->actual();
@@ -42,6 +46,18 @@ class VkCommand extends CConsoleCommand
                     $schedule[$replace->number][] = (int)$replace->group->number;
             }
         asort($schedule);
-        var_dump($schedule);
+        $schedule_text = 'У кого завтра физра?' . PHP_EOL;
+        foreach ($schedule as $number => $groups) {
+            $schedule_text .= $number . ') ' . implode(', ', $groups) . PHP_EOL;
+        }
+
+        $params = http_build_query([
+            'owner_id' => $this->owner_id,
+            'message' => $schedule_text,
+            'from_group' => 1,
+            'access_token' => $this->access_token
+        ]);
+
+        file_get_contents('https://api.vk.com/method/wall.post?' . $params);
     }
 }
