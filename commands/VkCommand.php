@@ -14,6 +14,8 @@ class VkCommand extends CConsoleCommand
         $tomorrow_date = (new DateTime())->add(new DateInterval("P1D"))
             ->format('Y-m-d');
         $tomorrow_time = strtotime($tomorrow_date);
+        if (date('N') == 6)
+            return 0;
         $week_number = (date('W', $tomorrow_time) - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
         $week_day = date('N', $tomorrow_time);
         /** @var Subjects $subject */
