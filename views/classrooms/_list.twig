@@ -4,6 +4,10 @@
 'template':'{summary} {pager} <div class="table table-responsive">{items}</div> {pager}',
 'type': constant('BsHtml::GRID_TYPE_STRIPED'),
 'columns': [
+{
+'name': 'id',
+'visible': App.user.checkAccess('admin')
+},
 'name',
 {
 'name': 'owner_id',

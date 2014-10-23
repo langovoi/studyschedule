@@ -51,7 +51,8 @@ class Subjects extends CActiveRecord
     {
         return [
             'owner' => [self::BELONGS_TO, 'Users', 'owner_id'],
-            'schedule_elements' => [self::HAS_MANY, 'ScheduleElemenet', 'subject_id'],
+            'schedule_elements' => [self::HAS_MANY, 'ScheduleElement', 'subject_id'],
+            'replaces' => [self::HAS_MANY, 'GroupReplace', 'subject_id'],
         ];
     }
 
