@@ -38,18 +38,19 @@ class IcsAnalyticsController extends Controller
         }
     }
 
-    public function actionChart($interval = 'day', $group = 'all', $days = '5')
+    public function actionChart($interval = 'day', $group = 'all', $days = '2')
     {
         if (!in_array($interval, ['day', 'hour']))
             throw new CHttpException(404);
         if (!in_array($group, ['all', 'groups', 'platforms']))
             throw new CHttpException(404);
         $series = [];
+        $date = date('Y-m-d', strtotime('- ' . $days . 'days', time()));
         switch ($group) {
             case 'groups':
                 $data_temp = [];
                 /** @var IcsAnalytics $element */
-                foreach (IcsAnalytics::model()->findAll('time >= :time', [':time' => date('Y-m-d', strtotime('- ' . $days . 'days', time()))]) as $element) {
+                foreach (IcsAnalytics::model()->findAll('time >= :time', [':time' => $date]) as $element) {
                     $data_temp[$element->group][] = $element;
                 }
                 foreach ($data_temp as $chart_name => $data) {
@@ -59,21 +60,19 @@ class IcsAnalyticsController extends Controller
             case 'platforms':
                 $data_temp = [];
                 $criteria = new CDbCriteria();
-                $criteria->addCondition('time >= :time');
-                $criteria->params[':time'] = date('Y-m-d', strtotime('- ' . $days . 'days', time()));
-                $criteria->addSearchCondition('useragent', 'Android');
+                $criteria->compare('useragent', 'Android', true);
+                $criteria->compare('time', '>=' . $date);
                 $data_temp['Android'] = IcsAnalytics::model()->findAll($criteria);
                 $criteria = new CDbCriteria();
-                $criteria->addCondition('time >= :time');
-                $criteria->params[':time'] = date('Y-m-d', strtotime('- ' . $days . 'days', time()));
                 $criteria->compare('useragent', 'iOS', true, 'OR');
                 $criteria->compare('useragent', 'Mac', true, 'OR');
+                $criteria->compare('time', '>=' . $date);
                 $data_temp['iOS/Mac'] = IcsAnalytics::model()->findAll($criteria);
                 $criteria = new CDbCriteria();
-                $criteria->addCondition('time >= :time');
-                $criteria->params[':time'] = date('Y-m-d', strtotime('- ' . $days . 'days', time()));
-                $criteria->addSearchCondition('useragent', 'Android', true, 'AND', 'NOT LIKE');
-                $criteria->addSearchCondition('useragent', 'iOS', true, 'AND', 'NOT LIKE');
+                $criteria->compare('useragent', '<>Android', true);
+                $criteria->compare('useragent', '<>iOS', true);
+                $criteria->compare('useragent', '<>Mac', true);
+                $criteria->compare('time', '>=' . $date);
                 $data_temp['Другие'] = IcsAnalytics::model()->findAll($criteria);
                 foreach ($data_temp as $chart_name => $data) {
                     $series[] = ['name' => $chart_name, 'data' => $this->dataCountByInterval($data, $interval)];
@@ -81,7 +80,7 @@ class IcsAnalyticsController extends Controller
                 break;
             case 'all':
             default:
-                $series[] = ['name' => 'Всего', 'data' => $this->dataCountByInterval(IcsAnalytics::model()->findAll('time >= :time', [':time' => date('Y-m-d', strtotime('- ' . $days . 'days', time()))]), $interval)];
+                $series[] = ['name' => 'Всего', 'data' => $this->dataCountByInterval(IcsAnalytics::model()->findAll('time >= :time', [':time' => $date]), $interval)];
         }
         $this->render('chart', ['series' => $series, 'interval' => $interval, 'group' => $group]);
     }
