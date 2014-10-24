@@ -101,7 +101,7 @@ class Group extends CActiveRecord
         for ($i = 1; $i <= 2; $i++)
             for ($j = 1; $j <= 6; $j++) {
                 $sql = "(SELECT COUNT(*) FROM `$schedule_table` WHERE `$schedule_table`.`week_number` = $i AND `$schedule_table`.`week_day` = $j AND `$schedule_table`.`group_id` = `t`.`id` AND `$schedule_table`.`semester_id` = :semester_id) " . ($bool ? ">" : "=") . " 0";
-                $criteria->addCondition($sql);
+                $criteria->addCondition($sql, $bool ? 'AND' : 'OR');
             }
         return $this;
     }
