@@ -30,14 +30,14 @@ class HelpController extends Controller
     public function actionIndex()
     {
         $group_list = [];
-        foreach (Group::model()->findAll() as $group)
+        foreach (Group::model()->filled()->findAll() as $group)
             $group_list[$group->number] = $group->number;
         $this->render('index', ['group_list' => $group_list, 'os_list' => self::$os]);
     }
 
     public function actionPhone($group, $os)
     {
-        $group = Group::model()->findByAttributes(['number' => $group]);
+        $group = Group::model()->filled()->findByAttributes(['number' => $group]);
         if (!in_array(strtolower($os), array_keys(self::$os)))
             throw new CHttpException(404, "Инструкции для данной системы нет");
         if (!$group)

@@ -19,7 +19,7 @@ class ScheduleController extends Controller
     public function actionIndex($group = false)
     {
         /** @var Group $group */
-        if ($group != false && !($group = Group::model()->findByAttributes(['number' => $group])))
+        if ($group != false && !($group = Group::model()->filled()->findByAttributes(['number' => $group])))
             throw new CHttpException(404, 'Данной группы не найден');
         /** @var Semesters $semester */
         $semester = Semesters::model()->actual();
@@ -27,7 +27,7 @@ class ScheduleController extends Controller
         $current_time = strtotime($current_date);
         if (!$semester)
             throw new CHttpException(404, 'Сейчас нет семестра :-(');
-        $group_list = CHtml::listData(Group::model()->findAll(), 'number', 'number');
+        $group_list = CHtml::listData(Group::model()->filled()->findAll(), 'number', 'number');
 
         $schedule = [];
         if ($group) {

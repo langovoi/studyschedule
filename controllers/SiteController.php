@@ -122,8 +122,4 @@ class SiteController extends Controller
         }
         $this->render('invite', ['model' => $model]);
     }
-
-    public function actionTest($filled = true) {
-        var_dump(Group::model()->filled($filled)->findAll());
-    }
 }
