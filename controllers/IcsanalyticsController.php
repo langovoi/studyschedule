@@ -91,7 +91,7 @@ class IcsAnalyticsController extends Controller
                 foreach (Yii::app()->db->createCommand()
                              ->select($time . " as 'date', count(*) as `count`, `group`")
                              ->from(IcsAnalytics::model()->tableName())
-                             ->where("`useragent` NOT LIKE '%iOS%' AND `useragent` NOT LIKE '%Mac%' AND `useragent` LIKE '%Android%'")
+                             ->where("`useragent` NOT LIKE '%iOS%' AND `useragent` NOT LIKE '%Mac%' AND `useragent` NOT LIKE '%Android%'")
                              ->group($time)
                              ->queryAll() as $row)
                     $data_temp['Другие'][] = [strtotime($row['date']) * 1000, (int)$row['count']];
