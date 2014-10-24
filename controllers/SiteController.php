@@ -12,7 +12,7 @@ class SiteController extends Controller
     public function accessRules()
     {
         return [
-            ['allow', 'users' => ['*'], 'actions' => ['index', 'login', 'error', 'invite', 'captcha']],
+            ['allow', 'users' => ['*'], 'actions' => ['index', 'login', 'error', 'invite', 'captcha', 'test']],
             ['allow', 'users' => ['@'], 'actions' => ['logout', 'dashboard']],
             ['deny', 'users' => ['*']],
         ];
@@ -121,5 +121,9 @@ class SiteController extends Controller
             }
         }
         $this->render('invite', ['model' => $model]);
+    }
+
+    public function actionTest($filled = true) {
+        var_dump(Group::model()->filled($filled)->findAll());
     }
 }
