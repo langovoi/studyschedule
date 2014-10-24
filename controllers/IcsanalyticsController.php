@@ -38,81 +38,79 @@ class IcsAnalyticsController extends Controller
         }
     }
 
-    public function actionChart($interval = 'day', $group = 'all', $days = '2')
+    public function actionChart($interval = 'day', $group = 'all')
     {
         if (!in_array($interval, ['day', 'hour']))
             throw new CHttpException(404);
         if (!in_array($group, ['all', 'groups', 'platforms']))
             throw new CHttpException(404);
+        switch ($interval) {
+            default:
+            case 'day':
+                $time = "DATE_FORMAT(`time`, '%Y-%m-%d')";
+                break;
+            case 'hour':
+                $time = "DATE_FORMAT(`time`, '%Y-%m-%d %H:00:00')";
+                break;
+        }
         $series = [];
-        $date = date('Y-m-d', strtotime('- ' . $days . 'days', time()));
         switch ($group) {
             case 'groups':
-                $data_temp = [];
-                /** @var IcsAnalytics $element */
-                foreach (IcsAnalytics::model()->findAll('time >= :time', [':time' => $date]) as $element) {
-                    $data_temp[$element->group][] = $element;
-                }
-                foreach ($data_temp as $chart_name => $data) {
-                    $series[] = ['name' => $chart_name, 'data' => $this->dataCountByInterval($data, $interval)];
+                $data = [];
+                foreach (Yii::app()->db->createCommand()
+                             ->select($time . " as 'date', count(*) as `count`, `group`")
+                             ->from(IcsAnalytics::model()->tableName())
+                             ->group($time . ', `group`')
+                             ->queryAll() as $row)
+                    $data[(int)$row['group']][] = [strtotime($row['date']) * 1000, (int)$row['count']];
+                foreach ($data as $chart_name => $chart_data) {
+                    $series[] = ['name' => $chart_name, 'data' => $chart_data];
                 }
                 break;
             case 'platforms':
                 $data_temp = [];
-                $criteria = new CDbCriteria();
-                $criteria->compare('useragent', 'Android', true);
-                $criteria->compare('time', '>=' . $date);
-                $data_temp['Android'] = IcsAnalytics::model()->findAll($criteria);
-                $criteria = new CDbCriteria();
-                $criteria->compare('useragent', 'iOS', true, 'OR');
-                $criteria->compare('useragent', 'Mac', true, 'OR');
-                $criteria->compare('time', '>=' . $date);
-                $data_temp['iOS/Mac'] = IcsAnalytics::model()->findAll($criteria);
-                $criteria = new CDbCriteria();
-                $criteria->compare('useragent', '<>Android', true);
-                $criteria->compare('useragent', '<>iOS', true);
-                $criteria->compare('useragent', '<>Mac', true);
-                $criteria->compare('time', '>=' . $date);
-                $data_temp['Другие'] = IcsAnalytics::model()->findAll($criteria);
+                $data_temp['Android'] = [];
+                foreach (Yii::app()->db->createCommand()
+                             ->select($time . " as 'date', count(*) as `count`, `group`")
+                             ->from(IcsAnalytics::model()->tableName())
+                             ->where("`useragent` LIKE '%Android%'")
+                             ->group($time)
+                             ->queryAll() as $row)
+                    $data_temp['Android'][] = [strtotime($row['date']) * 1000, (int)$row['count']];
+
+                $data_temp['iOS/Mac'] = [];
+                foreach (Yii::app()->db->createCommand()
+                             ->select($time . " as 'date', count(*) as `count`, `group`")
+                             ->from(IcsAnalytics::model()->tableName())
+                             ->where("`useragent` LIKE '%iOS%' OR `useragent` LIKE '%Mac%'")
+                             ->group($time)
+                             ->queryAll() as $row)
+                    $data_temp['iOS/Mac'][] = [strtotime($row['date']) * 1000, (int)$row['count']];
+
+                $data_temp['Другие'] = [];
+                foreach (Yii::app()->db->createCommand()
+                             ->select($time . " as 'date', count(*) as `count`, `group`")
+                             ->from(IcsAnalytics::model()->tableName())
+                             ->where("`useragent` NOT LIKE '%iOS%' AND `useragent` NOT LIKE '%Mac%' AND `useragent` LIKE '%Android%'")
+                             ->group($time)
+                             ->queryAll() as $row)
+                    $data_temp['Другие'][] = [strtotime($row['date']) * 1000, (int)$row['count']];
+
                 foreach ($data_temp as $chart_name => $data) {
-                    $series[] = ['name' => $chart_name, 'data' => $this->dataCountByInterval($data, $interval)];
+                    $series[] = ['name' => $chart_name, 'data' => $data];
                 }
                 break;
             case 'all':
             default:
-                $series[] = ['name' => 'Всего', 'data' => $this->dataCountByInterval(IcsAnalytics::model()->findAll('time >= :time', [':time' => $date]), $interval)];
+                $data = [];
+                foreach (Yii::app()->db->createCommand()
+                             ->select($time . " as 'date', count(*) as `count`")
+                             ->from(IcsAnalytics::model()->tableName())
+                             ->group($time)
+                             ->queryAll() as $row)
+                    $data[] = [strtotime($row['date']) * 1000, (int)$row['count']];
+                $series[] = ['name' => 'Всего', 'data' => $data];
         }
         $this->render('chart', ['series' => $series, 'interval' => $interval, 'group' => $group]);
-    }
-
-    private function dataCountByInterval($data, $interval)
-    {
-        if (!in_array($interval, ['day', 'hour']))
-            return false;
-        $data_temp = [];
-        $return = [];
-        /** @var IcsAnalytics $data_element */
-        foreach ($data as $data_element) {
-            $datetime = explode(' ', $data_element->time);
-            $time = explode(':', $datetime[1]);
-            switch ($interval) {
-                case 'hour':
-                    $timestamp = strtotime($datetime[0] . ' ' . $time[0] . ':00:00');
-                    if (!isset($data_temp[$timestamp]))
-                        $data_temp[$timestamp] = 1;
-                    else $data_temp[$timestamp]++;
-                    break;
-                case 'day':
-                default:
-                    $timestamp = strtotime($datetime[0] . ' 00:00:00');
-                    if (!isset($data_temp[$timestamp]))
-                        $data_temp[$timestamp] = 1;
-                    else $data_temp[$timestamp]++;
-            }
-        }
-        foreach ($data_temp as $time => $count) {
-            $return[] = [(int)($time * 1000), (int)$count];
-        }
-        return $return;
     }
 }
