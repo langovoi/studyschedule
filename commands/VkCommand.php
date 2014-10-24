@@ -14,7 +14,7 @@ class VkCommand extends CConsoleCommand
         $tomorrow_date = (new DateTime())->add(new DateInterval("P1D"))
             ->format('Y-m-d');
         $tomorrow_time = strtotime($tomorrow_date);
-        if(Holiday::model()->findByAttributes(['date' => $tomorrow_date]) || date('N', $tomorrow_time) == 7)
+        if (Holiday::model()->findByAttributes(['date' => $tomorrow_date]) || date('N', $tomorrow_time) == 7)
             throw new CException('Завтра выходной');
         $week_number = (date('W', $tomorrow_time) - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
         $week_day = date('N', $tomorrow_time);
@@ -48,7 +48,7 @@ class VkCommand extends CConsoleCommand
                     $schedule[$replace->number][] = (int)$replace->group->number;
             }
         asort($schedule);
-        $schedule_text = 'У кого завтра физра?' . PHP_EOL;
+        $schedule_text = 'У кого завтра ' . $subject->name . '?' . PHP_EOL;
         foreach ($schedule as $number => $groups) {
             $schedule_text .= $number . ') ' . implode(', ', $groups) . PHP_EOL;
         }

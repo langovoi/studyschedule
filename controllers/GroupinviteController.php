@@ -2,6 +2,7 @@
 
 class GroupInviteController extends Controller
 {
+
     public function filters()
     {
         return [
