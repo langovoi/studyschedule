@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/Moscow');
+
 // change the following paths if necessary
 $yiic = dirname(__FILE__) . '/vendor/yiisoft/yii/framework/yiic.php';
 
