@@ -7,6 +7,7 @@
  *
  * @property Users $owner
  * @property ScheduleElement[] $schedule_elements
+ * @property GroupReplace[] $replaces
  */
 class Group extends CActiveRecord
 {
@@ -45,7 +46,8 @@ class Group extends CActiveRecord
     {
         return [
             'owner' => [self::BELONGS_TO, 'Users', 'owner_id'],
-            'schedule_elements' => [self::HAS_MANY, 'ScheduleElement', 'group_id']
+            'schedule_elements' => [self::HAS_MANY, 'ScheduleElement', 'group_id'],
+            'replaces' => [self::HAS_MANY, 'GroupReplace', 'group_id']
         ];
     }
 

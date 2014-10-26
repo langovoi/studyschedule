@@ -1,0 +1,34 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Настройка автопостинга в ВК группы #{{ group.number }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                {% include '/views/particle/notice.twig' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Настройка автопостинга в ВК</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ C.Html.beginForm({0: 'autopost', id: group.number}, 'get') }}
+                {{ C.Html.hiddenField('step', 1) }}
+                Сначало нужно получить ключ для доступа: <br/>
+                <ol>
+                    <li>Перейдите по <a
+                                href="https://oauth.vk.com/authorize?client_id=4601759&scope=wall,groups,offline&redirect_uri=https://oauth.vk.com/blank.htmlI&display=popup&v=5.25&response_type=token"
+                                class="btn btn-info btn-xs" target="_blank">ссылке</a> и подтвердите доступ
+                    </li>
+                    <li>Скопируйте ссылку и вставьте {{ C.Html.textField('access_token', '', {placeholder: 'сюда'}) }}</li>
+                    <li>{{ C.Html.submitButton('Далее', {class: 'btn btn-success btn-xs'}) }}</li>
+                </ol>
+                {{ C.Html.endForm() }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

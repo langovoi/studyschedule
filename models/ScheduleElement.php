@@ -44,7 +44,7 @@ class ScheduleElement extends CActiveRecord
             ['group_id, semester_id, week_number, week_day, number, subject_id', 'required'],
             ['group_id, semester_id, week_number, week_day, number, classroom_id, teacher_id, subject_id', 'numerical', 'integerOnly' => true],
             ['week_number', 'in', 'allowEmpty' => false, 'range' => [1, 2]],
-            ['week_day', 'in', 'allowEmpty' => false, 'range' => [1, 2, 3, 4, 5, 6, 7]],
+            ['week_day', 'in', 'allowEmpty' => false, 'range' => [1, 2, 3, 4, 5]],
             ['id, group_id, semester_id, week_number, week_day, number, classroom_id, teacher_id, subject_id', 'safe', 'on' => 'search'],
         ];
     }

@@ -11,7 +11,6 @@
  */
 class Classrooms extends CActiveRecord
 {
-
     public function behaviors()
     {
         return [

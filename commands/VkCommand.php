@@ -47,7 +47,7 @@ class VkCommand extends CConsoleCommand
                 if (!in_array((int)$replace->group->number, $schedule[$replace->number]))
                     $schedule[$replace->number][] = (int)$replace->group->number;
             }
-        asort($schedule);
+        ksort($schedule);
         $schedule_text = 'У кого завтра ' . $subject->name . '?' . PHP_EOL;
         foreach ($schedule as $number => $groups) {
             $schedule_text .= $number . ') ' . implode(', ', $groups) . PHP_EOL;
@@ -62,5 +62,59 @@ class VkCommand extends CConsoleCommand
         ]);
 
         file_get_contents('https://api.vk.com/method/wall.post?' . $params);
+    }
+
+    public function actionAutopost()
+    {
+        $semester = Semesters::model()->actual();
+        if (!$semester)
+            throw new CException('Нет семестра');
+        $tomorrow_date = (new DateTime())->add(new DateInterval("P1D"))
+            ->format('Y-m-d');
+        $tomorrow_time = strtotime($tomorrow_date);
+        if (Holiday::model()->findByAttributes(['date' => $tomorrow_date]) || date('N', $tomorrow_time) == 7)
+            throw new CException('Завтра выходной');
+        $current_hour = date('G');
+        $week_number = (date('W', $tomorrow_time) - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
+        $week_day = date('N', $tomorrow_time);
+        /** @var GroupAutopost[] $autoposts */
+        if (!($autoposts = GroupAutopost::model()->with(['group' => ['scopes' => 'filled', 'with' => ['schedule_elements' => ['condition' => 'week_number = :week_number AND week_day = :week_day', 'params' => [':week_number' => $week_number, ':week_day' => $week_day]]]]])->findAllByAttributes(['hour' => $current_hour])))
+            throw new CException('Нет групп для автопостинга');
+        foreach ($autoposts as $autopost) {
+            $replaces = CHtml::listData(GroupReplace::model()->with(['subject', 'classroom', 'teacher'])->findAllByAttributes(['group_id' => $autopost->group_id, 'date' => $tomorrow_date]), 'number', function ($model) {
+                return array_merge($model->attributes, ['teacher' => $model->teacher, 'classroom' => $model->classroom, 'subject' => $model->subject]);
+            });
+            $schedule_elements = CHtml::listData($autopost->group->schedule_elements, 'number', function ($model) {
+                return array_merge($model->attributes, ['teacher' => $model->teacher, 'classroom' => $model->classroom, 'subject' => $model->subject]);
+            });
+            $schedule = $replaces + $schedule_elements;
+            ksort($schedule);
+            $schedule_text = 'Расписание на завтра:' . PHP_EOL;
+            if ($schedule)
+                foreach ($schedule as $subject) {
+                    if (isset($subject['cancel']) && $subject['cancel']) continue;
+                    $schedule_text .= $subject['number'] . ') ' . $subject['subject']->name;
+                    if ($subject['teacher'])
+                        $schedule_text .= ', ' . $subject['teacher']->lastname . ' ' . mb_substr($subject['teacher']->firstname, 0, 1, "UTF-8") . '.' . mb_substr($subject['teacher']->middlename, 0, 1, "UTF-8") . '.';
+                    if ($subject['classroom'])
+                        $schedule_text .= ' (' . $subject['classroom']->name . ')';
+                    if (isset($subject['comment']) && strlen($subject['comment']))
+                        $schedule_text .= ' - ' . $subject['comment'];
+                    $schedule_text .= PHP_EOL;
+                }
+            else $schedule_text .= 'Пар нет';
+
+            $schedule_text .= PHP_EOL . 'Данные предоставлены проектом @studyschedule (Расписание ККЭП)';
+
+            $params = http_build_query([
+                'owner_id' => $autopost->page_id,
+                'message' => $schedule_text,
+                'from_group' => 1,
+                'access_token' => $autopost->access_token
+            ]);
+
+            var_dump(file_get_contents('https://api.vk.com/method/wall.post?' . $params));
+        }
+
     }
 }

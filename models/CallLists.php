@@ -8,7 +8,6 @@
  */
 class CallLists extends CActiveRecord
 {
-
     public function behaviors()
     {
         return [

@@ -11,7 +11,6 @@
  */
 class CallListsElements extends CActiveRecord
 {
-
     public function behaviors()
     {
         return [
