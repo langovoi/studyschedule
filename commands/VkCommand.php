@@ -72,7 +72,7 @@ class VkCommand extends CConsoleCommand
         $tomorrow_date = (new DateTime())->add(new DateInterval("P1D"))
             ->format('Y-m-d');
         $tomorrow_time = strtotime($tomorrow_date);
-        if (Holiday::model()->findByAttributes(['date' => $tomorrow_date]) || date('N', $tomorrow_time) == 7)
+        if (date('N', $tomorrow_time) == 7)
             throw new CException('Завтра выходной');
         $current_hour = date('G');
         $week_number = (date('W', $tomorrow_time) - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
@@ -90,19 +90,29 @@ class VkCommand extends CConsoleCommand
             $schedule = $replaces + $schedule_elements;
             ksort($schedule);
             $schedule_text = 'Расписание на завтра:' . PHP_EOL;
-            if ($schedule)
-                foreach ($schedule as $subject) {
-                    if (isset($subject['cancel']) && $subject['cancel']) continue;
-                    $schedule_text .= $subject['number'] . ') ' . $subject['subject']->name;
-                    if ($subject['teacher'])
-                        $schedule_text .= ', ' . $subject['teacher']->lastname . ' ' . mb_substr($subject['teacher']->firstname, 0, 1, "UTF-8") . '.' . mb_substr($subject['teacher']->middlename, 0, 1, "UTF-8") . '.';
-                    if ($subject['classroom'])
-                        $schedule_text .= ' (' . $subject['classroom']->name . ')';
-                    if (isset($subject['comment']) && strlen($subject['comment']))
-                        $schedule_text .= ' - ' . $subject['comment'];
-                    $schedule_text .= PHP_EOL;
-                }
-            else $schedule_text .= 'Пар нет';
+            $schedule_count = 0;
+            /** @var $holiday Holiday */
+            if (($holiday = Holiday::model()->findByAttributes(['date' => $tomorrow_date]))) {
+                $schedule_text .= 'Выходной - ' . $holiday->name;
+            } else {
+                if ($schedule)
+                    foreach ($schedule as $subject) {
+                        if (isset($subject['cancel']) && $subject['cancel']) {
+                            continue;
+                        }
+                        $schedule_count++;
+                        $schedule_text .= $subject['number'] . ') ' . $subject['subject']->name;
+                        if ($subject['teacher'])
+                            $schedule_text .= ', ' . $subject['teacher']->lastname . ' ' . mb_substr($subject['teacher']->firstname, 0, 1, "UTF-8") . '.' . mb_substr($subject['teacher']->middlename, 0, 1, "UTF-8") . '.';
+                        if ($subject['classroom'])
+                            $schedule_text .= ' (' . $subject['classroom']->name . ')';
+                        if (isset($subject['comment']) && strlen($subject['comment']))
+                            $schedule_text .= ' - ' . $subject['comment'];
+                        $schedule_text .= PHP_EOL;
+                    }
+                if (!$schedule || $schedule_count == 0)
+                    $schedule_text .= 'Пар нет';
+            }
 
             $schedule_text .= PHP_EOL . 'Данные предоставлены проектом @studyschedule (Расписание ККЭП)';
 
@@ -112,8 +122,9 @@ class VkCommand extends CConsoleCommand
                 'from_group' => 1,
                 'access_token' => $autopost->access_token
             ]);
-
+            echo "----" . $autopost->group->number . "----" . PHP_EOL;
             var_dump(file_get_contents('https://api.vk.com/method/wall.post?' . $params));
+            echo PHP_EOL;
         }
 
     }
