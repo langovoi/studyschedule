@@ -1,0 +1,26 @@
+{% extends '/views/layouts/main.twig' %}
+
+{% block title %}Настройка автопостинга в ВК группы #{{ group.number }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                {% include '/views/particle/notice.twig' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Настройка автопостинга в ВК</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ C.Html.beginForm({0: 'autopost', id: group.number}, 'get') }}
+                {{ C.Html.hiddenField('delete', 1) }}
+                {{ C.Html.submitButton('Отключить', {class: 'btn btn-danger'}) }}
+                {{ C.Html.endForm() }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
