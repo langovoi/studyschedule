@@ -5,5 +5,6 @@ return [
     'emulatePrepare' => true,
     'username' => 'root',
     'password' => '',
+    'tablePrefix' => '',
     'charset' => 'utf8',
 ];
