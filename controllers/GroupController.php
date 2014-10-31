@@ -297,7 +297,7 @@ class GroupController extends Controller
     public function actionAutoPost($step = 0)
     {
         if (GroupAutopost::model()->findByAttributes(['group_id' => self::$group->id]))
-            throw new CHttpException(403, 'У вашей группы уже есть автопостинг');
+            throw new CHttpException(403, 'У вашей группы уже есть автопостинг, его настройки будут доступны позже');
         if (!in_array($step, [0, 1, 2]))
             throw new CHttpException(404, 'Данный шаг отсутсвует');
         switch ($step) {
@@ -311,27 +311,36 @@ class GroupController extends Controller
                     $this->render('autopost/token', ['group' => self::$group]);
                 } else {
                     parse_str(explode('#', $url)[1], $url_data);
-                    if (!$url_data['access_token']) {
+                    if (!isset($url_data['access_token'])) {
                         Yii::app()->user->setFlash('error', 'Ссылка неверна');
                         $this->render('autopost/token', ['group' => self::$group]);
                     } else {
                         $access_token = $url_data['access_token'];
                         $params = http_build_query([
-                            'extended' => 1,
-                            'access_token' => $access_token,
-                            'filter' => 'moder'
+                            'access_token' => $access_token
                         ]);
-                        $answer = json_decode(file_get_contents('https://api.vk.com/method/groups.get?' . $params), true);
+                        $answer = json_decode(file_get_contents('https://api.vk.com/method/account.getAppPermissions?' . $params), true);
                         if (isset($answer['error'])) {
                             Yii::app()->user->setFlash('error', 'Ключ в ссылке неверный');
                             $this->render('autopost/token', ['group' => self::$group]);
                         } else {
-                            Yii::app()->session->add('vk_access_token', $access_token);
-                            $groups = [];
-                            foreach ($answer['response'] as $group)
-                                if ($group['gid'])
-                                    $groups[-(int)($group['gid'])] = $group['name'];
-                            $this->render('autopost/page_and_hover', ['group' => self::$group, 'groups' => $groups, 'hours' => array_combine(array_values(GroupAutopost::$hours), array_values(GroupAutopost::$hours))]);
+                            if (($answer['response'] & 262144) == 0 || ($answer['response'] & 8192) == 0 || ($answer['response'] & 65536) == 0) {
+                                Yii::app()->user->setFlash('error', 'Ключ в ссылке не дает нужных прав');
+                                $this->render('autopost/token', ['group' => self::$group]);
+                            } else {
+                                $params = http_build_query([
+                                    'extended' => 1,
+                                    'access_token' => $access_token,
+                                    'filter' => 'moder'
+                                ]);
+                                $answer = json_decode(file_get_contents('https://api.vk.com/method/groups.get?' . $params), true);
+                                Yii::app()->session->add('vk_access_token', $access_token);
+                                $groups = [];
+                                foreach ($answer['response'] as $group)
+                                    if ($group['gid'])
+                                        $groups[-(int)($group['gid'])] = $group['name'];
+                                $this->render('autopost/page_and_hour', ['group' => self::$group, 'groups' => $groups, 'hours' => array_combine(array_values(GroupAutopost::$hours), array_values(GroupAutopost::$hours))]);
+                            }
                         }
                     }
                 }
@@ -357,9 +366,10 @@ class GroupController extends Controller
                         foreach ($answer['response'] as $group)
                             if ($group['gid'])
                                 $groups[-(int)($group['gid'])] = $group['name'];
-                        $this->render('autopost/page_and_hover', ['group' => self::$group, 'groups' => $groups, 'hours' => array_combine(array_values(GroupAutopost::$hours), array_values(GroupAutopost::$hours))]);
+                        $this->render('autopost/page_and_hour', ['group' => self::$group, 'groups' => $groups, 'hours' => array_combine(array_values(GroupAutopost::$hours), array_values(GroupAutopost::$hours))]);
                     }
                 } else {
+                    Yii::app()->session->remove('access_token');
                     $autopost = new GroupAutopost();
                     $autopost->setAttributes([
                         'group_id' => self::$group->id,
@@ -367,7 +377,7 @@ class GroupController extends Controller
                         'hour' => $hour,
                         'access_token' => $access_token
                     ]);
-                    $autopost->save(false);
+                    $autopost->save();
                     Yii::app()->user->setFlash('success', 'Автопостинг в ВК успешно настроен');
                     $this->redirect(['site/dashboard']);
                 }
