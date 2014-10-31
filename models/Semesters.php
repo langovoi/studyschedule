@@ -9,8 +9,9 @@
  * @property integer $call_list
  * @property integer $call_list_short
  *
- * @property CallLists $callListShort
- * @property CallLists $callList
+ * @method CallLists call_list_short
+ * @method CallLists call_list
+ * @method Semesters with
  */
 class Semesters extends CActiveRecord
 {
@@ -51,7 +52,7 @@ class Semesters extends CActiveRecord
         $time = strtotime($this->$attribute);
         if ($this->isNewRecord && $time < strtotime(date('Y-m-d'))) {
             $this->addError($attribute, 'Нельзя установить дату меньше сегоднешней');
-        } elseif(($semester = Semesters::model()->find('start_date <= :date AND end_date >= :date', [':date' => $this->$attribute])) && $semester->id !== $this->id) {
+        } elseif (($semester = Semesters::model()->find('start_date <= :date AND end_date >= :date', [':date' => $this->$attribute])) && $semester->id !== $this->id) {
             $this->addError($attribute, 'Уже есть семестр который перекрывают данную дату');
         }
     }
@@ -131,7 +132,8 @@ class Semesters extends CActiveRecord
     /**
      * @return Semesters|false
      */
-    public function actual() {
+    public function actual()
+    {
         return $this->find('start_date <= :date AND end_date >= :date', [':date' => date('Y-m-d')]);
     }
 }

@@ -50,8 +50,8 @@ class IcsController extends Controller
         /** @var Semesters $semester */
         if (!$semester)
             throw new CHttpException(404, 'Сейчас нет семестра :-(');
-        /** @var CallListElements[] $call_list */
-        /** @var CallListElements[] $call_list_short */
+        /** @var CallListsElements[] $call_list */
+        /** @var CallListsElements[] $call_list_short */
         $call_list = [];
         $call_list_short = [];
         /** @var CallListsElements $element */
@@ -94,10 +94,10 @@ class IcsController extends Controller
                 $start_time = new DateTime(date('Y-m-d', $i));
                 $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
                 $call_list_end = explode(':', $current_call_list[$schedule_element->number]->end_time);
-                $start_time->setTime($call_list_start[0], $call_list_start[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
+                $start_time->setTime($call_list_start[0], $call_list_start[1]);
                 $event->setStart($start_time);
                 $end_time = new DateTime(date('Y-m-d', $i));
-                $end_time->setTime($call_list_end[0], $call_list_end[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
+                $end_time->setTime($call_list_end[0], $call_list_end[1]);
                 $event->setEnd($end_time);
                 $event->setSummary($schedule_element->subject->name);
                 $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
@@ -123,10 +123,10 @@ class IcsController extends Controller
                     $start_time = new DateTime(date('Y-m-d', $i));
                     $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
                     $call_list_end = explode(':', $current_call_list[$schedule_element->number]->end_time);
-                    $start_time->setTime($call_list_start[0], $call_list_start[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
+                    $start_time->setTime($call_list_start[0], $call_list_start[1]);
                     $event->setStart($start_time);
                     $end_time = new DateTime(date('Y-m-d', $i));
-                    $end_time->setTime($call_list_end[0], $call_list_end[1])->setTimezone(new DateTimeZone('Europe/Moscow'));
+                    $end_time->setTime($call_list_end[0], $call_list_end[1]);
                     $event->setEnd($end_time);
                     $event->setSummary($schedule_element->subject->name);
                     $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
@@ -174,7 +174,6 @@ if (!function_exists('getallheaders')) {
 
 function get_client_ip()
 {
-    $ipaddress = '';
     if (getenv('HTTP_CLIENT_IP'))
         $ipaddress = getenv('HTTP_CLIENT_IP');
     else if (getenv('HTTP_X_FORWARDED_FOR'))
