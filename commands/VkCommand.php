@@ -78,7 +78,7 @@ class VkCommand extends CConsoleCommand
         $week_number = (date('W', $tomorrow_time) - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
         $week_day = date('N', $tomorrow_time);
         /** @var GroupAutopost[] $autoposts */
-        if (!($autoposts = GroupAutopost::model()->with(['group' => ['scopes' => 'filled', 'with' => ['schedule_elements' => ['condition' => 'week_number = :week_number AND week_day = :week_day', 'params' => [':week_number' => $week_number, ':week_day' => $week_day]]]]])->findAllByAttributes(['hour' => $current_hour])))
+        if (!($autoposts = GroupAutopost::model()->with(['group' => ['scopes' => 'filled', 'with' => ['schedule_elements' => ['condition' => 'week_number = :week_number AND week_day = :week_day', 'params' => [':week_number' => $week_number, ':week_day' => $week_day]]]]])->findAllByAttributes(['hour' => $current_hour, 'status' => GroupAutopost::STATUS_ACTIVE])))
             throw new CException('Нет групп для автопостинга');
         foreach ($autoposts as $autopost) {
             $replaces = CHtml::listData(GroupReplace::model()->with(['subject', 'classroom', 'teacher'])->findAllByAttributes(['group_id' => $autopost->group_id, 'date' => $tomorrow_date]), 'number', function ($model) {
@@ -123,8 +123,20 @@ class VkCommand extends CConsoleCommand
                 'access_token' => $autopost->access_token
             ]);
             echo "----" . $autopost->group->number . "----" . PHP_EOL;
-            var_dump(file_get_contents('https://api.vk.com/method/wall.post?' . $params));
+            $response = file_get_contents('https://api.vk.com/method/wall.post?' . $params);
+            $answer = json_decode($response, true);
+            var_dump($answer);
             echo PHP_EOL;
+            if (isset($answer['error'])) {
+                $autopost->status = GroupAutopost::STATUS_DISABLE;
+                $autopost->save();
+                $email = $autopost->group->owner->email;
+                $mail = new YiiMailer("autopost", ['group' => $autopost->group]);
+                $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
+                $mail->setTo($email);
+                $mail->setSubject('Ошибка автопостинга в ВК');
+                $mail->send();
+            }
         }
 
     }

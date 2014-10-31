@@ -1,6 +1,7 @@
 <?php
 
 $db = !file_exists(dirname(__FILE__) . '/local/db.php') ? require(dirname(__FILE__) . '/db.php') : require(dirname(__FILE__) . '/local/db.php');
+$mail = !file_exists(dirname(__FILE__) . '/local/mail.php') ? require(dirname(__FILE__) . '/mail.php') : require(dirname(__FILE__) . '/local/mail.php');
 
 return [
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
@@ -9,11 +10,25 @@ return [
     'import' => [
         'application.models.*',
         'application.components.*',
+        'application.vendor.sc0rp1d.YiiMailer.YiiMailer',
     ],
     'components' => [
         'db' => $db,
-        'errorHandler' => [
-            'errorAction' => 'site/error',
+        'urlManager' => [
+            'urlFormat' => 'path',
+            'showScriptName' => false,
+            'caseSensitive' => false,
+            'rules' => [
+                '<action:(login|logout)>' => 'site/<action>',
+                'dashboard' => 'site/dashboard',
+                'invite' => 'site/invite',
+                'ics/<id:\d+>' => 'ics/group',
+                'ics/<id:\d+>.ics' => 'ics/group',
+                'group/<id:\d+>/<action:\w+>' => 'group/<action>',
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
         ],
         'authManager' => [
             'class' => 'DbAuthManager',
@@ -29,5 +44,14 @@ return [
                 ],
             ],
         ],
+        'request' => [
+            'hostInfo' => 'http://studyschedule.dev',
+            'baseUrl' => '',
+            'scriptUrl' => '',
+        ],
+    ],
+    'params' => [
+        'YiiMailer' => $mail,
+        'adminEmail' => 'marklangovoi@gmail.com',
     ],
 ];

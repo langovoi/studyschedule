@@ -6,12 +6,16 @@
  * @property integer $page_id
  * @property integer $group_id
  * @property integer $hour
+ * @property integer $status
  *
  * @property Group $group
  */
 class GroupAutopost extends CActiveRecord
 {
-    public static $hours =  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+    static $hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+
+    const STATUS_DISABLE = 0;
+    const STATUS_ACTIVE = 1;
 
     public function behaviors()
     {
@@ -39,6 +43,7 @@ class GroupAutopost extends CActiveRecord
             ['page_id, group_id, hour', 'numerical', 'integerOnly' => true],
             ['access_token', 'length', 'max' => 255],
             ['hour', 'in', 'allowEmpty' => false, 'range' => self::$hours],
+            ['status', 'in', 'allowEmpty' => true, 'range' => [self::STATUS_ACTIVE, self::STATUS_DISABLE]],
             ['id, access_token, page_id, group_id, hour', 'safe', 'on' => 'search'],
         ];
     }
@@ -60,7 +65,7 @@ class GroupAutopost extends CActiveRecord
     {
         return [
             'id' => 'ID',
-            'access_token' => 'Access Token',
+            'access_token' => 'Ключ',
             'page_id' => 'Страница',
             'group_id' => 'Группа',
             'hour' => 'Час',

@@ -21,7 +21,7 @@ return [
     'import' => [
         'application.models.*',
         'application.components.*',
-        'application.vendor.vernes.YiiMailer.YiiMailer',
+        'application.vendor.sc0rp1d.YiiMailer.YiiMailer',
         'bootstrap.behaviors.*',
         'bootstrap.helpers.*',
         'bootstrap.widgets.*',
