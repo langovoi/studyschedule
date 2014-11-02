@@ -45,7 +45,7 @@ return [
             ],
         ],
         'request' => [
-            'hostInfo' => 'http://studyschedule.dev',
+            'hostInfo' => 'http://studyschedule.ru',
             'baseUrl' => '',
             'scriptUrl' => '',
         ],
