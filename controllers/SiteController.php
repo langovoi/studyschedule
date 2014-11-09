@@ -31,7 +31,7 @@ class SiteController extends Controller
     {
         /** @var Semesters $semester */
         $semester = Semesters::model()->actual();
-        $this->render('index', ['group_count' => Group::model()->count(), 'replace_count' => GroupReplace::model()->count('date >= :start_semester AND date <= :end_semester', [':start_semester' => $semester->start_date, ':end_semester' => $semester->end_date]), 'ics_count' => IcsAnalytics::model()->count('time LIKE :date', [':date' => date('Y-m-d') . '%'])]);
+        $this->render('index', ['group_count' => Group::model()->filled()->count(), 'replace_count' => GroupReplace::model()->count('date >= :start_semester AND date <= :end_semester', [':start_semester' => $semester->start_date, ':end_semester' => $semester->end_date]), 'ics_count' => IcsAnalytics::model()->count('time LIKE :date', [':date' => date('Y-m-d') . '%'])]);
     }
 
     public function actionError()
@@ -79,7 +79,7 @@ class SiteController extends Controller
             $invite = GroupInvite::model()->with('group')->findByAttributes(['status' => GroupInvite::INVITE_CREATE, 'hash' => $hash]);
         elseif ($type == 2)
             $invite = Invite::model()->findByAttributes(['status' => Invite::INVITE_ACCEPT, 'hash' => $hash]);
-        if (!$invite)
+        if (!isset($invite))
             throw new CHttpException(404, 'Данное приглашение не найдено или было отменено');
         $model = new Users();
         if (Yii::app()->request->isPostRequest) {
