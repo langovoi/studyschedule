@@ -99,6 +99,7 @@ class ScheduleController extends Controller
                 ksort($schedule[$date]);
             }
         }
+        Yii::app()->clientScript->registerMetaTag('noarchive', 'robots');
         $this->render('index', ['group' => ($group ? $group->number : false), 'group_list' => $group_list, 'schedule' => $schedule]);
     }
 }
