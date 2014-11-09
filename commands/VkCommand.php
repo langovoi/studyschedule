@@ -61,7 +61,12 @@ class VkCommand extends CConsoleCommand
             'access_token' => $this->access_token
         ]);
 
-        file_get_contents('https://api.vk.com/method/wall.post?' . $params);
+        if (($result = file_get_contents('https://api.vk.com/method/wall.post?' . $params))) {
+            var_dump(json_decode($result, true));
+        } else {
+            echo 'Error when send request...';
+        }
+        echo PHP_EOL;
     }
 
     public function actionAutopost()
@@ -111,10 +116,10 @@ class VkCommand extends CConsoleCommand
                         $schedule_text .= PHP_EOL;
                     }
                 if (!$schedule || $schedule_count == 0)
-                    $schedule_text .= 'Пар нет';
+                    $schedule_text .= 'Пар нет' . PHP_EOL;
             }
 
-            $schedule_text .= PHP_EOL . 'Данные предоставлены проектом @studyschedule (Расписание ККЭП)';
+            $schedule_text .= 'Данные предоставлены проектом @studyschedule (Расписание ККЭП)';
 
             $params = http_build_query([
                 'owner_id' => $autopost->page_id,
@@ -124,19 +129,23 @@ class VkCommand extends CConsoleCommand
             ]);
             echo "----" . $autopost->group->number . "----" . PHP_EOL;
             $response = file_get_contents('https://api.vk.com/method/wall.post?' . $params);
-            $answer = json_decode($response, true);
-            var_dump($answer);
-            echo PHP_EOL;
-            if (isset($answer['error'])) {
-                $autopost->status = GroupAutopost::STATUS_DISABLE;
-                $autopost->save();
-                $email = $autopost->group->owner->email;
-                $mail = new YiiMailer("autopost", ['group' => $autopost->group]);
-                $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
-                $mail->setTo($email);
-                $mail->setSubject('Ошибка автопостинга в ВК');
-                $mail->send();
+            if ($response) {
+                $answer = json_decode($response, true);
+                var_dump($answer);
+                if (isset($answer['error'])) {
+                    $autopost->status = GroupAutopost::STATUS_DISABLE;
+                    $autopost->save();
+                    $email = $autopost->group->owner->email;
+                    $mail = new YiiMailer("autopost", ['group' => $autopost->group]);
+                    $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
+                    $mail->setTo($email);
+                    $mail->setSubject('Ошибка автопостинга в ВК');
+                    $mail->send();
+                }
+            } else {
+                echo 'Error when send request...';
             }
+            echo PHP_EOL;
         }
 
     }
