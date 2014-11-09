@@ -123,14 +123,8 @@ class IcsController extends Controller
             else
                 $current_call_list = $call_list;
             $week_number = ($period_element->format('W') - $semester_start->format('W')) % ($semester->week_number + 1) + 1;
-            $numbers = [1, 2, 3, 4, 5];
-            foreach ($schedule_elements[$week_number][$week_day] as $schedule_element) {
-                unset($numbers[array_search($schedule_element->number, $numbers)]);
-                if (isset($replaces[$date_formatted][$schedule_element->number])) {
-                    $replace = $replaces[$date_formatted][$schedule_element->number];
-                    if (isset($replace->cancel) && $replace->cancel) continue;
-                    $schedule_element = $replace;
-                }
+            foreach (((isset($replaces[$date_formatted]) ? $replaces[$date_formatted] : []) + $schedule_elements[$week_number][$week_day]) as $schedule_element) {
+                if (isset($schedule_element->cancel) && $schedule_element->cancel) continue;
                 $event = new CalendarEvent();
                 $start_time = clone $period_element;
                 $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
@@ -156,34 +150,6 @@ class IcsController extends Controller
                     $event->setDescription($schedule_element->comment);
                 $calendar->addEvent($event);
             }
-            if (isset($replaces[$date_formatted]))
-                foreach ($replaces[$date_formatted] as $schedule_element) {
-                    if (!in_array($schedule_element->number, $numbers) || isset($schedule_element->cancel) && $schedule_element->cancel) continue;
-                    $event = new CalendarEvent();
-                    $start_time = clone $period_element;
-                    $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
-                    $call_list_end = explode(':', $current_call_list[$schedule_element->number]->end_time);
-                    $start_time->setTime($call_list_start[0], $call_list_start[1]);
-                    $event->setStart($start_time);
-                    $end_time = clone $period_element;
-                    $end_time->setTime($call_list_end[0], $call_list_end[1]);
-                    $event->setEnd($end_time);
-                    $event->setSummary($schedule_element->subject->name);
-                    $event->setUid(md5($date_formatted . ' ' . $current_call_list[$schedule_element->number]->start_time));
-                    if ($schedule_element->classroom_id || $schedule_element->teacher_id) {
-                        $location = new Location();
-                        $desc = [];
-                        if ($schedule_element->teacher_id)
-                            $desc[] = $schedule_element->teacher->lastname . ' ' . mb_substr($schedule_element->teacher->firstname, 0, 1, "UTF-8") . '.' . mb_substr($schedule_element->teacher->middlename, 0, 1, "UTF-8");
-                        if ($schedule_element->classroom_id)
-                            $desc[] = $schedule_element->classroom->name;
-                        $location->setName(implode(' | ', $desc));
-                        $event->addLocation($location);
-                    }
-                    if ($schedule_element instanceof GroupReplace && strlen($schedule_element->comment))
-                        $event->setDescription($schedule_element->comment);
-                    $calendar->addEvent($event);
-                }
         }
         $calendarExport = new CalendarExport(new CalendarStream, new Formatter());
         $calendarExport->addCalendar($calendar);
