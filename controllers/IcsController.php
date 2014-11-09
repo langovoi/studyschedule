@@ -29,10 +29,17 @@ class IcsController extends Controller
     {
         if (!isset($_SERVER['HTTP_USER_AGENT']))
             throw new CHttpException(403, 'У вас нет useragent, поэтому сюда вам нельзя');
+
+        /** @var Semesters $semester */
+        if (!($semester = Semesters::model()->with(['call_list', 'call_list_short'])->actual()))
+            throw new CHttpException(404, 'Сейчас нет семестра :-(');
+
+        // Аналитика
         if (!($unique_ics_id = Yii::app()->session->get('unique_ics_id', false))) {
             $unique_ics_id = uniqid();
             Yii::app()->session->add('unique_ics_id', $unique_ics_id);
         }
+
         $analytics = new IcsAnalytics();
         $analytics->setAttributes([
             'useragent' => $_SERVER['HTTP_USER_AGENT'],
@@ -42,25 +49,61 @@ class IcsController extends Controller
             'unique_id' => $unique_ics_id
         ]);
         $analytics->save();
-        $group = new Group();
+
+        // Даты
+        $count_days = 24;
+        $current_date = date('Y-m-d');
+        $period_interval = new DateInterval('P1D');
+        $period_start = new DateTime($current_date);
+        $period_start->modify('-' . floor($count_days / 2) . ' days');
+        $period_end = new DateTime($current_date);
+        $period_end->modify('+' . floor($count_days / 2) . ' days');
+        $period = new DatePeriod($period_start, $period_interval, $period_end);
+        $period_dates = [];
+        $semester_start = new DateTime($semester->start_date);
+        $semester_end = new DateTime($semester->end_date);
+        /** @var DateTime $period_date */
+        foreach ($period as $period_date) {
+            $period_dates[] = $period_date->format('Y-m-d');
+        }
+
+        // Загрузка группы с расписанием и заменами за нужный период
         /** @var Group $group */
-        if (!($group = $group->filled()->findByAttributes(['number' => $id])))
+        if (!($group = Group::model()->filled()->with(['schedule_elements' => ['with' => ['teacher' => ['alias' => 's_teacher'], 'classroom' => ['alias' => 's_classroom'], 'subject' => ['alias' => 's_subject']]], 'replaces' => ['with' => ['teacher' => ['alias' => 'r_teacher'], 'classroom' => ['alias' => 'r_classroom'], 'subject' => ['alias' => 'r_subject']], 'condition' => 'date >= :start_date AND date <= :end_date', 'params' => [':start_date' => $period_start->format('Y-m-d'), ':end_date' => $period_end->format('Y-m-d'),]]])->findByAttributes(['number' => $id])))
             throw new CHttpException(404, 'Группа не найдена или незаполнена');
-        $semester = Semesters::model()->with(['call_list', 'call_list_short'])->actual();
-        /** @var Semesters $semester */
-        if (!$semester)
-            throw new CHttpException(404, 'Сейчас нет семестра :-(');
+
+        // Преобразование массивов
+
         /** @var CallListsElements[] $call_list */
+        $call_list = CHtml::listData($semester->call_list()->elements, 'number', function ($model) {
+            return $model;
+        });
+
         /** @var CallListsElements[] $call_list_short */
-        $call_list = [];
-        $call_list_short = [];
-        /** @var CallListsElements $element */
-        foreach ($semester->call_list()->elements as $element) {
-            $call_list[$element->number] = $element;
+        $call_list_short = CHtml::listData($semester->call_list_short()->elements, 'number', function ($model) {
+            return $model;
+        });
+
+        $schedule_elements = [];
+
+        for ($i = 1; $i <= 2; $i++) {
+            for ($j = 1; $j <= 6; $j++) {
+                $schedule_elements[$i][$j] = CHtml::listData(array_filter($group->schedule_elements, function ($model) use (&$i, &$j) {
+                    return $model->week_number == $i && $model->week_day == $j;
+                }), 'number', function ($model) {
+                    return $model;
+                });
+                ksort($schedule_elements[$i][$j], SORT_NUMERIC);
+            }
+            ksort($schedule_elements[$i], SORT_NUMERIC);
         }
-        foreach ($semester->call_list_short()->elements as $element) {
-            $call_list_short[$element->number] = $element;
+
+        $replaces = [];
+
+        foreach ($group->replaces as $replace) {
+            $replaces[$replace->date][$replace->number] = $replace;
         }
+
         $calendar = new Calendar();
         $calendar->setProdId('-//Sc0Rp1D//KKEP//RU');
         $calendar->setTimezone(new DateTimeZone('Europe/Moscow'));
@@ -68,39 +111,38 @@ class IcsController extends Controller
             'X-PUBLISHED-TTL' => 'PT1H',
             'REFRESH-INTERVAL' => 'VALUE=DURATION:PT1H',
         ]);
-        $count_days = 24;
-        $start_date = strtotime('-' . $count_days / 2 . ' days', strtotime(date('Y-m-d')));
-        $end_date = strtotime('+' . $count_days / 2 . ' days', strtotime(date('Y-m-d')));
-        for ($i = $start_date; $i <= $end_date; $i = strtotime('+1 days', $i)) {
-            if ($i < strtotime($semester->start_date)) continue;
-            if ($i > strtotime($semester->end_date)) break;
-            if (date('N', $i) == 7 || Holiday::model()->findByAttributes(['date' => date('Y-m-d', $i)])) continue;
-            if (date('N', $i) == 6 || ShortDay::model()->findByAttributes(['date' => date('Y-m-d', $i)]))
+        $holidays = CHtml::listData(Holiday::model()->findAllByAttributes(['date' => $period_dates]), 'date', 'name');
+        $short_days = CHtml::listData(ShortDay::model()->findAllByAttributes(['date' => $period_dates]), 'date', 'name');
+        /** @var DateTime $period_element */
+        foreach ($period as $period_element) {
+            $week_day = $period_element->format('N');
+            $date_formatted = $period_element->format('Y-m-d');
+            if ($period_element < $semester_start || $week_day == 7 || array_key_exists($date_formatted, $holidays)) continue;
+            if ($period_element > $semester_end) break;
+            if ($week_day == 6 || array_key_exists($date_formatted, $short_days))
                 $current_call_list = $call_list_short;
             else
                 $current_call_list = $call_list;
-            $week_number = (date('W', $i) - date('W', strtotime($semester->start_date))) % ($semester->week_number + 1) + 1;
-            $week_day = date('N', $i);
-            $schedule_elements = $this->getScheduleElement($group->id, $semester->id, $week_number, $week_day);
+            $week_number = ($period_element->format('W') - $semester_start->format('W')) % ($semester->week_number + 1) + 1;
             $numbers = [1, 2, 3, 4, 5];
-            foreach ($schedule_elements as $schedule_element) {
+            foreach ($schedule_elements[$week_number][$week_day] as $schedule_element) {
                 unset($numbers[array_search($schedule_element->number, $numbers)]);
-                $schedule_element_temp = GroupReplace::model()->findByAttributes(['group_id' => $group->id, 'date' => date('Y-m-d', $i), 'number' => $schedule_element->number]);
-                if ($schedule_element_temp) {
-                    if ($schedule_element_temp->cancel) continue;
-                    $schedule_element = $schedule_element_temp;
+                if (isset($replaces[$date_formatted][$schedule_element->number])) {
+                    $replace = $replaces[$date_formatted][$schedule_element->number];
+                    if (isset($replace->cancel) && $replace->cancel) continue;
+                    $schedule_element = $replace;
                 }
                 $event = new CalendarEvent();
-                $start_time = new DateTime(date('Y-m-d', $i));
+                $start_time = clone $period_element;
                 $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
                 $call_list_end = explode(':', $current_call_list[$schedule_element->number]->end_time);
                 $start_time->setTime($call_list_start[0], $call_list_start[1]);
                 $event->setStart($start_time);
-                $end_time = new DateTime(date('Y-m-d', $i));
+                $end_time = clone $period_element;
                 $end_time->setTime($call_list_end[0], $call_list_end[1]);
                 $event->setEnd($end_time);
                 $event->setSummary($schedule_element->subject->name);
-                $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
+                $event->setUid(md5($date_formatted . ' ' . $current_call_list[$schedule_element->number]->start_time));
                 if ($schedule_element->classroom_id || $schedule_element->teacher_id) {
                     $location = new Location();
                     $desc = [];
@@ -115,21 +157,20 @@ class IcsController extends Controller
                     $event->setDescription($schedule_element->comment);
                 $calendar->addEvent($event);
             }
-            $replaces = GroupReplace::model()->findAllByAttributes(['group_id' => $group->id, 'date' => date('Y-m-d', $i), 'number' => $numbers]);
-            if ($replaces)
-                foreach ($replaces as $schedule_element) {
-                    if ($schedule_element->cancel) continue;
+            if (isset($replaces[$date_formatted]))
+                foreach ($replaces[$date_formatted] as $schedule_element) {
+                    if (!in_array($schedule_element->number, $numbers) || isset($schedule_element->cancel) && $schedule_element->cancel) continue;
                     $event = new CalendarEvent();
-                    $start_time = new DateTime(date('Y-m-d', $i));
+                    $start_time = clone $period_element;
                     $call_list_start = explode(':', $current_call_list[$schedule_element->number]->start_time);
                     $call_list_end = explode(':', $current_call_list[$schedule_element->number]->end_time);
                     $start_time->setTime($call_list_start[0], $call_list_start[1]);
                     $event->setStart($start_time);
-                    $end_time = new DateTime(date('Y-m-d', $i));
+                    $end_time = clone $period_element;
                     $end_time->setTime($call_list_end[0], $call_list_end[1]);
                     $event->setEnd($end_time);
                     $event->setSummary($schedule_element->subject->name);
-                    $event->setUid(md5(date('d.m.Y', $i) . ' ' . $current_call_list[$schedule_element->number]->start_time));
+                    $event->setUid(md5($date_formatted . ' ' . $current_call_list[$schedule_element->number]->start_time));
                     if ($schedule_element->classroom_id || $schedule_element->teacher_id) {
                         $location = new Location();
                         $desc = [];
@@ -147,28 +188,8 @@ class IcsController extends Controller
         }
         $calendarExport = new CalendarExport(new CalendarStream, new Formatter());
         $calendarExport->addCalendar($calendar);
-        header('Content-Type: text/calendar; charset=utf-8');
+        //header('Content-Type: text/calendar; charset=utf-8');
         echo $calendarExport->getStream();
-    }
-
-    private function getScheduleElement($group_id, $semester_id, $week_number, $week_day)
-    {
-        if (!isset($this->schedule_elements[$week_number . "_" . $week_day]))
-            $this->schedule_elements[$week_number . "_" . $week_day] = ScheduleElement::model()->byNumber()->findAllByAttributes(['group_id' => $group_id, 'semester_id' => $semester_id, 'week_number' => $week_number, 'week_day' => $week_day]);
-        return $this->schedule_elements[$week_number . "_" . $week_day];
-    }
-}
-
-if (!function_exists('getallheaders')) {
-    function getallheaders()
-    {
-        $headers = '';
-        foreach ($_SERVER as $name => $value) {
-            if (substr($name, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-            }
-        }
-        return $headers;
     }
 }
 
