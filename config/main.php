@@ -77,11 +77,11 @@ return [
                     'class' => 'CFileLogRoute',
                     'levels' => 'error, warning',
                 ],
-                [
+                /*[
                     'class' => 'CProfileLogRoute',
                     'levels' => 'profile',
-                    'enabled' => YII_DEBUG,
-                ]
+                    'enabled' => true,
+                ],*/
             ],
         ],
     ],
