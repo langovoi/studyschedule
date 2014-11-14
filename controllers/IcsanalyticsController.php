@@ -26,7 +26,7 @@ class IcsAnalyticsController extends Controller
             ]
         ]);
         $model = new IcsAnalytics('search');
-        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+        if (!Yii::app()->request->isAjaxRequest && !Yii::app()->request->getParam('ajax'))
             $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
         else {
             $model->setAttributes(Yii::app()->request->getParam('IcsAnalytics'));

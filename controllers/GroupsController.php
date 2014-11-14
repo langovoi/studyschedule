@@ -21,7 +21,7 @@ class GroupsController extends Controller
     {
         $dataProvider = new CActiveDataProvider('Group');
         $model = new Group('search');
-        if (!Yii::app()->request->isAjaxRequest || !Yii::app()->request->getParam('ajax'))
+        if (!Yii::app()->request->isAjaxRequest && !Yii::app()->request->getParam('ajax'))
             $this->render('list', ['dataProvider' => $dataProvider, 'model' => $model]);
         else {
             $model->setAttributes(Yii::app()->request->getParam('Group'));
