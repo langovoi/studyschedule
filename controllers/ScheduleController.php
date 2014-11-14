@@ -60,7 +60,8 @@ class ScheduleController extends Controller
                     } elseif ($replace) {
                         $schedule[$date][$schedule_element->number] = [
                             'subject' => $replace->subject->name,
-                            'replace' => true
+                            'replace' => true,
+                            'comment' => $replace->comment
                         ];
                         if ($replace->teacher_id)
                             $schedule[$date][$schedule_element->number]['teacher'] = $replace->teacher->lastname . ' ' . mb_substr($replace->teacher->firstname, 0, 1, "UTF-8") . '.' . mb_substr($replace->teacher->middlename, 0, 1, "UTF-8") . '.';
