@@ -139,7 +139,7 @@ class VkCommand extends CConsoleCommand
                     $mail = new YiiMailer("autopost", ['group' => $autopost->group]);
                     $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
                     $mail->setTo($email);
-                    $mail->setSubject('Ошибка автопостинга в ВК');
+                    $mail->setSubject('Ошибка автопостинга в ВКонтакте');
                     $mail->send();
                 }
             } else {
