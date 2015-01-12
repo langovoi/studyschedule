@@ -43,7 +43,7 @@ class ScheduleController extends Controller
                     continue;
                 }
                 $schedule[$date] = [];
-                $week_number = (($semester->week_number + (date('W', $i) - date('W', strtotime($semester->start_date)))) % 2) ? 2 : 0;
+                $week_number = (($semester->week_number + (date('W', $i) - date('W', strtotime($semester->start_date)))) % 2) ? 2 : 1;
                 $schedule_elements = ScheduleElement::model()->findAllByAttributes(['group_id' => $group->id, 'semester_id' => $semester->id, 'week_number' => $week_number, 'week_day' => $week_day]);
 
                 $numbers = [1, 2, 3, 4, 5];
