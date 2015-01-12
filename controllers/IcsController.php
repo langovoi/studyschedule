@@ -122,7 +122,7 @@ class IcsController extends Controller
                 $current_call_list = $call_list_short;
             else
                 $current_call_list = $call_list;
-            $week_number = (($semester->week_number + ($period_element->format('W') - $semester_start->format('W'))) % 2) ? 2 : 1;
+            $week_number = (($semester->week_number + ($period_element->format('W') - $semester_start->format('W'))) % 2) ? 1 : 2;
             foreach (((isset($replaces[$date_formatted]) ? $replaces[$date_formatted] : []) + $schedule_elements[$week_number][$week_day]) as $schedule_element) {
                 if (isset($schedule_element->cancel) && $schedule_element->cancel) continue;
                 $event = new CalendarEvent();

@@ -16,7 +16,7 @@ class VkCommand extends CConsoleCommand
         $tomorrow_time = strtotime($tomorrow_date);
         if (Holiday::model()->findByAttributes(['date' => $tomorrow_date]) || date('N', $tomorrow_time) == 7)
             throw new CException('Завтра выходной');
-        $week_number = (($semester->week_number + (date('W', $tomorrow_time) - date('W', strtotime($semester->start_date)))) % 2) ? 2 : 1;
+        $week_number = (($semester->week_number + (date('W', $tomorrow_time) - date('W', strtotime($semester->start_date)))) % 2) ? 1 : 2;
         $week_day = date('N', $tomorrow_time);
         /** @var Subjects $subject */
         $subject = Subjects::model()->findByPk($subject_id);
