@@ -68,7 +68,7 @@ class IcsController extends Controller
 
         // Загрузка группы с расписанием и заменами за нужный период
         /** @var Group $group */
-        if (!($group = Group::model()->filled()->with(['schedule_elements' => ['with' => ['teacher' => ['alias' => 's_teacher'], 'classroom' => ['alias' => 's_classroom'], 'subject' => ['alias' => 's_subject']]], 'replaces' => ['together' => false, 'with' => ['teacher' => ['alias' => 'r_teacher'], 'classroom' => ['alias' => 'r_classroom'], 'subject' => ['alias' => 'r_subject']], 'condition' => 'date >= :start_date AND date <= :end_date', 'params' => [':start_date' => $period_start->format('Y-m-d'), ':end_date' => $period_end->format('Y-m-d'),]]])->findByAttributes(['number' => $id]))) {
+        if (!($group = Group::model()->filled()->with(['schedule_elements' => ['with' => ['teacher' => ['alias' => 's_teacher'], 'classroom' => ['alias' => 's_classroom'], 'subject' => ['alias' => 's_subject']], 'condition' => 'semester_id = :semester_id', 'params' => [':semester_id' => $semester->id]], 'replaces' => ['together' => false, 'with' => ['teacher' => ['alias' => 'r_teacher'], 'classroom' => ['alias' => 'r_classroom'], 'subject' => ['alias' => 'r_subject']], 'condition' => 'date >= :start_date AND date <= :end_date', 'params' => [':start_date' => $period_start->format('Y-m-d'), ':end_date' => $period_end->format('Y-m-d'),]]])->findByAttributes(['number' => $id]))) {
             throw new CHttpException(404, 'Группа не найдена или незаполнена');
         }
         // Преобразование массивов
@@ -123,6 +123,7 @@ class IcsController extends Controller
             else
                 $current_call_list = $call_list;
             $week_number = (($semester->week_number + ($period_element->format('W') - $semester_start->format('W'))) % 2) ? 1 : 2;
+            /** @var ScheduleElement $schedule_element */
             foreach (((isset($replaces[$date_formatted]) ? $replaces[$date_formatted] : []) + $schedule_elements[$week_number][$week_day]) as $schedule_element) {
                 if (isset($schedule_element->cancel) && $schedule_element->cancel) continue;
                 $event = new CalendarEvent();
