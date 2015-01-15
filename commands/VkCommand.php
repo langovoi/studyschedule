@@ -83,7 +83,7 @@ class VkCommand extends CConsoleCommand
         $week_number = (($semester->week_number + date('W', $tomorrow_time) - date('W', strtotime($semester->start_date))) % 2) ? 1 : 2;
         $week_day = date('N', $tomorrow_time);
         /** @var GroupAutopost[] $autoposts */
-        if (!($autoposts = GroupAutopost::model()->with(['group' => ['scopes' => 'filled', 'with' => ['schedule_elements' => ['condition' => 'week_number = :week_number AND week_day = :week_day AND semester_id = :semester_id', 'params' => [':week_number' => $week_number, ':week_day' => $week_day, ':semester_id' => $semester->id]]]]])->findAllByAttributes(['hour' => $current_hour, 'status' => GroupAutopost::STATUS_ACTIVE])))
+        if (!($autoposts = GroupAutopost::model()->with(['group' => ['with' => ['schedule_elements' => ['condition' => 'week_number = :week_number AND week_day = :week_day AND semester_id = :semester_id', 'params' => [':week_number' => $week_number, ':week_day' => $week_day, ':semester_id' => $semester->id]]]]])->findAllByAttributes(['hour' => $current_hour, 'status' => GroupAutopost::STATUS_ACTIVE])))
             throw new CException('Нет групп для автопостинга');
         foreach ($autoposts as $autopost) {
             $replaces = CHtml::listData(GroupReplace::model()->with(['subject', 'classroom', 'teacher'])->findAllByAttributes(['group_id' => $autopost->group_id, 'date' => $tomorrow_date]), 'number', function ($model) {
