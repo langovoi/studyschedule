@@ -10,7 +10,7 @@ return [
     'import' => [
         'application.models.*',
         'application.components.*',
-        'application.vendor.sc0rp1d.YiiMailer.YiiMailer',
+        'application.vendor.vernes.YiiMailer.YiiMailer',
     ],
     'components' => [
         'db' => $db,

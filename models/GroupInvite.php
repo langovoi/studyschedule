@@ -81,7 +81,7 @@ class GroupInvite extends CActiveRecord
                 $mail = new YiiMailer();
                 $mail->setView('invite');
                 $mail->setData(array('group' => $group, 'hash' => $this->hash));
-                $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
+                $mail->setFrom(isset(Yii::app()->params->YiiMailer->Username) ? Yii::app()->params->YiiMailer->Username : Yii::app()->params->adminEmail, 'Система управления учебным расписанием');
                 $mail->setTo($this->email);
                 $mail->setSubject('Приглашение');
                 $mail->send();

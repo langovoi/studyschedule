@@ -21,7 +21,7 @@ return [
     'import' => [
         'application.models.*',
         'application.components.*',
-        'application.vendor.sc0rp1d.YiiMailer.YiiMailer',
+        'application.vendor.vernes.YiiMailer.YiiMailer',
         'bootstrap.behaviors.*',
         'bootstrap.helpers.*',
         'bootstrap.widgets.*',
@@ -34,6 +34,9 @@ return [
     ],
     'modules' => $modules,
     'components' => [
+        'request' => [
+            'baseUrl' => '',
+        ],
         'viewRenderer' => [
             'class' => 'application.vendor.yiiext.twig-renderer.ETwigViewRenderer',
             'twigPathAlias' => 'application.vendor.twig.twig.lib.Twig',

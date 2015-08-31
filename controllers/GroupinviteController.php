@@ -40,7 +40,7 @@ class GroupInviteController extends Controller
         $mail = new YiiMailer();
         $mail->setView('invite/accept');
         $mail->setData(['model' => $model]);
-        $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
+        $mail->setFrom(isset(Yii::app()->params->YiiMailer->Username) ? Yii::app()->params->YiiMailer->Username : Yii::app()->params->adminEmail, 'Система управления учебным расписанием');
         $mail->setTo($model->email);
         $mail->setSubject('Заявка на создание');
         if ($mail->send()) {
@@ -61,7 +61,7 @@ class GroupInviteController extends Controller
         if ($model->status == Invite::INVITE_CREATE) {
             $mail = new YiiMailer();
             $mail->setView('invite/decline');
-            $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
+            $mail->setFrom(isset(Yii::app()->params->YiiMailer->Username) ? Yii::app()->params->YiiMailer->Username : Yii::app()->params->adminEmail, 'Система управления учебным расписанием');
             $mail->setTo($model->email);
             $mail->setSubject('Заявка на создание');
             $mail->send();

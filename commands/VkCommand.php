@@ -137,7 +137,7 @@ class VkCommand extends CConsoleCommand
                     $autopost->save();
                     $email = $autopost->group->owner->email;
                     $mail = new YiiMailer("autopost", ['group' => $autopost->group]);
-                    $mail->setFrom('marklangovoi@gmail.com', 'Система управления учебным расписанием');
+                    $mail->setFrom(isset(Yii::app()->params->YiiMailer->Username) ? Yii::app()->params->YiiMailer->Username : Yii::app()->params->adminEmail, 'Система управления учебным расписанием');
                     $mail->setTo($email);
                     $mail->setSubject('Ошибка автопостинга в ВКонтакте');
                     $mail->send();

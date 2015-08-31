@@ -68,6 +68,25 @@ class Invite extends CActiveRecord
         return parent::beforeSave();
     }
 
+    public function afterSave()
+    {
+        $admins = array_map(function ($user) {
+            /** @var Users $user */
+            return $user->email;
+        }, array_filter(Users::model()->findAll(), function ($user) {
+                /** @var Users $user */
+                return in_array('admin', array_keys($user->groups));
+            })
+        );
+        $mail = new YiiMailer();
+        $mail->setView('invite/new');
+        $mail->setFrom(isset(Yii::app()->params->YiiMailer->Username) ? Yii::app()->params->YiiMailer->Username : Yii::app()->params->adminEmail, 'Система управления учебным расписанием');
+        $mail->setTo($admins);
+        $mail->setSubject('Новая заявка');
+        $mail->send();
+        return parent::afterSave();
+    }
+
     public function groupCheck($attribute)
     {
         if (Group::model()->findByAttributes(['number' => $this->$attribute]))

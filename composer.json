@@ -11,11 +11,11 @@
         {
             "type":"package",
             "package":{
-                "name": "sc0rp1d/YiiMailer",
+                "name": "vernes/YiiMailer",
                 "version":"dev-master",
                 "source":{
                     "type":"git",
-                    "url": "https://github.com/sc0rp1d/YiiMailer",
+                    "url": "https://github.com/vernes/YiiMailer",
                     "reference":"master"
                 }
             }
@@ -27,7 +27,7 @@
         "twig/twig": "1.6.5",
         "yiiext/twig-renderer": "dev-master",
         "jsvrcek/ics": "dev-master",
-        "sc0rp1d/YiiMailer": "dev-master",
+        "vernes/YiiMailer": "dev-master",
         "drmabuse/yii-bootstrap-3-module": "dev-master",
         "miloschuman/yii-highcharts": "~4.0"
     }
