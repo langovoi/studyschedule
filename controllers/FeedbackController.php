@@ -36,7 +36,8 @@ class FeedbackController extends Controller
                 $mail = new YiiMailer();
                 $mail->setView('feedback');
                 $mail->setData(['form' => $form]);
-                $mail->setFrom($form->email, $form->name);
+                $mail->setFFix rom($form->email, $form->name);
+                $mail->setReplyTo($form->email);
                 $mail->setTo(Yii::app()->params->adminEmail);
                 $mail->setSubject('Система расписания: ' . $form->subject);
                 if ($mail->send()) {
