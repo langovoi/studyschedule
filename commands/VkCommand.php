@@ -44,6 +44,8 @@ class VkCommand extends CConsoleCommand
             }
         if ($replaces)
             foreach ($replaces as $replace) {
+                if(!isset($schedule[$replace->number]))
+                    $schedule[$replace->number] = [];
                 if (!in_array((int)$replace->group->number, $schedule[$replace->number]))
                     $schedule[$replace->number][] = (int)$replace->group->number;
             }
