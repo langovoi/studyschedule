@@ -51,9 +51,15 @@ class VkCommand extends CConsoleCommand
             }
         ksort($schedule);
         $schedule_text = 'У кого завтра ' . $subject->name . '?' . PHP_EOL;
-        foreach ($schedule as $number => $groups) {
-            $schedule_text .= $number . ') ' . implode(', ', $groups) . PHP_EOL;
+        
+        if(count($schedule)) {
+            foreach ($schedule as $number => $groups) {
+                $schedule_text .= $number . ') ' . implode(', ', $groups) . PHP_EOL;
+            }
+        } else {
+            $schedule_text .= 'А мы не знаем :-(' . PHP_EOL;
         }
+        
         $schedule_text .= PHP_EOL . 'Данные предоставлены проектом @studyschedule (Расписание ККЭП)';
 
         $params = http_build_query([
